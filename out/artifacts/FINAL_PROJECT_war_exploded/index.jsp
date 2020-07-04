@@ -14,7 +14,7 @@ Please Log in.
   <input type="text" name="username" title="accountName"/>
   </br></br>
   <label>Password:</label>
-  <input type="text" name="password" title="accountPassword"/>
+  <input type="password" name="password" title="accountPassword"/>
   <input type="submit" value="Login"/>
 </form>
 </br>

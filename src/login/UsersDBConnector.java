@@ -5,9 +5,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class UsersDBConnector {
+public class UsersDBConnector extends DBConnector{
 
-    private Connection connection;
     private final String usersTableName = "users";
     private HashMap<String, String> hashMap;
     private int usersCount;
@@ -15,27 +14,10 @@ public class UsersDBConnector {
     /*
      * creates and connects to a database
      */
-    public UsersDBConnector(){
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306?allowMultiQueries=true",
-                    "root",
-                    "1234");
-            Statement useDbStm = connection.createStatement();
-            useDbStm.executeQuery("USE SCRIBBLE;");
-            hashMap = toMap();
-            usersCount = usersCount();
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /*
-     * Closes connection to the database
-     */
-    public void closeConnection() throws SQLException {
-        connection.close();
+    public UsersDBConnector() throws SQLException {
+        super();
+        hashMap = toMap();
+        usersCount = usersCount();
     }
 
     /* converts table records to a list */
@@ -89,15 +71,15 @@ public class UsersDBConnector {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO " + usersTableName +" VALUES (?, ?, ?)");
         ps.setInt(1, usersCount);
         ps.setString(2, username);
-        ps.setString(3,password);
+        ps.setString(3,Encryptor.shaVal(password));
         ps.execute();
         usersCount++;
         if(!hashMap.containsKey(username))
-            hashMap.put(username, password);
+            hashMap.put(username, Encryptor.shaVal(password));
     }
 
     /* Checks if SHA value of password matches username's password */
     public boolean passwordMatches(String username, String password) throws NoSuchAlgorithmException {
-        return hashMap.get(username).equals(password);
+        return hashMap.get(username).equals(Encryptor.shaVal(password));
     }
 }
