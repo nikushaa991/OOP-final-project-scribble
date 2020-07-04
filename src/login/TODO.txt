@@ -1,0 +1,7 @@
+check if hashmap necessary
+
+split servlets database code and actual code into different packages
+
+add encrypted storing
+
+maybe create interface for databases
