@@ -1,4 +1,4 @@
-USE scribble;
+USE SCRIBBLE;
 
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
