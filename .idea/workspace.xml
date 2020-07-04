@@ -7,17 +7,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d96d9b77-ab47-45cc-ae4c-c9a7eda73667" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/SessionCreatingListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/FINAL_PROJECT_war_exploded/WEB-INF/classes/main/java/AcctCreationServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/FINAL_PROJECT_war_exploded/WEB-INF/classes/main/java/LoginServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/FINAL_PROJECT_war_exploded/WEB-INF/classes/main/java/LoginServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/FINAL_PROJECT_war_exploded/WEB-INF/classes/main/java/UsersDBConnector.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/FINAL_PROJECT_war_exploded/WEB-INF/classes/main/java/UsersDBConnector.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FINAL_PROJECT/main/java/AcctCreationServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FINAL_PROJECT/main/java/LoginServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FINAL_PROJECT/main/java/LoginServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FINAL_PROJECT/main/java/UsersDBConnector.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FINAL_PROJECT/main/java/UsersDBConnector.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/AcctCreationServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CreationServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/LoginServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/UsersDBConnector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/UsersDBConnector.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/databasesInit.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/databasesInit.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -167,11 +159,6 @@
                 <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
                 <item name="Tomcat Server" type="7427dc5b:ServiceModel$ServiceGroupNode" />
               </path>
-              <path>
-                <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
-                <item name="Tomcat Server" type="7427dc5b:ServiceModel$ServiceGroupNode" />
-                <item name="Running" type="7427dc5b:ServiceModel$ServiceGroupNode" />
-              </path>
             </expand>
             <select />
           </treeState>
@@ -191,7 +178,8 @@
       <updated>1593522547622</updated>
       <workItem from="1593522551893" duration="611000" />
       <workItem from="1593794105759" duration="1707000" />
-      <workItem from="1593802214332" duration="13158000" />
+      <workItem from="1593802214332" duration="15300000" />
+      <workItem from="1593868436903" duration="1204000" />
     </task>
     <servers />
   </component>
@@ -283,10 +271,11 @@
     </state>
     <state width="908" height="231" key="GridCell.Tab.2.right/67.27.1373.783@67.27.1373.783" timestamp="1593854435240" />
     <state width="1244" height="231" key="GridCell.Tab.2.right/67.27.3773.1053@67.27.3773.1053" timestamp="1593859685498" />
-    <state x="236" y="27" width="1024" height="783" key="SettingsEditor" timestamp="1593854129414">
-      <screen x="67" y="27" width="1373" height="783" />
+    <state x="-39" y="27" width="1920" height="1053" key="SettingsEditor" timestamp="1593861492035">
+      <screen x="67" y="27" width="3773" height="1053" />
     </state>
     <state x="236" y="27" width="1024" height="783" key="SettingsEditor/67.27.1373.783@67.27.1373.783" timestamp="1593854129414" />
+    <state x="-39" y="27" width="1920" height="1053" key="SettingsEditor/67.27.3773.1053@67.27.3773.1053" timestamp="1593861492035" />
     <state x="425" y="313" width="646" height="225" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD" timestamp="1593854107890">
       <screen x="67" y="27" width="1373" height="783" />
     </state>

@@ -9,7 +9,7 @@ import java.util.Map;
 public class UsersDBConnector {
 
     private Connection connection;
-    private String usersTableName = "users";
+    private final String usersTableName = "users";
     private HashMap<String, String> hashMap;
     private int usersCount;
 
