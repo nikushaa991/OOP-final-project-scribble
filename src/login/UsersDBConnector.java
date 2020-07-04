@@ -1,10 +1,9 @@
-package main.java;
+package login;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class UsersDBConnector {
 

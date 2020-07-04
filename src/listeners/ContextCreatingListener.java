@@ -1,4 +1,6 @@
-package main.java;
+package listeners;
+
+import login.UsersDBConnector;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
