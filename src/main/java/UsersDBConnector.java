@@ -79,7 +79,7 @@ public class UsersDBConnector {
         return hashMap.containsKey(username);
     }
 
-    /* Returns number of users*/
+    /* Returns number of users in the table */
     public int usersCount() throws SQLException {
         return hashMap.size();
     }
@@ -90,15 +90,15 @@ public class UsersDBConnector {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO " + usersTableName +" VALUES (?, ?, ?)");
         ps.setInt(1, usersCount);
         ps.setString(2, username);
-        ps.setString(3, Encryptor.shaVal(password));
+        ps.setString(3,password);
         ps.execute();
         usersCount++;
         if(!hashMap.containsKey(username))
             hashMap.put(username, password);
     }
 
-    /* Checks if password matches username's password */
+    /* Checks if SHA value of password matches username's password */
     public boolean passwordMatches(String username, String password) throws NoSuchAlgorithmException {
-        return hashMap.get(username).equals(Encryptor.shaVal(password));
+        return hashMap.get(username).equals(password);
     }
 }
