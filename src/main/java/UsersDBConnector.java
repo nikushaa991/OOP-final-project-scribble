@@ -1,5 +1,6 @@
 package main.java;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,7 +76,6 @@ public class UsersDBConnector {
 
     /* checks if user exists in the table */
     public boolean exists(String username) throws SQLException {
-        System.out.println("exists entered." );
         return hashMap.containsKey(username);
     }
 
@@ -85,12 +85,12 @@ public class UsersDBConnector {
     }
 
     /* Creates and adds new user to the table */
-    public void newUser(String username, String password) throws SQLException {
+    public void newUser(String username, String password) throws SQLException, NoSuchAlgorithmException {
         User newUser = new User(usersCount, username, password);
         PreparedStatement ps = connection.prepareStatement("INSERT INTO " + usersTableName +" VALUES (?, ?, ?)");
         ps.setInt(1, usersCount);
         ps.setString(2, username);
-        ps.setString(3, password);
+        ps.setString(3, Encryptor.shaVal(password));
         ps.execute();
         usersCount++;
         if(!hashMap.containsKey(username))
@@ -98,7 +98,7 @@ public class UsersDBConnector {
     }
 
     /* Checks if password matches username's password */
-    public boolean passwordMatches(String username, String password){
-        return hashMap.get(username).equals(password);
+    public boolean passwordMatches(String username, String password) throws NoSuchAlgorithmException {
+        return hashMap.get(username).equals(Encryptor.shaVal(password));
     }
 }
