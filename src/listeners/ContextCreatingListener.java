@@ -20,7 +20,7 @@ public class ContextCreatingListener implements ServletContextListener {
             usersDb = new UsersDBConnector();
         } catch (SQLException e) { e.printStackTrace(); }
         servletContextEvent.getServletContext().setAttribute("users", usersDb);
-        servletContextEvent.getServletContext().setAttribute("games", currentGames);
+        servletContextEvent.getServletContext().setAttribute("games", usersDb);
     }
 
     @Override

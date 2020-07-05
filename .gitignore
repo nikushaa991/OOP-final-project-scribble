@@ -1,3 +1,6 @@
 .idea/workspace.xml
 out/
 src/main/java/DatabaseCredentials.java
+lib/
+*.iml
+.idea/
