@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-abstract class DBConnector {
+public abstract class DBConnector {
     protected Connection connection;
 
     public DBConnector(){
