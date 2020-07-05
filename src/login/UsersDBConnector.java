@@ -68,12 +68,10 @@ public class UsersDBConnector extends DBConnector {
 
     /* Returns number of users in the table */
     public int usersCount() throws SQLException {
-        int result = 0;
         Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + usersTableName +";");
-        if(rs.next())
-            result++;
-        return result;
+        ResultSet rs = queryStm.executeQuery("SELECT count(*) FROM " + usersTableName +";");
+        rs.next();
+        return rs.getInt(1);
     }
 
     /* Creates and adds new user to the table if such does not exist yet */
@@ -85,13 +83,20 @@ public class UsersDBConnector extends DBConnector {
             ps.setString(2, username);
             ps.setString(3, Encryptor.shaVal(password));
             ps.execute();
+            usersCount++;
         }
+    }
+
+    /* Deletes user from table. This will be needed to testing purposes */
+    public void deleteUser(String username) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("DELETE FROM " + usersTableName + " WHERE username = ?");
+        ps.setString(1, username);
     }
 
     /* Checks if SHA value of password matches username's password */
     public boolean passwordMatches(String username, String password) throws NoSuchAlgorithmException, SQLException {
         Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + usersTableName +" WHERE username = " + username + ";");
+        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + usersTableName +" WHERE username = \"" + username + "\"");
         if(rs.next()){
             if(rs.getString(3).equals(Encryptor.shaVal(password)))
                 return true;
