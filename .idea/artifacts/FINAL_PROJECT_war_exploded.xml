@@ -7,6 +7,10 @@
         <element id="directory" name="classes">
           <element id="module-output" name="FINAL_PROJECT" />
         </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="WebSocket" />
+          <element id="library" level="module" name="JUnit5.4" module-name="FINAL_PROJECT" />
+        </element>
       </element>
     </root>
   </artifact>

@@ -12,6 +12,7 @@ public class GameWS {
     @OnOpen
     public void onOpen(){
         System.out.println("Open Connection ...");
+
     }
 
     @OnClose
