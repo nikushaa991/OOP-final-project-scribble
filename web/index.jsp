@@ -18,6 +18,6 @@ Please Log in.
   <input type="submit" value="Login"/>
 </form>
 </br>
-<a href="new_account.jsp">Create New Account</a>
+<a href="new_user.jsp">Create New Account</a>
 </body>
 </html>

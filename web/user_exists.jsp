@@ -6,10 +6,10 @@
 </head>
 <body>
 
-<h1>Create New Account</h1>
+<h1>The Name <%= request.getParameter("username") %> is Already In Use</h1>
 
-Please enter proposed name and password
-<form action="AccountCreated" method="POST">
+Please enter another name and password
+<form action="UserCreated" method="POST">
     <label>User Name:</label>
     <input type="text" name="username" title="accountName"/>
     </br></br>

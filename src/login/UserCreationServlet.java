@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
-@WebServlet(value = "/AccountCreated", name = "AccountCreated")
-public class CreationServlet extends HttpServlet {
+@WebServlet(value = "/UserCreated", name = "UserCreated")
+public class UserCreationServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UsersDBConnector userDb = (UsersDBConnector) getServletContext().getAttribute("users");
@@ -18,10 +18,10 @@ public class CreationServlet extends HttpServlet {
         String psw = req.getParameter("password");
         try {
             if(userDb.exists(name))
-                req.getRequestDispatcher("account_exists.jsp").forward(req, resp);
+                req.getRequestDispatcher("user_exists.jsp").forward(req, resp);
             else {
                 userDb.newUser(name, psw);
-                req.getRequestDispatcher("welcome.jsp").forward(req, resp);
+                req.getRequestDispatcher("index.jsp").forward(req, resp);
             }
         } catch (SQLException | NoSuchAlgorithmException e) {
             e.printStackTrace();

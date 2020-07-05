@@ -77,7 +77,6 @@ public class UsersDBConnector extends DBConnector {
     /* Creates and adds new user to the table if such does not exist yet */
     public void newUser(String username, String password) throws SQLException, NoSuchAlgorithmException {
         if(!exists(username)) {
-            User newUser = new User(usersCount, username, password);
             PreparedStatement ps = connection.prepareStatement("INSERT INTO " + usersTableName + " VALUES (?, ?, ?)");
             ps.setInt(1, usersCount);
             ps.setString(2, username);
@@ -91,6 +90,7 @@ public class UsersDBConnector extends DBConnector {
     public void deleteUser(String username) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("DELETE FROM " + usersTableName + " WHERE username = ?");
         ps.setString(1, username);
+        ps.execute();
     }
 
     /* Checks if SHA value of password matches username's password */

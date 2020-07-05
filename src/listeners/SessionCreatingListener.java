@@ -1,5 +1,7 @@
 package listeners;
 
+import login.User;
+
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
