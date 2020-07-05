@@ -12,9 +12,9 @@ public abstract class DBConnector {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306?allowMultiQueries=true",
-                    "root",
-                    "1234");
+                    DatabaseCredentials.url,
+                    DatabaseCredentials.user,
+                    DatabaseCredentials.password);
             Statement useDbStm = connection.createStatement();
             useDbStm.executeQuery("USE SCRIBBLE;");
         } catch (ClassNotFoundException | SQLException e) {
