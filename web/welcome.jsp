@@ -65,6 +65,7 @@
     <div class="text">
     <textarea id="echoText" rows="5" cols="30"></textarea>
     </div>
+    //TODO: ADD CHAT
 </main>
 
 </body>

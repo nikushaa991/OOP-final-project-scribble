@@ -1,99 +1,112 @@
 window.onload = function () {
-  var webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
-  var echoText = document.getElementById("echoText");
-  echoText.value = "";
-  webSocket.onopen = function(message){ wsOpen(message);};
-  webSocket.onclose = function(message){ wsClose(message);};
-  webSocket.onerror = function(message){ wsError(message);};
+    var webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
+    var echoText = document.getElementById("echoText");
+    echoText.value = "";
+    webSocket.onopen = function (message) {
+        wsOpen(message);
+    };
+    webSocket.onclose = function (message) {
+        wsClose(message);
+    };
+    webSocket.onerror = function (message) {
+        wsError(message);
+    };
 
-  //RECEIVE MESSAGES FROM SERVER ON THIS METHOD
-  webSocket.onmessage = function(message){ wsGetMessage(message);};
+    //RECEIVE MESSAGES FROM SERVER ON THIS METHOD
+    webSocket.onmessage = function (message) {
+        wsGetMessage(message);
+    };
 
-  //SEND MESSAGES TO SERVER USING SEND
+    //SEND MESSAGES TO SERVER USING SEND
 
-    function wsOpen(message){
-    echoText.value += "Connected ... \n";
-  }
+    function wsOpen(message) {
+        echoText.value += "Connected ... \n";
+    }
 
-  function wsCloseConnection(){
-    webSocket.close();
-  }
-  function wsClose(message){
-    echoText.value += "Disconnect ... \n";
-  }
-  function wsError(message){
-    echoText.value += "Error ... \n";
-  }
+    function wsCloseConnection() {
+        webSocket.close();
+    }
 
-  function wsGetMessage(message){
+    function wsClose(message) {
+        echoText.value += "Disconnect ... \n";
+    }
+
+    function wsError(message) {
+        echoText.value += "Error ... \n";
+    }
+
+    function wsGetMessage(message) {
+        //TODO:
+        //HANDLE BASED ON SERVER REPLY
+        //CHAT, GAME ETC
         echoText.value += "Message received from to the server : " + message.data + "\n";
     }
 
-  var canvas = document.getElementById("paint-canvas");
-  var context = canvas.getContext("2d");
-  var boundings = canvas.getBoundingClientRect();
+    var canvas = document.getElementById("paint-canvas");
+    var context = canvas.getContext("2d");
+    var boundings = canvas.getBoundingClientRect();
 
-  // Specifications
-  var mouseX = 0;
-  var mouseY = 0;
-  context.strokeStyle = 'black'; // initial brush color
-  context.lineWidth = 1; // initial brush width
-  var isDrawing = false;
+    // Specifications
+    var mouseX = 0;
+    var mouseY = 0;
+    context.strokeStyle = 'black'; // initial brush color
+    context.lineWidth = 1; // initial brush width
+    var isDrawing = false;
 
 
-  // Handle Colors
-  var colors = document.getElementsByClassName('colors')[0];
+    // Handle Colors
+    var colors = document.getElementsByClassName('colors')[0];
 
-  colors.addEventListener('click', function(event) {
-    context.strokeStyle = event.target.value || 'black';
-  });
+    colors.addEventListener('click', function (event) {
+        context.strokeStyle = event.target.value || 'black';
+    });
 
-  // Handle Brushes
-  var brushes = document.getElementsByClassName('brushes')[0];
+    // Handle Brushes
+    var brushes = document.getElementsByClassName('brushes')[0];
 
-  brushes.addEventListener('click', function(event) {
-    context.lineWidth = event.target.value || 1;
-  });
+    brushes.addEventListener('click', function (event) {
+        context.lineWidth = event.target.value || 1;
+    });
 
-  // Mouse Down Event
-  canvas.addEventListener('mousedown', function(event) {
-    setMouseCoordinates(event);
-    isDrawing = true;
+    // Mouse Down Event
+    canvas.addEventListener('mousedown', function (event) {
+        setMouseCoordinates(event);
+        isDrawing = true;
 
-    // Start Drawing
-    context.beginPath();
-    webSocket.send("debilo\n");
-    echoText.value += "BEGIN PATH\n" + mouseX + ", " + mouseY;
-    context.moveTo(mouseX, mouseY);
-  });
+        // Start Drawing
+        context.beginPath();
+        webSocket.send("debilo\n");
+        echoText.value += "BEGIN PATH\n" + mouseX + ", " + mouseY;
+        context.moveTo(mouseX, mouseY);
+    });
 
-  // Mouse Move Event
-  canvas.addEventListener('mousemove', function(event) {
-    setMouseCoordinates(event);
+    // Mouse Move Event
+    canvas.addEventListener('mousemove', function (event) {
+        setMouseCoordinates(event);
 
-    if(isDrawing){
-      context.lineTo(mouseX, mouseY);
-      echoText.value += "STROKE TO " + mouseX + ", " + mouseY + "\n";
-      context.stroke();
+        if (isDrawing) {
+            context.lineTo(mouseX, mouseY);
+            echoText.value += "STROKE TO " + mouseX + ", " + mouseY + "\n";
+            context.stroke();
+        }
+    });
+
+    // Mouse Up Event
+    canvas.addEventListener('mouseup', function (event) {
+        setMouseCoordinates(event);
+        isDrawing = false;
+    });
+
+    // Handle Mouse Coordinates
+    function setMouseCoordinates(event) {
+        mouseX = event.clientX - boundings.left;
+        mouseY = event.clientY - boundings.top;
     }
-  });
 
-  // Mouse Up Event
-  canvas.addEventListener('mouseup', function(event) {
-    setMouseCoordinates(event);
-    isDrawing = false;
-  });
+    // Handle Clear Button
+    var clearButton = document.getElementById('clear');
 
-  // Handle Mouse Coordinates
-  function setMouseCoordinates(event) {
-    mouseX = event.clientX - boundings.left;
-    mouseY = event.clientY - boundings.top;
-  }
-
-  // Handle Clear Button
-  var clearButton = document.getElementById('clear');
-
-  clearButton.addEventListener('click', function() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-  });
+    clearButton.addEventListener('click', function () {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    });
 };
