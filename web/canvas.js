@@ -37,6 +37,8 @@ window.onload = function () {
 
     function wsGetMessage(message) {
         //TODO:
+        //ONLY ARTIST CAN DRAW
+        //ARTIST CANT COMMUNICATE IN CHAT
         //HANDLE BASED ON SERVER REPLY
         //CHAT, GAME ETC
         echoText.value += "Message received from to the server : " + message.data + "\n";
