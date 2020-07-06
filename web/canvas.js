@@ -1,14 +1,17 @@
 window.onload = function () {
-  var webSocket = new WebSocket("ws://localhost:8080/Game/GameWS/websocketendpoint");
+  var webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
   var echoText = document.getElementById("echoText");
   echoText.value = "";
   webSocket.onopen = function(message){ wsOpen(message);};
   webSocket.onclose = function(message){ wsClose(message);};
   webSocket.onerror = function(message){ wsError(message);};
+  webSocket.onmessage = function(message){ wsGetMessage(message);};
 
-  function wsOpen(message){
+
+    function wsOpen(message){
     echoText.value += "Connected ... \n";
   }
+
   function wsCloseConnection(){
     webSocket.close();
   }
@@ -18,6 +21,10 @@ window.onload = function () {
   function wsError(message){
     echoText.value += "Error ... \n";
   }
+
+  function wsGetMessage(message){
+        echoText.value += "Message received from to the server : " + message.data + "\n";
+    }
 
   var canvas = document.getElementById("paint-canvas");
   var context = canvas.getContext("2d");
@@ -52,6 +59,7 @@ window.onload = function () {
 
     // Start Drawing
     context.beginPath();
+    webSocket.send("debilo\n");
     echoText.value += "BEGIN PATH\n" + mouseX + ", " + mouseY;
     context.moveTo(mouseX, mouseY);
   });
@@ -62,7 +70,7 @@ window.onload = function () {
 
     if(isDrawing){
       context.lineTo(mouseX, mouseY);
-      echoText.value += "STROKE TO \n" + mouseX + ", " + mouseY;
+      echoText.value += "STROKE TO " + mouseX + ", " + mouseY + "\n";
       context.stroke();
     }
   });
