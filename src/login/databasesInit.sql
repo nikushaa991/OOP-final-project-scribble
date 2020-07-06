@@ -7,3 +7,5 @@ CREATE TABLE users (
                        PASSWORD VARCHAR(256) NOT NULL
 );
 
+
+

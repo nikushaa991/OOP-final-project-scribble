@@ -3,6 +3,6 @@ out/
 src/main/java/DatabaseCredentials.java
 lib/
 *.iml
-.idea/
 FINAL_PROJECT.iml
 src/main/java/DatabaseCredentials.java
+.idea/

@@ -19,6 +19,7 @@ public class GameWS {
         order++;
         AE.MISHVELET();
         System.out.println("Open Connection ...");
+
     }
 
     @OnClose
