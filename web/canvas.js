@@ -5,8 +5,11 @@ window.onload = function () {
   webSocket.onopen = function(message){ wsOpen(message);};
   webSocket.onclose = function(message){ wsClose(message);};
   webSocket.onerror = function(message){ wsError(message);};
+
+  //RECEIVE MESSAGES FROM SERVER ON THIS METHOD
   webSocket.onmessage = function(message){ wsGetMessage(message);};
 
+  //SEND MESSAGES TO SERVER USING SEND
 
     function wsOpen(message){
     echoText.value += "Connected ... \n";

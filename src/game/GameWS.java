@@ -14,7 +14,7 @@ public class GameWS {
     @OnOpen
     public void onOpen(Session session) throws IOException {
         //get game instance
-        //id = game.registerSocket(this)
+        //id = game.registerSession(session)
         map.put(order, session);
         order++;
         AE.MISHVELET();
