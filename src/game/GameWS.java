@@ -1,19 +1,25 @@
 package game;
 
+import login.User;
+
+import javax.servlet.http.HttpSession;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint("/WS")
 public class GameWS {
+    private static int cnt = 0;
     private Game game;
     private int id;
 
     @OnOpen
-    public void onOpen(Session session) throws IOException {
+    public void onOpen(Session session, EndpointConfig config) throws IOException {
         System.out.println("Open Connection ...");
         //game = get game instance from http session
         //id = game.registerSession(session)
+
     }
 
     @OnClose
@@ -30,6 +36,7 @@ public class GameWS {
         //ARTIST:
         //return chosen word
         //send stroke to server
+
 
         //GUESSERS:
         //check guess + send message to chat
