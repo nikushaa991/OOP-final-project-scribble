@@ -21,29 +21,15 @@ public class UsersDBConnector extends DBConnector {
         nrows = nrow();
     }
 
-    /* converts table records to a list */
-    public ArrayList<User> toList() throws SQLException {
-        ArrayList<User> result = new ArrayList<User>();
+    /* converts table records to a list and writes them on passed argument */
+    public void toList(ArrayList<User> usersArray) throws SQLException {
+        usersArray = new ArrayList<User>();
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + ";");
         while (rs.next()) {
             User newItem = new User(rs.getInt(1), rs.getString(2), rs.getString(3));
-            result.add(newItem);
+            usersArray.add(newItem);
         }
-        return result;
-    }
-
-    /* converts table records to hashMap */
-    public HashMap<String, String> toMap() throws SQLException {
-        HashMap<String, String> result = new HashMap<String, String>();
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + ";");
-        while (rs.next()) {
-            String username = rs.getString(2);
-            String password =  rs.getString(3);
-            result.put(username, password);
-        }
-        return result;
     }
 
     /* returns user record from knowing it's username */
