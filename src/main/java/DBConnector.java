@@ -1,12 +1,13 @@
 package main.java;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class DBConnector {
     protected Connection connection;
+    protected String tableName;
+    protected int nrows;
+    protected ReentrantLock nrowLock;
 
     public DBConnector(){
         try {
@@ -17,6 +18,7 @@ public abstract class DBConnector {
                     DatabaseCredentials.password);
             Statement useDbStm = connection.createStatement();
             useDbStm.executeQuery("USE SCRIBBLE;");
+            nrowLock = new ReentrantLock();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -27,5 +29,13 @@ public abstract class DBConnector {
      */
     public void closeConnection() throws SQLException {
         connection.close();
+    }
+
+    /* Returns number of records in the table */
+    public int nrow() throws SQLException {
+        Statement queryStm = connection.createStatement();
+        ResultSet rs = queryStm.executeQuery("SELECT count(*) FROM " + tableName +";");
+        rs.next();
+        return rs.getInt(1);
     }
 }

@@ -12,22 +12,20 @@ import java.util.Map;
 
 public class UsersDBConnector extends DBConnector {
 
-    private final String usersTableName = "users";
-    private int usersCount;
-
     /*
      * creates and connects to a database
      */
     public UsersDBConnector() throws SQLException {
         super();
-        usersCount = usersCount();
+        tableName = "users";
+        nrows = nrow();
     }
 
     /* converts table records to a list */
     public ArrayList<User> toList() throws SQLException {
         ArrayList<User> result = new ArrayList<User>();
         Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + usersTableName + ";");
+        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + ";");
         while (rs.next()) {
             User newItem = new User(rs.getInt(1), rs.getString(2), rs.getString(3));
             result.add(newItem);
@@ -39,7 +37,7 @@ public class UsersDBConnector extends DBConnector {
     public HashMap<String, String> toMap() throws SQLException {
         HashMap<String, String> result = new HashMap<String, String>();
         Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + usersTableName + ";");
+        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + ";");
         while (rs.next()) {
             String username = rs.getString(2);
             String password =  rs.getString(3);
@@ -51,7 +49,7 @@ public class UsersDBConnector extends DBConnector {
     /* returns user record from knowing it's username */
     public User getUser(String username) throws SQLException {
         Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + usersTableName + " WHERE username = \"" + username + "\"");
+        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + " WHERE username = \"" + username + "\"");
         if(rs.next())
             return new User(rs.getInt(1), rs.getString(2), rs.getString(3));
         return null;
@@ -60,35 +58,29 @@ public class UsersDBConnector extends DBConnector {
     /* checks if user exists in the table */
     public boolean exists(String username) throws SQLException {
         Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + usersTableName + " WHERE username = \"" + username + "\"");
+        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + " WHERE username = \"" + username + "\"");
         if(rs.next())
             return true;
         return false;
     }
 
-    /* Returns number of users in the table */
-    public int usersCount() throws SQLException {
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT count(*) FROM " + usersTableName +";");
-        rs.next();
-        return rs.getInt(1);
-    }
-
     /* Creates and adds new user to the table if such does not exist yet */
     public void newUser(String username, String password) throws SQLException, NoSuchAlgorithmException {
         if(!exists(username)) {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO " + usersTableName + " VALUES (?, ?, ?)");
-            ps.setInt(1, usersCount);
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO " + tableName + " VALUES (?, ?, ?)");
+            nrowLock.lock();
+            ps.setInt(1, nrows);
+            nrows++;
+            nrowLock.unlock();
             ps.setString(2, username);
             ps.setString(3, Encryptor.shaVal(password));
             ps.execute();
-            usersCount++;
         }
     }
 
     /* Deletes user from table. This will be needed to testing purposes */
     public void deleteUser(String username) throws SQLException {
-        PreparedStatement ps = connection.prepareStatement("DELETE FROM " + usersTableName + " WHERE username = ?");
+        PreparedStatement ps = connection.prepareStatement("DELETE FROM " + tableName + " WHERE username = ?");
         ps.setString(1, username);
         ps.execute();
     }
@@ -96,7 +88,7 @@ public class UsersDBConnector extends DBConnector {
     /* Checks if SHA value of password matches username's password */
     public boolean passwordMatches(String username, String password) throws NoSuchAlgorithmException, SQLException {
         Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + usersTableName +" WHERE username = \"" + username + "\"");
+        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName +" WHERE username = \"" + username + "\"");
         if(rs.next()){
             if(rs.getString(3).equals(Encryptor.shaVal(password)))
                 return true;
