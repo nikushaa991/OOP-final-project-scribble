@@ -22,14 +22,15 @@ public class UsersDBConnector extends DBConnector {
     }
 
     /* converts table records to a list and writes them on passed argument */
-    public void toList(ArrayList<User> usersArray) throws SQLException {
-        usersArray = new ArrayList<User>();
+    public ArrayList<User> toList() throws SQLException {
+        ArrayList<User> usersArray = new ArrayList<User>();
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + ";");
         while (rs.next()) {
             User newItem = new User(rs.getInt(1), rs.getString(2), rs.getString(3));
             usersArray.add(newItem);
         }
+        return usersArray;
     }
 
     /* returns user record from knowing it's username */

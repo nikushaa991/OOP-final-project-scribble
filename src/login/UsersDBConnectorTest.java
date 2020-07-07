@@ -12,13 +12,13 @@ class UsersDBConnectorTest {
     /* Test basic functionality of the database */
     @Test
     public void test1() throws SQLException, NoSuchAlgorithmException {
-        String username = "testusername1";
+        String username = "testusername2";
         String password = "molly";
         UsersDBConnector dao = new UsersDBConnector();
         dao.newUser(username, password);
         assertTrue(dao.passwordMatches(username, "molly"));
         assertTrue(dao.exists(username));
-        assertEquals(dao.usersCount()-1, dao.getUser(username).getId());
+        assertEquals(dao.nrow()-1, dao.getUser(username).getId());
         dao.deleteUser(username);
     }
 }
