@@ -1,9 +1,10 @@
 package game;
 
-import javafx.util.Pair;
+
 import login.Encryptor;
 import login.User;
 import main.java.DBConnector;
+import main.java.Pair;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,7 +45,7 @@ public class GameDBConnector extends DBConnector {
     /* gets top scores of single game and scorers. number of top records is passed as an argument by client.
     * First integer of the pair is ID and second integer is score of the user.
     * */
-    public ArrayList<Pair<Integer, Integer> > topScores(int count) throws SQLException {
+    public ArrayList<Pair<Integer, Integer>> topScores(int count) throws SQLException {
         ArrayList<Pair<Integer, Integer> > topScores = new ArrayList<>();
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName +
