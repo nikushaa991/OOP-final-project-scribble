@@ -1,25 +1,22 @@
 package game;
 
-import login.User;
-
 import javax.servlet.http.HttpSession;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
 
-@ServerEndpoint("/WS")
+@ServerEndpoint(value = "/WS", configurator = GameSocketConfig.class)
 public class GameWS {
     private static int cnt = 0;
     private Game game;
     private int id;
 
     @OnOpen
-    public void onOpen(Session session, EndpointConfig config) throws IOException {
+    public void onOpen(Session session, EndpointConfig config) throws IOException, InterruptedException {
         System.out.println("Open Connection ...");
-        //game = get game instance from http session
-        //id = game.registerSession(session)
-
+        HttpSession sess = (HttpSession) config.getUserProperties().get("httpSession");
+        game = (Game) sess.getAttribute("GAME");
+        game.registerSession(session);
     }
 
     @OnClose
@@ -29,10 +26,12 @@ public class GameWS {
 
     //CLIENT TO SERVER COMMUNICATION
     @OnMessage
-    public String onMessage(String message) {
+    public String onMessage(String message) throws IOException {
         System.out.println("Message from the client: " + message);
         String res = "Echo from the server : " + message;
-
+        if(message.startsWith("START"))
+            game.stroke(message);
+        else game.stroke(message);
         //ARTIST:
         //return chosen word
         //send stroke to server

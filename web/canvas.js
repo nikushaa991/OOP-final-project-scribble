@@ -36,12 +36,30 @@ window.onload = function () {
     }
 
     function wsGetMessage(message) {
+        var asd = message.data.toString().split(",");
+        echoText.value += asd[0];
+        echoText.value += asd[1];
+        if(asd[0] == "START")
+        {
+            echoText.value += "VIWYEB PATHS\n";
+            context.beginPath();
+            context.moveTo(asd[1], asd[2]);
+        }
+        else if (asd[0] == "WORD"){
+            echoText.value += asd[1];
+        }
+        else if(asd[0] != "ECHO")
+        {
+            echoText.value += "LINETO\n";
+            context.lineTo(asd[0], asd[1]);
+            context.stroke();
+        }
+
         //TODO:
         //ONLY ARTIST CAN DRAW
         //ARTIST CANT COMMUNICATE IN CHAT
         //HANDLE BASED ON SERVER REPLY
         //CHAT, GAME ETC
-        echoText.value += "Message received from to the server : " + message.data + "\n";
     }
 
     var canvas = document.getElementById("paint-canvas");
@@ -77,8 +95,7 @@ window.onload = function () {
 
         // Start Drawing
         context.beginPath();
-        webSocket.send("debilo\n");
-        echoText.value += "BEGIN PATH\n" + mouseX + ", " + mouseY;
+        webSocket.send("START," + mouseX + ',' +  mouseY);
         context.moveTo(mouseX, mouseY);
     });
 
@@ -88,7 +105,7 @@ window.onload = function () {
 
         if (isDrawing) {
             context.lineTo(mouseX, mouseY);
-            echoText.value += "STROKE TO " + mouseX + ", " + mouseY + "\n";
+            webSocket.send(mouseX + ',' + mouseY);
             context.stroke();
         }
     });

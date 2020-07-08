@@ -34,6 +34,7 @@ public class Player
         return order;
     }
 
+    public Session getSession(){return session;}
     /* Setters */
 
     public void IncreaseScore(int Score)

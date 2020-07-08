@@ -2,19 +2,28 @@ package game;
 
 import login.User;
 
-public class Round {
-    private User painter;
+import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
+import java.io.IOException;
+import java.util.Random;
 
-    private String HiddenWord;
+public class Round extends Thread {
+    private Session painterSession;
+    private Random rand;
+    private String hiddenWord;
+    public static final int DURATION = 2000;
 
-    public Round(User painter)
+    public Round(Session painterSession)
     {
-        this.painter = painter;
+        this.painterSession = painterSession;
+        rand = new Random();
     }
 
-    public void OnRoundBegin()
-    {
-        // Randomly take 3 words out of WordDB
+    public void OnRoundBegin() throws IOException, InterruptedException {
+        // Randomly take word out of WordDB:
+        hiddenWord = WordsList.wordsList.get(rand.nextInt(3));
+        painterSession.getBasicRemote().sendText("WORD," + hiddenWord);
+        Thread.sleep(DURATION);
         // Painter chooses one word
         // HiddenWord = that word;
     }
