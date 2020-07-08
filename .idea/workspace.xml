@@ -6,18 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="02a7e243-fbb9-4961-8fe7-d36e50d44129" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/GameSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/GameSocketConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/GameWS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/GameWS.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/Round.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/Round.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/home/classes/Matchmaker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/home/classes/Matchmaker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/home/servlets/QuickplayServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/home/servlets/QuickplayServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/login/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/login/LoginServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/canvas.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/canvas.js" afterDir="false" />
-    </list>
+    <list default="true" id="02a7e243-fbb9-4961-8fe7-d36e50d44129" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
