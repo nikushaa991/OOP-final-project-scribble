@@ -1,20 +1,24 @@
 package game;
 
+import login.User;
+
+import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
 import java.io.IOException;
 
+
 public class Player
 {
-
     private int score;
-    private int order;
     private String name;
     private Session session;
+    private boolean bCanGuess;
 
-    public Player(int i, int order, Session session) {
-        this.order = order;
+    public Player(Session session, User user) {
+
+        this.name = user.getUsername();
         this.session = session;
-        //this.name = session.user.getName();
+
         score = 0;
     }
 
@@ -29,10 +33,12 @@ public class Player
         return name;
     }
 
-    public int GetOrder()
+
+    public boolean GetCanGuess()
     {
-        return order;
+        return bCanGuess;
     }
+
 
     public Session getSession(){return session;}
     /* Setters */
@@ -42,11 +48,12 @@ public class Player
         score += Score;
     }
 
-    public void TryGuess(String guess)
+    public void SetCanGuess(boolean b)
     {
-        Round CurrentRound = null;
-        int result = CurrentRound.CheckGuess(guess);
+        bCanGuess = b;
     }
+
+
 
     public void notifyPlayer(String text) throws IOException
     {

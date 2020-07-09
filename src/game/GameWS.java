@@ -1,5 +1,7 @@
 package game;
 
+import login.User;
+
 import javax.servlet.http.HttpSession;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
@@ -16,7 +18,9 @@ public class GameWS {
         System.out.println("Open Connection ...");
         HttpSession sess = (HttpSession) config.getUserProperties().get("httpSession");
         game = (Game) sess.getAttribute("GAME");
-        game.registerSession(session);
+
+        game.registerSession(session, (User) sess.getAttribute("USER"));
+
     }
 
     @OnClose

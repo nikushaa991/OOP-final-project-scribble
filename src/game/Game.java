@@ -1,7 +1,8 @@
 package game;
 
 import login.User;
-import main.java.Pair;
+import game.Round;
+
 
 import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
@@ -25,6 +26,7 @@ public class Game {
     private Player[] players;
 
     public Game() {
+
         players = new Player[MAX_PLAYERS];
         rounds = new Round[N_ROUNDS];
         playerCount = 0;
@@ -32,8 +34,8 @@ public class Game {
         word = "";
     }
 
-    public synchronized void registerSession(Session session) throws IOException, InterruptedException {
-        Player newPlayer = new Player(0, playerCount, session);
+    public synchronized void registerSession(Session session, User user) throws IOException, InterruptedException {
+        Player newPlayer = new Player(session, user);
         players[playerCount] = newPlayer;
         playerCount++;
         if(playerCount == 2)
@@ -43,13 +45,12 @@ public class Game {
     private void begin() throws IOException, InterruptedException {
         for(; curRound < N_ROUNDS; curRound++)
         {
-            rounds[curRound] = new Round(players[curRound % playerCount].getSession());
+            rounds[curRound] = new Round(players[curRound % playerCount]);
             Round CurrentRound = rounds[curRound];
-            CurrentRound.OnRoundBegin();
-            // guessers have the ability to guess the word in chat
-            // painter has the ability to paint the hidden word in canvas
-            // After timer ends, or everyone guesses
-            CurrentRound.OnRoundEnd();
+
+            CurrentRound.OnRoundBegin(players);
+            // Game in Progress
+            CurrentRound.OnRoundEnd(players);
         }
         GetWinner();
     }
@@ -74,5 +75,22 @@ public class Game {
         for(int i = 0; i < playerCount; i++)
             players[i].getSession().getBasicRemote().sendText(start);
 
+    }
+
+    public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException {
+        Round round = rounds[curRound];
+        int res = round.CheckGuess(guess);
+        if(res == 1)
+        {
+            round.OnCorrectGuess(players[PlayerIndex]);
+        }
+        else if(res == 2)
+        {
+            round.OnCloseGuess(players[PlayerIndex]);
+        }
+        else
+        {
+            round.OnIncorrectGuess(players[PlayerIndex], guess);
+        }
     }
 }

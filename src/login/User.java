@@ -15,8 +15,11 @@ public class User{
 
     /* getter methods*/
     public int getId(){return id;}
+
     public String getUsername(){return username;}
+
     public String getPassword(){return password;}
+
     public int getScore(){return score;}
 
 }
