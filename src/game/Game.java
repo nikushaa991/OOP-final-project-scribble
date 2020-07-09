@@ -1,7 +1,6 @@
 package game;
 
 import javax.websocket.Session;
-import java.io.IOException;
 
 
 //SEND TEXT TO PLAYER USING THIS!!!!!!!
@@ -37,60 +36,32 @@ public class Game {
     private void begin() {
         for(; curRound < N_ROUNDS; curRound++)
         {
-            //notifyAll(Players[curRound%playerCount] is artist);
-            //sendWordsToArtist();
-            //getWordFromArtist();
-            //notifyAll(word is word);
-            //timer(30sec);
-            //recordResults
+            rounds[curRound] = new Round(null);
+            Round CurrentRound = rounds[curRound];
+            CurrentRound.OnRoundBegin();
+            // guessers have the ability to guess the word in chat
+            // painter has the ability to paint the hidden word in canvas
+            // After timer ends, or everyone guesses
+            CurrentRound.OnRoundEnd();
         }
-        chooseWinner();
+        GetWinner();
     }
 
-    //called by player
-    private void guessWord(String guess, int order) {
-        //if guess == word
-        //Players[order].increaseScore();
-        //Players[order].notify("Correct guess!");
-        //else
-        //typeInChat(guess);
+
+    private void GetWinner()
+    {
+        Player winner = null;
+        int maxScore = 0;
+        for(Player p : Players)
+        {
+            if(p.GetScore() > maxScore)
+            {
+                maxScore = p.GetScore();
+                winner = p;
+            }
+        }
+
+        // Debug winner won the game
     }
 
-    private void chooseWinner() {
-
-    }
-
-    private class Player {
-        private int score;
-        private int order;
-        private String name;
-        private Session session;
-
-        public Player(int i, int order, Session session) {
-            this.order = order;
-            this.session = session;
-            //this.name = session.user.getName();
-            score = 0;
-        }
-
-        public int getScore() {
-            return score;
-        }
-
-        public String getString() {
-            return name;
-        }
-
-        public int getOrder() {
-            return order;
-        }
-
-        public void increaseScore(int score) {
-            this.score += score;
-        }
-
-        public void notifyPlayer(String text) throws IOException {
-            session.getBasicRemote().sendText(text);
-        }
-    }
 }

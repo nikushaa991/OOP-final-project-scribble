@@ -36,11 +36,21 @@
         <SOURCES />
       </library>
     </orderEntry>
+<<<<<<< HEAD
     <orderEntry type="library" name="websocket-api1" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar://$USER_HOME$/Downloads/apache-tomcat-8.5.56/lib/mysql-connector-java-5.1.47.jar!/" />
+=======
+    <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
+    <orderEntry type="library" name="websocket-api" level="project" />
+    <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../Web/apache-tomcat-8.5.56/lib/mysql-connector-java-8.0.19.jar!/" />
+>>>>>>> ad2e4a4170a7fff1912839f082cee48c841db68f
         </CLASSES>
         <JAVADOC />
         <SOURCES />

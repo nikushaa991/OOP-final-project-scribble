@@ -1,9 +1,14 @@
 package game;
 
+<<<<<<< HEAD
 //import javafx.util.Pair;
+=======
+
+>>>>>>> ad2e4a4170a7fff1912839f082cee48c841db68f
 import login.Encryptor;
 import login.User;
 import main.java.DBConnector;
+import main.java.Pair;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,6 +49,7 @@ public class GameDBConnector extends DBConnector {
     /* gets top scores of single game and scorers. number of top records is passed as an argument by client.
     * First integer of the pair is ID and second integer is score of the user.
     * */
+<<<<<<< HEAD
 //    public ArrayList<Pair<Integer, Integer> > topScores(int count) throws SQLException {
 //        ArrayList<Pair<Integer, Integer> > topScores = new ArrayList<>();
 //        Statement queryStm = connection.createStatement();
@@ -55,5 +61,18 @@ public class GameDBConnector extends DBConnector {
 //        }
 //        return topScores;
 //    }
+=======
+    public ArrayList<Pair<Integer, Integer>> topScores(int count) throws SQLException {
+        ArrayList<Pair<Integer, Integer> > topScores = new ArrayList<>();
+        Statement queryStm = connection.createStatement();
+        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName +
+                " WHERE RANKED = true ORDER BY WINNING_SCORE DESC LIMIT " + count + ";");
+        while (rs.next()) {
+            Pair<Integer, Integer> nextUser = new Pair(rs.getInt(3), rs.getInt(4));
+            topScores.add(nextUser);
+        }
+        return topScores;
+    }
+>>>>>>> ad2e4a4170a7fff1912839f082cee48c841db68f
 
 }
