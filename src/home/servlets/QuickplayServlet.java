@@ -21,7 +21,7 @@ public class QuickplayServlet extends HttpServlet {
         //Game game = mm.addToQueue();
         HttpSession session = request.getSession();
         session.setAttribute("GAME", game);
-        RequestDispatcher rd = request.getRequestDispatcher("XATVA.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("welcome.jsp");
         rd.forward(request, response);
     }
 
