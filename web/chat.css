@@ -1,0 +1,21 @@
+
+.chat{
+}
+#textInputButton{
+    width: 100%;
+}
+#textInput{
+    width: 300%;
+}
+#echoText{
+    height: 100%;
+}
+.textInputContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width:100%;
+}
+
+
+/*პრობლემა: ფანჯარა ძალიან დიდია, და სენდი არ ჯდება წესიერად.*/
