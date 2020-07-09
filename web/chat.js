@@ -60,12 +60,15 @@ function enterPressed(e) {
 }
 
 function sendClicked(){
+    var webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
     console.log("WTF1");
     var text = chatInput.value;
     if(text != "") {
         chatInput.value = "";
         echoText.value += text + "\n";
         echoText.scrollTop = echoText.scrollHeight;
+        text = "chat " + text;
+        webSocket.send(text);
     }
 }
 
