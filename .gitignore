@@ -1,4 +1,4 @@
 out/
 src/main/java/DatabaseCredentials.java
-*.xml
+.idea/
 *.iml
