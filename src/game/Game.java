@@ -27,7 +27,7 @@ public class Game {
 
     public Game() {
 
-        players = new Player[MAX_PLAYERS];
+        players = new Player[MAX_PLAYERS]; // Better make this as ArrayList, which changes size as new players register.
         rounds = new Round[N_ROUNDS];
         playerCount = 0;
         curRound = 0;
@@ -35,14 +35,14 @@ public class Game {
     }
 
     public synchronized void registerSession(Session session, User user) throws IOException, InterruptedException {
-        Player newPlayer = new Player(session, user);
+        Player newPlayer = new Player(session, user); // Better to pass player as argument (will be easier for testing) for dependency injection
         players[playerCount] = newPlayer;
         playerCount++;
         if(playerCount == 2)
             begin();
     }
 
-    private void begin() throws IOException, InterruptedException {
+    private void begin() throws IOException, InterruptedException { // better name: play() (because this method covers the whole gameplay)
         for(; curRound < N_ROUNDS; curRound++)
         {
             rounds[curRound] = new Round(players[curRound % playerCount]);
@@ -84,7 +84,7 @@ public class Game {
         {
             round.OnCorrectGuess(players[PlayerIndex]);
         }
-        else if(res == 2)
+        else if(res == 2) // do we need this?
         {
             round.OnCloseGuess(players[PlayerIndex]);
         }
