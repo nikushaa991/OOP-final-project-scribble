@@ -3,6 +3,24 @@ window.onload = function () {
     var webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
     var echoText = document.getElementById("echoText");
     echoText.value = "";
+
+    var chatInput = document.getElementById("textInput");
+    var chatButton = document.getElementById("textInputButton");
+
+    var canvas = document.getElementById("paint-canvas");
+    var context = canvas.getContext("2d");
+    var boundings = canvas.getBoundingClientRect();
+
+    // Specifications
+    var mouseX = 0;
+    var mouseY = 0;
+    context.strokeStyle = 'black'; // initial brush color
+    context.lineWidth = 1; // initial brush width
+    var isDrawing = false;
+    var isArtist = false;
+
+    chatButton.onclick = function(){sendClicked()};
+
     webSocket.onopen = function (message) {
         wsOpen(message);
     };
@@ -12,7 +30,6 @@ window.onload = function () {
     webSocket.onerror = function (message) {
         wsError(message);
     };
-
     //RECEIVE MESSAGES FROM SERVER ON THIS METHOD
     webSocket.onmessage = function (message) {
         wsGetMessage(message);
@@ -42,20 +59,32 @@ window.onload = function () {
         //ARTIST CANT COMMUNICATE IN CHAT
         //HANDLE BASED ON SERVER REPLY
         //CHAT, GAME ETC
-        echoText.value += "Message received from to the server : " + message.data + "\n";
+        if(message.data.startsWith("B"))
+        {
+            var coordinates = message.data.split(",");
+            context.beginPath();
+            context.moveTo(coordinates[1], coordinates[2]);
+        }
+        else if(message.data.startsWith("L"))
+        {
+            var coordinates = message.data.split(",");
+            context.lineTo(coordinates[1], coordinates[2]);
+            context.stroke();
+        }
+        else if(message.data.startsWith("N"))
+        {
+            isArtist = false;
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        else if(message.data.startsWith("P"))
+        {
+            isArtist = true;
+        }
+        else if(message.data != "")
+        {
+            echoText.value += message.data.substr(2) + '\n';
+        }
     }
-
-    var canvas = document.getElementById("paint-canvas");
-    var context = canvas.getContext("2d");
-    var boundings = canvas.getBoundingClientRect();
-
-    // Specifications
-    var mouseX = 0;
-    var mouseY = 0;
-    context.strokeStyle = 'black'; // initial brush color
-    context.lineWidth = 1; // initial brush width
-    var isDrawing = false;
-
 
     // Handle Colors
     var colors = document.getElementsByClassName('colors')[0];
@@ -74,22 +103,23 @@ window.onload = function () {
     // Mouse Down Event
     canvas.addEventListener('mousedown', function (event) {
         setMouseCoordinates(event);
-        isDrawing = true;
-
-        // Start Drawing
-        context.beginPath();
-        webSocket.send("debilo\n");
-        echoText.value += "BEGIN PATH\n" + mouseX + ", " + mouseY;
-        context.moveTo(mouseX, mouseY);
+        if(isArtist)
+        {
+            isDrawing = true;
+            // Start Drawing
+            webSocket.send("B," + mouseX + "," + mouseY);
+            context.beginPath();
+            context.moveTo(mouseX, mouseY);
+        }
     });
 
     // Mouse Move Event
     canvas.addEventListener('mousemove', function (event) {
         setMouseCoordinates(event);
 
-        if (isDrawing) {
+        if (isDrawing && isArtist) {
+            webSocket.send("L," + mouseX + "," + mouseY);
             context.lineTo(mouseX, mouseY);
-            echoText.value += "STROKE TO " + mouseX + ", " + mouseY + "\n";
             context.stroke();
         }
     });
@@ -112,4 +142,14 @@ window.onload = function () {
     clearButton.addEventListener('click', function () {
         context.clearRect(0, 0, canvas.width, canvas.height);
     });
+
+    function sendClicked(){
+        var text = chatInput.value;
+        if(text !== "") {
+            chatInput.value = "";
+            webSocket.send("C," + text);
+            echoText.scrollTop = echoText.scrollHeight;
+        }
+        else echoText.value += "ELSE\n";
+    }
 };

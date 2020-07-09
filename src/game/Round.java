@@ -6,9 +6,9 @@ import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Round{
-    private Session painterSession;
     private Player painter;
     private Random rand;
     private String hiddenWord;
@@ -17,21 +17,22 @@ public class Round{
     public Round(Player painter)
     {
         this.painter = painter;
-        this.painterSession = painter.getSession();
         rand = new Random();
     }
 
     public void OnRoundBegin(Player[] players) throws IOException, InterruptedException {
         // Randomly take word out of WordDB:
         hiddenWord = WordsList.wordsList.get(rand.nextInt(3));
-        painterSession.getBasicRemote().sendText("WORD," + hiddenWord);
+        notifyAllPlayers(players, "N,");
+        painter.notifyPlayer("P,");
+        painter.notifyPlayer("S,The word is: " + hiddenWord);
         painter.SetCanGuess(false);
         for(Player p : players)
         {
-            if(p != painter)
+            if(p != painter && p!= null)
                 p.SetCanGuess(true);
         }
-        wait(DURATION);
+        TimeUnit.SECONDS.sleep(20);
         // Painter chooses one word
         // HiddenWord = that word;
     }
@@ -42,9 +43,8 @@ public class Round{
             if(p != null)
             {
                 int score = p.GetScore();
-                Session playerSession = p.getSession();
-                String strScore = p.GetName() + " " + score;
-                playerSession.getBasicRemote().sendText(strScore);
+                String strScore = "S," + p.GetName() + " " + score;
+                p.notifyPlayer(strScore);
             }
         }
 
@@ -54,10 +54,11 @@ public class Round{
     }
 
     // Is used when a given player writes a correct guess
-    public void OnCorrectGuess(Player guesser) throws IOException
+    public void OnCorrectGuess(Player[] players, int guesserIndex) throws IOException
     {
-        String finalString = "!! " + guesser.GetName() + " has guessed the word!!";
-        guesser.notifyPlayer(finalString);
+        Player guesser = players[guesserIndex];
+        String finalString = "S,!! " + guesser.GetName() + " has guessed the word!!";
+        notifyAllPlayers(players, finalString);
         int score = CalculateScore(hiddenWord, 10); // TODO: time should be changed
         guesser.IncreaseScore(score);
         guesser.SetCanGuess(false);
@@ -67,18 +68,23 @@ public class Round{
         // Disable guesser-s ability to guess again
     }
 
-    public void OnIncorrectGuess(Player guesser, String guess) throws IOException
+    public void OnIncorrectGuess(Player[] players, int guesserIndex, String guess) throws IOException
     {
-        guesser.notifyPlayer(guesser.GetName() + ": " + guess);
+        notifyAllPlayers(players, "C," + players[guesserIndex].GetName() + ": " + guess);
         // Log out "guesser.name: " + "guess";
     }
 
     public void OnCloseGuess(Player guesser) throws IOException
     {
-        guesser.notifyPlayer(guesser.GetName() + " is close to the solution");
+        guesser.notifyPlayer("S,You're close to solution");
         // Log out "guesser.name is close to the solution"
     }
 
+    public void notifyAllPlayers(Player[] players, String text) throws IOException {
+        for(Player p : players)
+            if(p != null)
+                p.notifyPlayer(text);
+    }
 
 
     /*

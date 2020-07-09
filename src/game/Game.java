@@ -34,12 +34,13 @@ public class Game {
         word = "";
     }
 
-    public synchronized void registerSession(Session session, User user) throws IOException, InterruptedException {
+    public synchronized int registerSession(Session session, User user) throws IOException, InterruptedException {
         Player newPlayer = new Player(session, user);
         players[playerCount] = newPlayer;
         playerCount++;
         if(playerCount == 2)
             begin();
+        return playerCount - 1;
     }
 
     private void begin() throws IOException, InterruptedException {
@@ -71,18 +72,19 @@ public class Game {
         // Debug winner won the game
     }
 
-    public void stroke(String start) throws IOException {
+    public void stroke(String start, int id) throws IOException {
         for(int i = 0; i < playerCount; i++)
-            players[i].getSession().getBasicRemote().sendText(start);
-
+            if(players[i] != null && i != id)
+                players[i].notifyPlayer(start);
     }
 
     public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException {
+        if(playerCount < 2) return;
         Round round = rounds[curRound];
         int res = round.CheckGuess(guess);
         if(res == 1)
         {
-            round.OnCorrectGuess(players[PlayerIndex]);
+            round.OnCorrectGuess(players, PlayerIndex);
         }
         else if(res == 2)
         {
@@ -90,7 +92,10 @@ public class Game {
         }
         else
         {
-            round.OnIncorrectGuess(players[PlayerIndex], guess);
+            round.OnIncorrectGuess(players, PlayerIndex, guess);
         }
+    }
+    public void unregister(int playerIndex){
+        players[playerIndex] = null;
     }
 }
