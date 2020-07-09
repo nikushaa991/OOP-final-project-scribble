@@ -1,6 +1,5 @@
 package game;
 
-import javafx.util.Pair;
 import login.Encryptor;
 import login.User;
 import main.java.DBConnector;
