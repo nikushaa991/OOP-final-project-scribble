@@ -1,6 +1,6 @@
 package game;
 
-import javafx.util.Pair;
+//import javafx.util.Pair;
 import login.Encryptor;
 import login.User;
 import main.java.DBConnector;
@@ -44,16 +44,16 @@ public class GameDBConnector extends DBConnector {
     /* gets top scores of single game and scorers. number of top records is passed as an argument by client.
     * First integer of the pair is ID and second integer is score of the user.
     * */
-    public ArrayList<Pair<Integer, Integer> > topScores(int count) throws SQLException {
-        ArrayList<Pair<Integer, Integer> > topScores = new ArrayList<>();
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName +
-                " WHERE RANKED = true ORDER BY WINNING_SCORE DESC LIMIT " + count + ";");
-        while (rs.next()) {
-            Pair<Integer, Integer> nextUser = new Pair(rs.getInt(3), rs.getInt(4));
-            topScores.add(nextUser);
-        }
-        return topScores;
-    }
+//    public ArrayList<Pair<Integer, Integer> > topScores(int count) throws SQLException {
+//        ArrayList<Pair<Integer, Integer> > topScores = new ArrayList<>();
+//        Statement queryStm = connection.createStatement();
+//        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName +
+//                " WHERE RANKED = true ORDER BY WINNING_SCORE DESC LIMIT " + count + ";");
+//        while (rs.next()) {
+//            Pair<Integer, Integer> nextUser = new Pair(rs.getInt(3), rs.getInt(4));
+//            topScores.add(nextUser);
+//        }
+//        return topScores;
+//    }
 
 }

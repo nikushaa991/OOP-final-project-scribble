@@ -10,6 +10,8 @@ main {
   flex-grow: 1;
 }
 
+
+
 .left-block {
   width: 160px;
   border-right: 1px solid #e0e0e0;
@@ -224,5 +226,8 @@ main {
 }
 
 #paint-canvas {
+  height: 100%;
   cursor:crosshair;
 }
+
+

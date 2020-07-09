@@ -11,7 +11,9 @@
     <meta charset="UTF-8">
     <title>Canvas</title>
     <script src="canvas.js"></script>
+
     <link rel="stylesheet" href="canvas.css">
+    <link rel="stylesheet" href="chat.css">
 </head>
 <body>
 <main>
@@ -62,11 +64,15 @@
     <div class="right-block">
         <canvas id="paint-canvas" width="1000" height="800"></canvas>
     </div>
-    <div class="text">
-    <textarea id="echoText" rows="5" cols="30"></textarea>
+    <div class="chat" >
+        <textarea disabled id="echoText" rows="5" cols="30"></textarea>
+        <div class="textInputContainer">
+            <textarea id="textInput" onkeypress="enterPressed(event)"></textarea>
+            <button id="textInputButton" onclick="sendClicked()">Send</button>
+        </div>
     </div>
-    //TODO: ADD CHAT
 </main>
 
 </body>
+<script src="chat.js"></script>
 </html>
