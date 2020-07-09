@@ -9,6 +9,7 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="module" name="JUnit5.4" module-name="FINAL_PROJECT" />
+          <element id="library" level="project" name="websocket-api" />
         </element>
       </element>
     </root>
