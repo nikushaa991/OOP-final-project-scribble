@@ -1,56 +1,48 @@
 
-// window.onload = function () {
-//     var webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
-//
-//
-//     webSocket.onopen = function (message) {
-//         wsOpen(message);
-//     };
-//     webSocket.onclose = function (message) {
-//         wsClose(message);
-//     };
-//     webSocket.onerror = function (message) {
-//         wsError(message);
-//     };
-//
-//     //RECEIVE MESSAGES FROM SERVER ON THIS METHOD
-//     webSocket.onmessage = function (message) {
-//         wsGetMessage(message);
-//     };
-//
-//     //SEND MESSAGES TO SERVER USING SEND
-//
-//     function wsOpen(message) {
-//     }
-//
-//     function wsCloseConnection() {
-//         webSocket.close();
-//     }
-//
-//     function wsClose(message) {
-//     }
-//
-//     function wsError(message) {
-//     }
-//
-//     function wsGetMessage(message) {
-//         //TODO:
-//         //ONLY ARTIST CAN DRAW
-//         //ARTIST CANT COMMUNICATE IN CHAT
-//         //HANDLE BASED ON SERVER REPLY
-//         //CHAT, GAME ETC
-//     }
-//
-//
-// }
 const echoText = document.getElementById("echoText");
 const chatInput = document.getElementById("textInput");
-// while(true){
-//     if (document.readyState === 'complete'){
-//
-//         break;
-//     }
-// }
+var webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
+webSocket.onopen = function (message) {
+    wsOpen(message);
+};
+webSocket.onclose = function (message) {
+    wsClose(message);
+};
+webSocket.onerror = function (message) {
+    wsError(message);
+};
+
+//RECEIVE MESSAGES FROM SERVER ON THIS METHOD
+webSocket.onmessage = function (message) {
+    wsGetMessage(message);
+};
+
+//SEND MESSAGES TO SERVER USING SEND
+
+function wsOpen(message) {
+}
+
+function wsCloseConnection() {
+    webSocket.close();
+}
+
+function wsClose(message) {
+    echoText.value += "Disconnect ... \n";
+}
+
+function wsError(message) {
+    echoText.value += "Error ... \n";
+}
+
+function wsGetMessage(message) {
+    //TODO:
+    //ONLY ARTIST CAN DRAW
+    //ARTIST CANT COMMUNICATE IN CHAT
+    //HANDLE BASED ON SERVER REPLY
+    //CHAT, GAME ETC
+    // echoText.value += "Message received from to the server : " + message.data + "\n";
+}
+
 function enterPressed(e) {
     var code = (e.keyCode ? e.keyCode : e.which);
     if(code == 13) {
@@ -58,9 +50,8 @@ function enterPressed(e) {
         sendClicked()
     }
 }
-
 function sendClicked(){
-    var webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
+
     console.log("WTF1");
     var text = chatInput.value;
     if(text != "") {
