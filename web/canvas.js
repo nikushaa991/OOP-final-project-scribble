@@ -1,4 +1,3 @@
-
 window.onload = function () {
     var webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
     var echoText = document.getElementById("echoText");

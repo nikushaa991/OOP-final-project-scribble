@@ -1,6 +1,6 @@
 package game;
 
-//import javafx.util.Pair;
+import javafx.util.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
@@ -19,10 +19,10 @@ class GameDBConnectorTest {
         games.newGame(true,-3,34);
         games.newGame(true,-4,1000);
         games.newGame(true,-5,0);
-//        ArrayList<Pair<Integer, Integer>> topScores = games.topScores(3);
-//        assertEquals(topScores.get(0).getValue(), 1000);
-//        assertEquals(topScores.get(1).getValue(), 200);
-//        assertEquals(topScores.get(2).getValue(), 100);
+        ArrayList<Pair<Integer, Integer>> topScores = games.topScores(3);
+        assertEquals(topScores.get(0).getValue(), 1000);
+        assertEquals(topScores.get(1).getValue(), 200);
+        assertEquals(topScores.get(2).getValue(), 100);
         games.deleteGame(-1);
         games.deleteGame(-2);
         games.deleteGame(-3);
