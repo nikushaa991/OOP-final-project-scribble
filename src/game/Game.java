@@ -1,7 +1,13 @@
 package game;
 
+import login.User;
+import main.java.Pair;
+
+import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 
 
 //SEND TEXT TO PLAYER USING THIS!!!!!!!
@@ -16,81 +22,57 @@ public class Game {
     private int curRound;
     private String word;
     private Round[] rounds;
-    private Player[] Players;
+    private Player[] players;
 
     public Game() {
-        Players = new Player[MAX_PLAYERS];
+        players = new Player[MAX_PLAYERS];
         rounds = new Round[N_ROUNDS];
         playerCount = 0;
         curRound = 0;
         word = "";
     }
 
-    public synchronized void registerSession(Session session) {
-        Player newPlayer = new Player(/*session.id*/ 0, playerCount, session);
-        Players[playerCount] = newPlayer;
+    public synchronized void registerSession(Session session) throws IOException, InterruptedException {
+        Player newPlayer = new Player(0, playerCount, session);
+        players[playerCount] = newPlayer;
         playerCount++;
         if(playerCount == 2)
             begin();
     }
 
-    private void begin() {
+    private void begin() throws IOException, InterruptedException {
         for(; curRound < N_ROUNDS; curRound++)
         {
-            //notifyAll(Players[curRound%playerCount] is artist);
-            //sendWordsToArtist();
-            //getWordFromArtist();
-            //notifyAll(word is word);
-            //timer(30sec);
-            //recordResults
+            rounds[curRound] = new Round(players[curRound % playerCount].getSession());
+            Round CurrentRound = rounds[curRound];
+            CurrentRound.OnRoundBegin();
+            // guessers have the ability to guess the word in chat
+            // painter has the ability to paint the hidden word in canvas
+            // After timer ends, or everyone guesses
+            CurrentRound.OnRoundEnd();
         }
-        chooseWinner();
+        GetWinner();
     }
 
-    //called by player
-    private void guessWord(String guess, int order) {
-        //if guess == word
-        //Players[order].increaseScore();
-        //Players[order].notify("Correct guess!");
-        //else
-        //typeInChat(guess);
+
+    private void GetWinner() {
+        Player winner = null;
+        int maxScore = 0;
+        for(Player p : players)
+        {
+            if(p.GetScore() > maxScore)
+            {
+                maxScore = p.GetScore();
+                winner = p;
+            }
+        }
+
+        // Debug winner won the game
     }
 
-    private void chooseWinner() {
+    public void stroke(String start) throws IOException {
+        for(int i = 0; i < playerCount; i++)
+            players[i].getSession().getBasicRemote().sendText(start);
 
-    }
-
-    private class Player {
-        private int score;
-        private int order;
-        private String name;
-        private Session session;
-
-        public Player(int i, int order, Session session) {
-            this.order = order;
-            this.session = session;
-            //this.name = session.user.getName();
-            score = 0;
-        }
-
-        public int getScore() {
-            return score;
-        }
-
-        public String getString() {
-            return name;
-        }
-
-        public int getOrder() {
-            return order;
-        }
-
-        public void increaseScore(int score) {
-            this.score += score;
-        }
-
-        public void notifyPlayer(String text) throws IOException {
-            session.getBasicRemote().sendText(text);
-        }
     }
 }
