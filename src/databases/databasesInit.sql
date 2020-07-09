@@ -18,7 +18,7 @@ CREATE TABLE games (
 
 DROP TABLE IF EXISTS scores;
 create table scores (
-    USER_ID INT NOT NULL,
+    USERNAME VARCHAR(32) NOT NULL,
     GAME_ID INT,
     N_ROUND INT,
     SCORE INT
