@@ -16,21 +16,21 @@ class GamesDAOTest {
     public void test1() throws SQLException {
         GamesDAO games = new GamesDAO();
         try {
-            games.newGame(true, -1, 100);
-            games.newGame(true, -2, 200);
-            games.newGame(true, -3, 34);
-            games.newGame(true, -4, 1000);
-            games.newGame(true, -5, 0);
-            ArrayList<Pair<Integer, Integer>> topScores = games.topScores(3);
+            games.newGame(true, "-1", 100);
+            games.newGame(true, "-2", 200);
+            games.newGame(true, "-3", 34);
+            games.newGame(true, "-4", 1000);
+            games.newGame(true, "-5", 0);
+            ArrayList<Pair<String, Integer>> topScores = games.topScores(3);
             assertEquals(topScores.get(0).getSecond(), 1000);
             assertEquals(topScores.get(1).getSecond(), 200);
             assertEquals(topScores.get(2).getSecond(), 100);
         } finally {
-            games.deleteGame(-1);
-            games.deleteGame(-2);
-            games.deleteGame(-3);
-            games.deleteGame(-4);
-            games.deleteGame(-5);
+            games.deleteGame("-1");
+            games.deleteGame("-2");
+            games.deleteGame("-3");
+            games.deleteGame("-4");
+            games.deleteGame("-5");
         }
     }
 

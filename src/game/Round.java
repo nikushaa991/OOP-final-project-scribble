@@ -5,6 +5,7 @@ import login.User;
 import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -20,31 +21,31 @@ public class Round{
         rand = new Random(); //TODO: new random?? instanceof maybe
     }
 
-    public void OnRoundBegin(Player[] players) throws IOException, InterruptedException {
+    public void OnRoundBegin(ArrayList<Player> players) throws IOException, InterruptedException {
         // Randomly take word out of WordDB:
         hiddenWord = WordsList.wordsList.get(rand.nextInt(3)); //TODO: choose a list of unique words instead
         notifyAllPlayers(players, "N,");
         painter.notifyPlayer("P,");
         painter.notifyPlayer("S,The word is: " + hiddenWord); //TODO: send him a list of words instead, wait for his answer
         //TODO: might not be needed, we can add this to JS instead.
-        painter.SetCanGuess(false);
+        painter.setCanGuess(false);
         for(Player p : players)
         {
             if(p != painter && p!= null)
-                p.SetCanGuess(true);
+                p.setCanGuess(true);
         }
         TimeUnit.SECONDS.sleep(20);
         // Painter chooses one word
         // HiddenWord = that word;
     }
 
-    public void OnRoundEnd(Player[] players) throws IOException {
+    public void OnRoundEnd(ArrayList<Player> players) throws IOException {
         for(Player p : players)
         {
             if(p != null)
             {
-                int score = p.GetScore();
-                String strScore = "S," + p.GetName() + " " + score;
+                int score = p.getScore();
+                String strScore = "S," + p.getName() + " " + score;
                 p.notifyPlayer(strScore); //TODO: notify all players, so they can update every score.
             }
         }
@@ -55,23 +56,23 @@ public class Round{
     }
 
     // Is used when a given player writes a correct guess
-    public void OnCorrectGuess(Player[] players, int guesserIndex) throws IOException
+    public void OnCorrectGuess(ArrayList<Player> players, int guesserIndex) throws IOException
     {
-        Player guesser = players[guesserIndex];
-        String finalString = "S,!! " + guesser.GetName() + " has guessed the word!!"; //TODO: write directly into notifyAllPlayers maybe?
+        Player guesser = players.get(guesserIndex);
+        String finalString = "S,!! " + guesser.getName() + " has guessed the word!!"; //TODO: write directly into notifyAllPlayers maybe?
         notifyAllPlayers(players, finalString);
         int score = CalculateScore(hiddenWord, 10); // TODO: score should be based on order, not time, needs implementing anyway.
-        guesser.IncreaseScore(score);
-        guesser.SetCanGuess(false);
+        guesser.increaseScore(score);
+        guesser.setCanGuess(false);
         // Log out "guesser.name has guessed the word"
         // int score = Calculate score based on word difficulty and time
         // guesser.IncreaseScore(score);
         // Disable guesser-s ability to guess again
     }
 
-    public void OnIncorrectGuess(Player[] players, int guesserIndex, String guess) throws IOException //TODO: do we really need this method?
+    public void OnIncorrectGuess(ArrayList<Player> players, int guesserIndex, String guess) throws IOException //TODO: do we really need this method?
     {
-        notifyAllPlayers(players, "C," + players[guesserIndex].GetName() + ": " + guess);
+        notifyAllPlayers(players, "C," + players.get(guesserIndex).getName() + ": " + guess);
         // Log out "guesser.name: " + "guess";
     }
 
@@ -81,7 +82,7 @@ public class Round{
         // Log out "guesser.name is close to the solution"
     }
 
-    public void notifyAllPlayers(Player[] players, String text) throws IOException { //TODO: move this to a new negotiator class instead.
+    public void notifyAllPlayers(ArrayList<Player> players, String text) throws IOException { //TODO: move this to a new negotiator class instead.
         for(Player p : players)
             if(p != null)
                 p.notifyPlayer(text);
