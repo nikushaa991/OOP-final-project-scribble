@@ -1,5 +1,4 @@
 out/
-src/utils/DatabaseCredentials.java
 .idea/
 *.iml
 lib/
