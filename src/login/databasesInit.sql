@@ -1,3 +1,4 @@
+#TODO: remove?
 USE SCRIBBLE;
 
 DROP TABLE IF EXISTS users;

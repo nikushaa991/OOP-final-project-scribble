@@ -16,6 +16,7 @@ public class ContextCreatingListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
+        //TODO: store matchmaker in context.
         UsersDBConnector usersDb = null;
         ScoresDBConnector scoresDb = null;
         GameDBConnector gameDb = null;

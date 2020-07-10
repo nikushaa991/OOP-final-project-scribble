@@ -13,8 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameWS {
     private static ConcurrentHashMap<Session, Pair<Game, Integer>> map = new ConcurrentHashMap<>();
     @OnOpen
-    public void onOpen(Session session, EndpointConfig config) throws IOException, InterruptedException {
-        System.out.print("NEW CONNECTION\n");
+    public void onOpen(Session session, EndpointConfig config) {
         HttpSession sess = (HttpSession) config.getUserProperties().get("httpSession");
         Game game = (Game) sess.getAttribute("GAME");
         int id = game.registerSession(session, (User) sess.getAttribute("USER"));
@@ -31,21 +30,18 @@ public class GameWS {
     //CLIENT TO SERVER COMMUNICATION
     @OnMessage
     public String onMessage(String message, Session session) throws IOException {
-        System.out.print(message + " NEW MESSAGE\n");
         Pair<Game, Integer> p = map.get(session);
         if(message.startsWith("L") || message.startsWith("B"))
             p.getFirst().stroke(message, p.getSecond());
         else p.getFirst().CheckGuessFromGame(p.getSecond(), message.substring(2));
-        //ARTIST:
-        //return chosen word
-        //send stroke to server
-
-
-        //GUESSERS:
-        //check guess + send message to chat
+        //TODO: return chosen word from artist
+        //TODO: maybe echo something useful back to client?
+        //TODO: handle clear canvas action
+        //TODO: handle stroke color and size.
         return "";
     }
 
+    //TODO: unregister player and session on error
     @OnError
     public void onError(Throwable e) {
         e.printStackTrace();

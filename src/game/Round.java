@@ -17,15 +17,16 @@ public class Round{
     public Round(Player painter)
     {
         this.painter = painter;
-        rand = new Random();
+        rand = new Random(); //TODO: new random?? instanceof maybe
     }
 
     public void OnRoundBegin(Player[] players) throws IOException, InterruptedException {
         // Randomly take word out of WordDB:
-        hiddenWord = WordsList.wordsList.get(rand.nextInt(3));
+        hiddenWord = WordsList.wordsList.get(rand.nextInt(3)); //TODO: choose a list of unique words instead
         notifyAllPlayers(players, "N,");
         painter.notifyPlayer("P,");
-        painter.notifyPlayer("S,The word is: " + hiddenWord);
+        painter.notifyPlayer("S,The word is: " + hiddenWord); //TODO: send him a list of words instead, wait for his answer
+        //TODO: might not be needed, we can add this to JS instead.
         painter.SetCanGuess(false);
         for(Player p : players)
         {
@@ -44,7 +45,7 @@ public class Round{
             {
                 int score = p.GetScore();
                 String strScore = "S," + p.GetName() + " " + score;
-                p.notifyPlayer(strScore);
+                p.notifyPlayer(strScore); //TODO: notify all players, so they can update every score.
             }
         }
 
@@ -57,9 +58,9 @@ public class Round{
     public void OnCorrectGuess(Player[] players, int guesserIndex) throws IOException
     {
         Player guesser = players[guesserIndex];
-        String finalString = "S,!! " + guesser.GetName() + " has guessed the word!!";
+        String finalString = "S,!! " + guesser.GetName() + " has guessed the word!!"; //TODO: write directly into notifyAllPlayers maybe?
         notifyAllPlayers(players, finalString);
-        int score = CalculateScore(hiddenWord, 10); // TODO: time should be changed
+        int score = CalculateScore(hiddenWord, 10); // TODO: score should be based on order, not time, needs implementing anyway.
         guesser.IncreaseScore(score);
         guesser.SetCanGuess(false);
         // Log out "guesser.name has guessed the word"
@@ -68,7 +69,7 @@ public class Round{
         // Disable guesser-s ability to guess again
     }
 
-    public void OnIncorrectGuess(Player[] players, int guesserIndex, String guess) throws IOException
+    public void OnIncorrectGuess(Player[] players, int guesserIndex, String guess) throws IOException //TODO: do we really need this method?
     {
         notifyAllPlayers(players, "C," + players[guesserIndex].GetName() + ": " + guess);
         // Log out "guesser.name: " + "guess";
@@ -80,7 +81,7 @@ public class Round{
         // Log out "guesser.name is close to the solution"
     }
 
-    public void notifyAllPlayers(Player[] players, String text) throws IOException {
+    public void notifyAllPlayers(Player[] players, String text) throws IOException { //TODO: move this to a new negotiator class instead.
         for(Player p : players)
             if(p != null)
                 p.notifyPlayer(text);
@@ -95,14 +96,14 @@ public class Round{
     *   2 --- If Guess ~ HiddenWord
     *   0 --- If Guess != HiddenWord
     * */
-    public int CheckGuess(String guess)
+    public int CheckGuess(String guess) //TODO: implement close guess
     {
         if(guess.equals(hiddenWord))
             return 1;
         return 0;
     }
 
-    private int CalculateScore(String word, int time)
+    private int CalculateScore(String word, int time) //TODO: make it based on order instead of time, implement.
     {
         return 10;
     }

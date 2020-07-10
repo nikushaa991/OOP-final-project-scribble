@@ -1,3 +1,4 @@
+//TODO: dislike the main.java package name, maybe utils or libs or something?
 package main.java;
 
 import java.sql.*;

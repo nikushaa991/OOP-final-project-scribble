@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%-- TODO: rename file to something intuitive, like game.jsp--%>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -9,6 +10,8 @@
 </head>
 <body>
 <main>
+    <%-- TODO: add scoreboard. --%>
+
     <div class="left-block">
         <div class="colors">
             <button type="button" value="#0000ff"></button>
@@ -54,6 +57,7 @@
         </div>
     </div>
     <div class="right-block">
+        <%-- TODO: MAKE CANVAS SIZE STATIC 800x450, NO MATTER THE ZOOM/SCREEN RESOLUTION/ANYTHING --%>
         <canvas id="paint-canvas" width="800" height="450"></canvas>
     </div>
     <div class="chat" >
