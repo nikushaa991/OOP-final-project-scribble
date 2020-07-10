@@ -1,30 +1,39 @@
 package home.classes;
 
-public class Matchmaker {
-    //private Game game;
-    private int inQueue;
-    private Object lock;
+import game.Game;
 
-    public Matchmaker(){
-        //game = Game.newInstance();
+public class Matchmaker {
+    private Game game;
+    private int inQueue;
+    private static Object lock;
+
+    public Matchmaker() {
+        game = new Game();
         inQueue = 0;
         lock = new Object();
     }
 
-    /*
-    public Game addToQueue(){
-    lock.acquire();
-    inQueue++;
-    if(inQueue == MAX_PLAYERS)
+    public Game addToQueue() throws InterruptedException {
+        synchronized (lock)
         {
-        Game res = game;
-        game = Game.newInstance();
-        inQueue = 0;
-        lock.release();
-        return res;
+            lock.wait();
         }
-    lock.release();
-    return game;
+        inQueue++;
+        if(inQueue == 6)
+        {
+            Game res = game;
+            game = new Game();
+            inQueue = 0;
+            synchronized (lock)
+            {
+                lock.notify();
+            }
+            return res;
+        }
+        synchronized (lock)
+        {
+            lock.notify();
+        }
+        return game;
     }
-     */
 }

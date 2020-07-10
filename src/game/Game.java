@@ -1,8 +1,10 @@
 package game;
 
+import login.User;
+
+
 import javax.websocket.Session;
 import java.io.IOException;
-
 
 //SEND TEXT TO PLAYER USING THIS!!!!!!!
 //session.getBasicRemote().sendText(text);
@@ -14,83 +16,99 @@ public class Game {
 
     private int playerCount;
     private int curRound;
-    private String word;
     private Round[] rounds;
-    private Player[] Players;
+    private Player[] players;
 
     public Game() {
-        Players = new Player[MAX_PLAYERS];
+
+        players = new Player[MAX_PLAYERS]; // Better make this as ArrayList, which changes size as new players register.
         rounds = new Round[N_ROUNDS];
         playerCount = 0;
         curRound = 0;
-        word = "";
     }
 
-    public synchronized void registerSession(Session session) {
-        Player newPlayer = new Player(/*session.id*/ 0, playerCount, session);
-        Players[playerCount] = newPlayer;
+    public synchronized int registerSession(Session session, User user) {
+        Player newPlayer = new Player(session, user); // Better to pass player as argument (will be easier for testing) for dependency injection
+        players[playerCount] = newPlayer;
         playerCount++;
         if(playerCount == 2)
-            begin();
+        {
+            new Thread(() -> {
+                try
+                {
+                    begin();
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+        return playerCount - 1;
     }
 
-    private void begin() {
+    private void begin() throws IOException, InterruptedException { // better name: play() (because this method covers the whole gameplay)
         for(; curRound < N_ROUNDS; curRound++)
         {
-            //notifyAll(Players[curRound%playerCount] is artist);
-            //sendWordsToArtist();
-            //getWordFromArtist();
-            //notifyAll(word is word);
-            //timer(30sec);
-            //recordResults
+            rounds[curRound] = new Round(players[curRound % playerCount]);
+            Round CurrentRound = rounds[curRound];
+
+            CurrentRound.OnRoundBegin(players);
+            // Game in Progress
+            CurrentRound.OnRoundEnd(players);
         }
-        chooseWinner();
+        Player p = GetWinner();
     }
 
-    //called by player
-    private void guessWord(String guess, int order) {
-        //if guess == word
-        //Players[order].increaseScore();
-        //Players[order].notify("Correct guess!");
-        //else
-        //typeInChat(guess);
+
+    private Player GetWinner() {
+        Player winner = null;
+        int maxScore = 0;
+        for(Player p : players)
+        {
+            if(p != null && p.GetScore() > maxScore)
+            {
+                maxScore = p.GetScore();
+                winner = p;
+            }
+        }
+        return winner;
+
+        // Debug winner won the game
     }
 
-    private void chooseWinner() {
-
+    public void stroke(String start, int id) throws IOException {
+        for(int i = 0; i < playerCount; i++)
+            if(players[i] != null && i != id)
+                players[i].notifyPlayer(start);
     }
 
-    private class Player {
-        private int score;
-        private int order;
-        private String name;
-        private Session session;
-
-        public Player(int i, int order, Session session) {
-            this.order = order;
-            this.session = session;
-            //this.name = session.user.getName();
-            score = 0;
+    public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException {
+        if(playerCount < 2 || curRound == 18)
+        {
+            for(Player p : players)
+                if(p != null)
+                    p.notifyPlayer("C," + players[PlayerIndex].GetName() + ": " + guess);
+            return;
         }
-
-        public int getScore() {
-            return score;
+        Round round = rounds[curRound];
+        int res = round.CheckGuess(guess);
+        if(res == 1)
+        {
+            round.OnCorrectGuess(players, PlayerIndex);
         }
-
-        public String getString() {
-            return name;
+        else if(res == 2) // do we need this?
+        {
+            round.OnCloseGuess(players[PlayerIndex]);
         }
-
-        public int getOrder() {
-            return order;
+        else
+        {
+            round.OnIncorrectGuess(players, PlayerIndex, guess);
         }
-
-        public void increaseScore(int score) {
-            this.score += score;
-        }
-
-        public void notifyPlayer(String text) throws IOException {
-            session.getBasicRemote().sendText(text);
-        }
+    }
+    public void unregister(int playerIndex){
+        players[playerIndex] = null;
     }
 }

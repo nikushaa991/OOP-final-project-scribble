@@ -11,7 +11,8 @@ import javax.servlet.http.HttpSessionListener;
 public class SessionCreatingListener implements HttpSessionListener{
 
     @Override
-    public void sessionCreated(HttpSessionEvent httpSessionEvent) {
+    public void sessionCreated(HttpSessionEvent httpSessionEvent)
+    {
 
     }
 

@@ -1,19 +1,11 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: nikushaa991
-  Date: 26/6/2020
-  Time: 8:34 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Canvas</title>
-    <script src="canvas.js"></script>
-
     <link rel="stylesheet" href="canvas.css">
     <link rel="stylesheet" href="chat.css">
+    <script type="text/javascript" src="canvas.js"></script>
 </head>
 <body>
 <main>
@@ -62,17 +54,16 @@
         </div>
     </div>
     <div class="right-block">
-        <canvas id="paint-canvas" width="1000" height="800"></canvas>
+        <canvas id="paint-canvas" width="800" height="450"></canvas>
     </div>
     <div class="chat" >
         <textarea disabled id="echoText" rows="5" cols="30"></textarea>
         <div class="textInputContainer">
-            <textarea id="textInput" onkeypress="enterPressed(event)"></textarea>
-            <button id="textInputButton" onclick="sendClicked()">Send</button>
+            <textarea id="textInput"></textarea>
+            <button id="textInputButton">Send</button>
         </div>
     </div>
 </main>
 
 </body>
-<script src="chat.js"></script>
 </html>

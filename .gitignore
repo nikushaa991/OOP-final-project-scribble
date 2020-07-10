@@ -2,3 +2,4 @@ out/
 src/main/java/DatabaseCredentials.java
 .idea/
 *.iml
+lib/

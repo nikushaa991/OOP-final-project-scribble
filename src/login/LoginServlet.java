@@ -19,9 +19,9 @@ public class LoginServlet extends HttpServlet {
         String psw = req.getParameter("password");
         try {
             if(userDb.exists(username) && userDb.passwordMatches(username, psw)) {
-                req.getRequestDispatcher("welcome.jsp").forward(req, resp);
+                req.getRequestDispatcher("home.jsp").forward(req, resp);
                 HttpSession session = req.getSession();
-                session.setAttribute("user", userDb.getUser(username));
+                session.setAttribute("USER", userDb.getUser(username));
             } else
                 req.getRequestDispatcher("try_again.jsp").forward(req, resp);
         } catch (SQLException | NoSuchAlgorithmException e) { e.printStackTrace(); }
