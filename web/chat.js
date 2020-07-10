@@ -20,6 +20,7 @@ webSocket.onmessage = function (message) {
 //SEND MESSAGES TO SERVER USING SEND
 
 function wsOpen(message) {
+    console.log("Connected chat ... \n");
 }
 
 function wsCloseConnection() {
@@ -27,11 +28,11 @@ function wsCloseConnection() {
 }
 
 function wsClose(message) {
-    echoText.value += "Disconnect ... \n";
+    console.log("Disconnect chat ... \n");
 }
 
 function wsError(message) {
-    echoText.value += "Error ... \n";
+    console.log("Error chat ... \n");
 }
 
 function wsGetMessage(message) {
@@ -51,8 +52,6 @@ function enterPressed(e) {
     }
 }
 function sendClicked(){
-
-    console.log("WTF1");
     var text = chatInput.value;
     if(text != "") {
         chatInput.value = "";
