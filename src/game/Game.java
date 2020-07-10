@@ -21,18 +21,19 @@ public class Game {
 
     public Game() {
 
-        players = new Player[MAX_PLAYERS]; // Better make this as ArrayList, which changes size as new players register.
+        players = new Player[MAX_PLAYERS];
         rounds = new Round[N_ROUNDS];
         playerCount = 0;
         curRound = 0;
     }
 
     public synchronized int registerSession(Session session, User user) {
-        Player newPlayer = new Player(session, user); // Better to pass player as argument (will be easier for testing) for dependency injection
+        Player newPlayer = new Player(session, user);
         players[playerCount] = newPlayer;
         playerCount++;
         if(playerCount == 2)
         {
+            //TODO: make this look prettier
             new Thread(() -> {
                 try
                 {
@@ -49,7 +50,7 @@ public class Game {
         return playerCount - 1;
     }
 
-    private void begin() throws IOException, InterruptedException { // better name: play() (because this method covers the whole gameplay)
+    private void begin() throws IOException, InterruptedException {
         for(; curRound < N_ROUNDS; curRound++)
         {
             rounds[curRound] = new Round(players[curRound % playerCount]);
@@ -59,7 +60,8 @@ public class Game {
             // Game in Progress
             CurrentRound.OnRoundEnd(players);
         }
-        Player p = GetWinner();
+        Player p = GetWinner(); //TODO: increase winner rating if ranked, game should store if it's ranked or not
+        //TODO: store game in database, including all rounds
     }
 
 
@@ -79,14 +81,16 @@ public class Game {
         // Debug winner won the game
     }
 
+    //TODO: store all strokes to store in database, for live replay of drawing.
+    //TODO: handle colors and sizes.
     public void stroke(String start, int id) throws IOException {
-        for(int i = 0; i < playerCount; i++)
+        for(int i = 0; i < playerCount; i++) //TODO: this should be a separate method in a negotiator class as notifyAllExceptOne()
             if(players[i] != null && i != id)
                 players[i].notifyPlayer(start);
     }
 
     public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException {
-        if(playerCount < 2 || curRound == 18)
+        if(playerCount < 2 || curRound == 18) //TODO: make this prettier, sentinel instead of 18
         {
             for(Player p : players)
                 if(p != null)
@@ -95,11 +99,12 @@ public class Game {
         }
         Round round = rounds[curRound];
         int res = round.CheckGuess(guess);
+        //TODO: make ifs prettier, enum maybe
         if(res == 1)
         {
             round.OnCorrectGuess(players, PlayerIndex);
         }
-        else if(res == 2) // do we need this?
+        else if(res == 2) //TODO: implement this
         {
             round.OnCloseGuess(players[PlayerIndex]);
         }
@@ -108,6 +113,7 @@ public class Game {
             round.OnIncorrectGuess(players, PlayerIndex, guess);
         }
     }
+    //TODO: implement in a better way so disconnected player can't be null
     public void unregister(int playerIndex){
         players[playerIndex] = null;
     }

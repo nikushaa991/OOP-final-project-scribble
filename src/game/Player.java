@@ -33,7 +33,7 @@ public class Player
         return name;
     }
 
-
+    //TODO: maybe do something with these two methods
     public boolean GetCanGuess()
     {
         return bCanGuess;
@@ -55,7 +55,7 @@ public class Player
 
 
 
-    public void notifyPlayer(String text) throws IOException
+    public void notifyPlayer(String text) throws IOException //TODO: move this to a negotiator class instead.
     {
         session.getBasicRemote().sendText(text);
     }

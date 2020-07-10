@@ -13,11 +13,10 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(value = "/HomeServlet", name = "HomeServlet")
-
 public class QuickplayServlet extends HttpServlet {
     static Game game = new Game();
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //Matchmaker mm = context.get(matchmaker);
+        //Matchmaker mm = context.get(matchmaker); //TODO: store matchmaker in context.
         //Game game = mm.addToQueue();
         HttpSession session = request.getSession();
         session.setAttribute("GAME", game);

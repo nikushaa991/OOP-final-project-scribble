@@ -2,6 +2,7 @@ package home.classes;
 
 import game.Game;
 
+//TODO: i'll do this myself
 public class Matchmaker {
     private Game game;
     private int inQueue;

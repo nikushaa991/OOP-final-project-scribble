@@ -8,6 +8,7 @@
     <script type="text/javascript" src="canvas.js"></script>
 </head>
 <body>
+<%--<<<<<<< HEAD--%>
 <main style="width: 100%">
     <div class="left-block">
         <div class="colors">
