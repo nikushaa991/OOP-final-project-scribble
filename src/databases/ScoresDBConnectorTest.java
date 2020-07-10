@@ -15,18 +15,18 @@ class ScoresDBConnectorTest {
     public void test1() throws SQLException {
         ScoresDBConnector scoresDao = new ScoresDBConnector();
         try {
-            scoresDao.newScore(-1, -1, -1, 100);
-            scoresDao.newScore(-2, -1, -1, 200);
-            scoresDao.newScore(-3, -1, -2, 30);
-            scoresDao.newScore(-1, -2, -2, 1000);
-            scoresDao.newScore(-2, -3, -1, 500);
-            ArrayList<Pair<Integer, Integer>> topScores = scoresDao.overallTopScores(2);
+            scoresDao.newScore("-1", -1, -1, 100);
+            scoresDao.newScore("-2", -1, -1, 200);
+            scoresDao.newScore("-3", -1, -2, 30);
+            scoresDao.newScore("-1", -2, -2, 1000);
+            scoresDao.newScore("-2", -3, -1, 500);
+            ArrayList<Pair<String, Integer>> topScores = scoresDao.overallTopScores(2);
             assertEquals(topScores.get(0).getSecond(), 1100);
-            assertEquals(topScores.get(1).getFirst(), -2);
+            assertEquals(topScores.get(1).getFirst(), "-2");
         } finally {
-            scoresDao.deleteScores(-1);
-            scoresDao.deleteScores(-2);
-            scoresDao.deleteScores(-3);
+            scoresDao.deleteScores("-1");
+            scoresDao.deleteScores("-2");
+            scoresDao.deleteScores("-3");
         }
     }
 }
