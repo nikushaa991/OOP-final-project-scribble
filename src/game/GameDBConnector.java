@@ -1,10 +1,8 @@
 package game;
 
 
-import login.Encryptor;
-import login.User;
-import main.java.DBConnector;
-import main.java.Pair;
+import utils.DBConnector;
+import utils.Pair;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,7 +20,7 @@ public class GameDBConnector extends DBConnector {
     }
 
     /* Adds new game to table */
-    public void newGame(boolean isRanked, int winnerId, int winnerScore) throws SQLException {
+    public  void newGame(boolean isRanked, int winnerId, int winnerScore) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO " + tableName +
                 " VALUES (?, DATE(SYSDATE()), ?, ?, ?)");
         nrowLock.lock();

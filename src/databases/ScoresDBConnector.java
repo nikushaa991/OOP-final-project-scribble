@@ -1,7 +1,7 @@
 package databases;
 
-import main.java.DBConnector;
-import main.java.Pair;
+import utils.DBConnector;
+import utils.Pair;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

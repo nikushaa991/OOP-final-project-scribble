@@ -1,7 +1,5 @@
 package game;
 
-import main.java.Pair;
-
 import java.util.ArrayList;
 
 public class WordsList {

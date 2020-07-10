@@ -1,7 +1,7 @@
 package home.servlets;
 
 import databases.ScoresDBConnector;
-import main.java.Pair;
+import utils.Pair;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

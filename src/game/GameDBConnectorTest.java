@@ -1,7 +1,7 @@
 package game;
 
 
-import main.java.Pair;
+import utils.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;

@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @WebServlet(value = "/HomeServlet", name = "HomeServlet")
 public class QuickplayServlet extends HttpServlet {
-    static Game game = new Game();
+    static Game game = new Game(true); // let it be true for the time being
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //Matchmaker mm = context.get(matchmaker); //TODO: store matchmaker in context.
         //Game game = mm.addToQueue();

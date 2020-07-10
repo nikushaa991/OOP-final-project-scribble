@@ -18,13 +18,15 @@ public class Game {
     private int curRound;
     private Round[] rounds;
     private Player[] players;
+    private boolean ranked;
 
-    public Game() {
+    public Game(boolean ranked) {
 
         players = new Player[MAX_PLAYERS];
         rounds = new Round[N_ROUNDS];
         playerCount = 0;
         curRound = 0;
+        this.ranked = ranked;
     }
 
     public synchronized int registerSession(Session session, User user) {
@@ -62,6 +64,7 @@ public class Game {
         }
         Player p = GetWinner(); //TODO: increase winner rating if ranked, game should store if it's ranked or not
         //TODO: store game in database, including all rounds
+
     }
 
 
@@ -90,7 +93,7 @@ public class Game {
     }
 
     public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException {
-        if(playerCount < 2 || curRound == 18) //TODO: make this prettier, sentinel instead of 18
+        if(playerCount < 2 || curRound == N_ROUNDS) //TODO: make this prettier, sentinel instead of 18
         {
             for(Player p : players)
                 if(p != null)
@@ -114,7 +117,8 @@ public class Game {
         }
     }
     //TODO: implement in a better way so disconnected player can't be null
-    public void unregister(int playerIndex){
+    public synchronized void unregister(int playerIndex){
         players[playerIndex] = null;
+        playerCount--;
     }
 }

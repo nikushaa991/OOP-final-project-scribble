@@ -1,28 +1,20 @@
 //TODO: dislike the main.java package name, maybe utils or libs or something?
-package main.java;
+package utils;
+
+import databases.SingletonDb;
 
 import java.sql.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class DBConnector {
-    protected Connection connection;
+    protected static Connection connection;
     protected String tableName;
     protected int nrows;
     protected ReentrantLock nrowLock;
 
     public DBConnector(){
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(
-                    DatabaseCredentials.url,
-                    DatabaseCredentials.user,
-                    DatabaseCredentials.password);
-            Statement useDbStm = connection.createStatement();
-            useDbStm.executeQuery("USE SCRIBBLE;");
-            nrowLock = new ReentrantLock();
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
+        connection = SingletonDb.getInstance();
+        nrowLock = new ReentrantLock();
     }
 
     /*
