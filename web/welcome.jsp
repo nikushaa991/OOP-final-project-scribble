@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%-- TODO: rename file to something intuitive, like game.jsp--%>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -9,9 +8,8 @@
     <script type="text/javascript" src="canvas.js"></script>
 </head>
 <body>
-<main>
-    <%-- TODO: add scoreboard. --%>
-
+<%--<<<<<<< HEAD--%>
+<main style="width: 100%">
     <div class="left-block">
         <div class="colors">
             <button type="button" value="#0000ff"></button>
@@ -57,14 +55,13 @@
         </div>
     </div>
     <div class="right-block">
-        <%-- TODO: MAKE CANVAS SIZE STATIC 800x450, NO MATTER THE ZOOM/SCREEN RESOLUTION/ANYTHING --%>
-        <canvas id="paint-canvas" width="800" height="450"></canvas>
+        <canvas id="paint-canvas" ></canvas>
     </div>
     <div class="chat" >
         <textarea disabled id="echoText" rows="5" cols="30"></textarea>
         <div class="textInputContainer">
-            <textarea id="textInput"></textarea>
-            <button id="textInputButton">Send</button>
+            <textarea id="textInput" onkeypress="enterPressed(event)"></textarea>
+            <button onclick="sendClicked()" id="textInputButton">Send</button>
         </div>
     </div>
 </main>
