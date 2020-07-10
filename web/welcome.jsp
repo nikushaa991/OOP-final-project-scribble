@@ -8,7 +8,7 @@
     <script type="text/javascript" src="canvas.js"></script>
 </head>
 <body>
-<main>
+<main style="width: 100%">
     <div class="left-block">
         <div class="colors">
             <button type="button" value="#0000ff"></button>
@@ -54,13 +54,13 @@
         </div>
     </div>
     <div class="right-block">
-        <canvas id="paint-canvas" width="800" height="450"></canvas>
+        <canvas id="paint-canvas" ></canvas>
     </div>
     <div class="chat" >
         <textarea disabled id="echoText" rows="5" cols="30"></textarea>
         <div class="textInputContainer">
-            <textarea id="textInput"></textarea>
-            <button id="textInputButton">Send</button>
+            <textarea id="textInput" onkeypress="enterPressed(event)"></textarea>
+            <button onclick="sendClicked()" id="textInputButton">Send</button>
         </div>
     </div>
 </main>

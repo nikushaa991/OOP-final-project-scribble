@@ -1,10 +1,12 @@
-
+var webSocket;
+var echoText;
+var chatInput;
 window.onload = function () {
-    var webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
-    var echoText = document.getElementById("echoText");
+    webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
+    echoText = document.getElementById("echoText");
     echoText.value = "";
 
-    var chatInput = document.getElementById("textInput");
+    chatInput = document.getElementById("textInput");
     var chatButton = document.getElementById("textInputButton");
 
     var canvas = document.getElementById("paint-canvas");
@@ -19,7 +21,6 @@ window.onload = function () {
     var isDrawing = false;
     var isArtist = false;
 
-    chatButton.onclick = function(){sendClicked()};
 
     webSocket.onopen = function (message) {
         wsOpen(message);
@@ -142,14 +143,21 @@ window.onload = function () {
     clearButton.addEventListener('click', function () {
         context.clearRect(0, 0, canvas.width, canvas.height);
     });
-
-    function sendClicked(){
-        var text = chatInput.value;
-        if(text !== "") {
-            chatInput.value = "";
-            webSocket.send("C," + text);
-            echoText.scrollTop = echoText.scrollHeight;
-        }
-        else echoText.value += "ELSE\n";
-    }
 };
+
+function enterPressed(e){
+    var code = (e.keyCode ? e.keyCode : e.which);
+    if(code == 13) {
+        e.preventDefault();
+        sendClicked();
+    }
+}
+function sendClicked(){
+    var text = chatInput.value;
+    if(text !== "") {
+        chatInput.value = "";
+        webSocket.send("C," + text);
+        echoText.scrollTop = echoText.scrollHeight;
+    }
+    else echoText.value += "ELSE\n";
+}
