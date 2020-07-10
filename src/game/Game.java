@@ -1,15 +1,10 @@
 package game;
 
 import login.User;
-import game.Round;
 
 
-import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
-
 
 //SEND TEXT TO PLAYER USING THIS!!!!!!!
 //session.getBasicRemote().sendText(text);
@@ -21,7 +16,6 @@ public class Game {
 
     private int playerCount;
     private int curRound;
-    private String word;
     private Round[] rounds;
     private Player[] players;
 
@@ -31,15 +25,27 @@ public class Game {
         rounds = new Round[N_ROUNDS];
         playerCount = 0;
         curRound = 0;
-        word = "";
     }
 
-    public synchronized int registerSession(Session session, User user) throws IOException, InterruptedException {
+    public synchronized int registerSession(Session session, User user) {
         Player newPlayer = new Player(session, user);
         players[playerCount] = newPlayer;
         playerCount++;
         if(playerCount == 2)
-            begin();
+        {
+            new Thread(() -> {
+                try
+                {
+                    begin();
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
         return playerCount - 1;
     }
 
@@ -53,21 +59,22 @@ public class Game {
             // Game in Progress
             CurrentRound.OnRoundEnd(players);
         }
-        GetWinner();
+        Player p = GetWinner();
     }
 
 
-    private void GetWinner() {
+    private Player GetWinner() {
         Player winner = null;
         int maxScore = 0;
         for(Player p : players)
         {
-            if(p.GetScore() > maxScore)
+            if(p != null && p.GetScore() > maxScore)
             {
                 maxScore = p.GetScore();
                 winner = p;
             }
         }
+        return winner;
 
         // Debug winner won the game
     }
@@ -79,7 +86,13 @@ public class Game {
     }
 
     public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException {
-        if(playerCount < 2) return;
+        if(playerCount < 2 || curRound == 18)
+        {
+            for(Player p : players)
+                if(p != null)
+                    p.notifyPlayer("C," + players[PlayerIndex].GetName() + ": " + guess);
+
+        }
         Round round = rounds[curRound];
         int res = round.CheckGuess(guess);
         if(res == 1)
