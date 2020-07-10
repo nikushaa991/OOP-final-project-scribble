@@ -91,7 +91,7 @@ public class Game {
             for(Player p : players)
                 if(p != null)
                     p.notifyPlayer("C," + players[PlayerIndex].GetName() + ": " + guess);
-
+            return;
         }
         Round round = rounds[curRound];
         int res = round.CheckGuess(guess);
