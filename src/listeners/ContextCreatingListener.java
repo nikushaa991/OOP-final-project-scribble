@@ -1,9 +1,9 @@
 package listeners;
 
-import databases.ScoresDBConnector;
+import databases.ScoresDAO;
 import game.Game;
-import game.GameDBConnector;
-import login.UsersDBConnector;
+import game.GamesDAO;
+import login.UsersDAO;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -17,14 +17,14 @@ public class ContextCreatingListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         //TODO: store matchmaker in context.
-        UsersDBConnector usersDb = null;
-        ScoresDBConnector scoresDb = null;
-        GameDBConnector gameDb = null;
+        UsersDAO usersDb = null;
+        ScoresDAO scoresDb = null;
+        GamesDAO gameDb = null;
         ArrayList<Game> currentGames = new ArrayList<>();
         try {
-            usersDb = new UsersDBConnector();
-            scoresDb =  new ScoresDBConnector();
-            gameDb =  new GameDBConnector();
+            usersDb = new UsersDAO();
+            scoresDb =  new ScoresDAO();
+            gameDb =  new GamesDAO();
         } catch (SQLException e) { e.printStackTrace(); }
         servletContextEvent.getServletContext().setAttribute("users", usersDb);
         servletContextEvent.getServletContext().setAttribute("scoresHistory", scoresDb);
@@ -34,7 +34,7 @@ public class ContextCreatingListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        UsersDBConnector usersDb = (UsersDBConnector) servletContextEvent.getServletContext().getAttribute("users");
+        UsersDAO usersDb = (UsersDAO) servletContextEvent.getServletContext().getAttribute("users");
         try {
             usersDb.closeConnection();
         } catch (SQLException e) { e.printStackTrace(); }

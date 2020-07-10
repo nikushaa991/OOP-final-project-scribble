@@ -24,3 +24,9 @@ create table scores (
     SCORE INT
 );
 
+DROP TABLE IF EXISTS friends;
+create table friends (
+    USERNAME_1 VARCHAR(32) NOT NULL,
+    USERNAME_2 VARCHAR(32) NOT NULL
+);
+

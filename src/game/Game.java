@@ -64,7 +64,7 @@ public class Game {
         }
         Player p = GetWinner(); //TODO: increase winner rating if ranked, game should store if it's ranked or not
         //TODO: store game in database, including all rounds
-
+        
     }
 
 

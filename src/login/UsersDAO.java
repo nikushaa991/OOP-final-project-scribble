@@ -6,12 +6,12 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class UsersDBConnector extends DBConnector {
+public class UsersDAO extends DBConnector {
 
     /*
      * creates and connects to a database
      */
-    public UsersDBConnector() throws SQLException {
+    public UsersDAO() throws SQLException {
         super();
         tableName = "users";
         nrows = nrow();

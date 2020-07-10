@@ -14,7 +14,7 @@ import java.sql.SQLException;
 public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UsersDBConnector userDb = (UsersDBConnector) getServletContext().getAttribute("users");
+        UsersDAO userDb = (UsersDAO) getServletContext().getAttribute("users");
         String username = req.getParameter("username");
         String psw = req.getParameter("password");
         try {

@@ -10,10 +10,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class GameDBConnector extends DBConnector {
+public class GamesDAO extends DBConnector {
     private int gamesCount;
 
-    public GameDBConnector() throws SQLException {
+    public GamesDAO() throws SQLException {
         super();
         tableName = "games";
         nrows = nrow();

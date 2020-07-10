@@ -9,9 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class ScoresDBConnector extends DBConnector {
+public class ScoresDAO extends DBConnector {
 
-    public ScoresDBConnector() throws SQLException {
+    public ScoresDAO() throws SQLException {
         super();
         tableName = "scores";
     }

@@ -9,12 +9,12 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GameDBConnectorTest {
+class GamesDAOTest {
 
     /* Tests basic functionality of the games table*/
     @Test
     public void test1() throws SQLException {
-        GameDBConnector games = new GameDBConnector();
+        GamesDAO games = new GamesDAO();
         try {
             games.newGame(true, -1, 100);
             games.newGame(true, -2, 200);
