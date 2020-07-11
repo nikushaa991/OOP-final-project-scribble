@@ -3,8 +3,6 @@
 }
 
 main {
-  width: 800px;
-  border: 1px solid #e0e0e0;
   margin: 0 auto;
   display: flex;
   flex-grow: 1;

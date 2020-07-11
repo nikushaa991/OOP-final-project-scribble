@@ -10,7 +10,6 @@ window.onload = function () {
 
     var canvas = document.getElementById("paint-canvas");
     var context = canvas.getContext("2d");
-    var boundings = canvas.getBoundingClientRect();
     var clearButton = document.getElementById('clear');
 
     // Specifications
@@ -18,6 +17,7 @@ window.onload = function () {
     var mouseY = 0;
     context.strokeStyle = 'black'; // initial brush color
     context.lineWidth = 1; // initial brush width
+    context.filter = "url(#crisp)";
     var isDrawing = false;
     var isArtist = false;
 
@@ -113,11 +113,16 @@ window.onload = function () {
     // Mouse Move Event
     canvas.addEventListener('mousemove', function (event) {
         setMouseCoordinates(event);
-
         if (isDrawing && isArtist) {
             webSocket.send("L," + mouseX + "," + mouseY);
             context.lineTo(mouseX, mouseY);
             context.stroke();
+        }
+        if(isArtist && (mouseX < 3 || mouseX > 797 || mouseY < 3 || mouseY > 447))
+        {
+            webSocket.send("B," + mouseX + "," + mouseY);
+            context.beginPath();
+            context.moveTo(mouseX, mouseY);
         }
     });
 
@@ -129,9 +134,11 @@ window.onload = function () {
 
     // Handle Mouse Coordinates
     function setMouseCoordinates(event) {
-        canvas.getBoundingClientRect();
-        mouseX = event.clientX - boundings.left;
-        mouseY = event.clientY - boundings.top;
+        var boundings = canvas.getBoundingClientRect();
+        var root = document.documentElement;
+
+        mouseY = event.clientY - boundings.top - root.scrollTop;
+        mouseX = event.clientX - boundings.left - root.scrollLeft;
     }
 
     // Handle Clear Button
