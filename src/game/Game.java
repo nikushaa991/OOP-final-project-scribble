@@ -3,12 +3,9 @@ package game;
 import login.User;
 
 
-import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 //SEND TEXT TO PLAYER USING THIS!!!!!!!
 //session.getBasicRemote().sendText(text);
@@ -20,10 +17,10 @@ public class Game {
 
     private int playerCount;
     private int curRound;
-    private Round[] rounds;
-    GamesDAO dao;
-    private Player[] players;
     private boolean ranked;
+    private GamesDAO dao;
+    private Round[] rounds;
+    private Player[] players; //TODO: create better structure for this, accommodate for disconnects and painter queue.
 
     public Game(boolean ranked, GamesDAO dao) {
 
@@ -54,9 +51,11 @@ public class Game {
     }
 
     private void begin() throws IOException, InterruptedException, SQLException {
-        for(; curRound < N_ROUNDS; curRound++)
+        for(int painterNum = 0; curRound < N_ROUNDS; curRound++, painterNum++)
         {
-            rounds[curRound] = new Round(players[curRound % playerCount]);
+            while(players[painterNum % playerCount] == null)
+                painterNum++;
+            rounds[curRound] = new Round(players[painterNum % playerCount]);
             Round CurrentRound = rounds[curRound];
 
             CurrentRound.OnRoundBegin(players);
@@ -65,7 +64,7 @@ public class Game {
         }
         Player p = GetWinner(); //TODO: increase winner rating if ranked, game should store if it's ranked or not
         //TODO: store game in database, including all rounds
-        updateDatabase(p);
+        //updateDatabase(p);
     }
 
     /* Writes new game entry after a game ends by
@@ -100,6 +99,8 @@ public class Game {
     }
 
     public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException {
+        if(!players[PlayerIndex].getCanGuess())
+            return;
         if(playerCount < 2 || curRound == N_ROUNDS) //TODO: make this prettier, sentinel instead of 18
         {
             for(Player p : players)
