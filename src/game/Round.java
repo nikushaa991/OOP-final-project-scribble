@@ -39,16 +39,25 @@ public class Round{
         // HiddenWord = that word;
     }
 
-    public void OnRoundEnd(Player[] players) throws IOException {
+    public void OnRoundEnd(Player[] players) throws IOException
+    {
+        String result = "S,";
         for(Player p : players)
         {
             if(p != null)
             {
                 int score = p.getScore();
-                String strScore = "S," + p.getName() + " " + score;
-                p.notifyPlayer(strScore); //TODO: notify all players, so they can update every score.
+                result += p.getName() + " " + score + " ";
             }
         }
+        for(Player p : players)
+        {
+            if(p != null)
+            {
+                p.notifyPlayer(strScore);
+            }
+        }
+
 
         // foreach(Player)
             // int score = Player.getScore();
