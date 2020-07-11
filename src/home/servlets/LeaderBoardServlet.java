@@ -1,7 +1,7 @@
 package home.servlets;
 
-import databases.ScoresDBConnector;
-import main.java.Pair;
+import databases.ScoresDAO;
+import utils.Pair;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +17,7 @@ public class LeaderBoardServlet extends HttpServlet{
     ArrayList<Pair<String, Integer>> leaderboard;
     private static final int topScoreCnt = 10;
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ScoresDBConnector scoresDb = (ScoresDBConnector) getServletContext().getAttribute("scoresHistory");
+        ScoresDAO scoresDb = (ScoresDAO) getServletContext().getAttribute("scoresHistory");
         try {
             leaderboard = scoresDb.overallTopScores(topScoreCnt);
         } catch (SQLException e) {  e.printStackTrace();  }

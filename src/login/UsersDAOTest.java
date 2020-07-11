@@ -7,14 +7,14 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UsersDBConnectorTest {
+class UsersDAOTest {
 
     /* Test basic functionality of the database */
     @Test
     public void test1() throws SQLException, NoSuchAlgorithmException {
         String username = "testusername2";
         String password = "molly";
-        UsersDBConnector dao = new UsersDBConnector();
+        UsersDAO dao = new UsersDAO();
         dao.newUser(username, password);
         assertTrue(dao.passwordMatches(username, "molly"));
         assertTrue(dao.exists(username));

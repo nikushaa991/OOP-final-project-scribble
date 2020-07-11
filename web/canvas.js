@@ -1,25 +1,23 @@
-var webSocket;
-var echoText;
-var chatInput;
+
 window.onload = function () {
-    webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
-    echoText = document.getElementById("echoText");
     //TODO AFTER: make this an actual link, instead of localhost.
     var webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
     var echoText = document.getElementById("echoText");
     echoText.value = "";
 
-    chatInput = document.getElementById("textInput");
+    var chatInput = document.getElementById("textInput");
+    var chatButton = document.getElementById("textInputButton");
 
     var canvas = document.getElementById("paint-canvas");
     var context = canvas.getContext("2d");
-    var boundings = canvas.getBoundingClientRect();
+    var clearButton = document.getElementById('clear');
 
     // Specifications
     var mouseX = 0;
     var mouseY = 0;
     context.strokeStyle = 'black'; // initial brush color
     context.lineWidth = 1; // initial brush width
+    context.filter = "url(#crisp)";
     var isDrawing = false;
     var isArtist = false;
 
@@ -115,11 +113,16 @@ window.onload = function () {
     // Mouse Move Event
     canvas.addEventListener('mousemove', function (event) {
         setMouseCoordinates(event);
-
         if (isDrawing && isArtist) {
             webSocket.send("L," + mouseX + "," + mouseY);
             context.lineTo(mouseX, mouseY);
             context.stroke();
+        }
+        if(isArtist && (mouseX < 3 || mouseX > 797 || mouseY < 3 || mouseY > 447))
+        {
+            webSocket.send("B," + mouseX + "," + mouseY);
+            context.beginPath();
+            context.moveTo(mouseX, mouseY);
         }
     });
 
@@ -131,32 +134,33 @@ window.onload = function () {
 
     // Handle Mouse Coordinates
     function setMouseCoordinates(event) {
-        mouseX = event.clientX - boundings.left;
-        mouseY = event.clientY - boundings.top;
+        var boundings = canvas.getBoundingClientRect();
+        var root = document.documentElement;
+
+        mouseY = event.clientY - boundings.top - root.scrollTop;
+        mouseX = event.clientX - boundings.left - root.scrollLeft;
     }
 
     // Handle Clear Button
     //TODO: only painter must be able to use this, send this action to server and handle it.
-    var clearButton = document.getElementById('clear');
 
     clearButton.addEventListener('click', function () {
         context.clearRect(0, 0, canvas.width, canvas.height);
     });
-};
 
-function enterPressed(e){
-    var code = (e.keyCode ? e.keyCode : e.which);
-    if(code == 13) {
-        e.preventDefault();
-        sendClicked();
-    }
-}
-function sendClicked(){
-    var text = chatInput.value;
-    if(text !== "") {
+
+    chatInput.addEventListener("keyup", function(event) {
+        if (event.key === 'Enter') {
+            sendClicked();
+        }
+    });
+    chatButton.onclick = function(){sendClicked()};
+    function sendClicked(){
+        var text = chatInput.value.trim();
+        if(text !== "") {
+            webSocket.send("C," + text);
+        }
         chatInput.value = "";
-        webSocket.send("C," + text);
         echoText.scrollTop = echoText.scrollHeight;
     }
-    else echoText.value += "ELSE\n";
-}
+};

@@ -1,7 +1,7 @@
 package game;
 
 import login.User;
-import main.java.Pair;
+import utils.Pair;
 
 import javax.servlet.http.HttpSession;
 import javax.websocket.*;

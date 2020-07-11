@@ -1,4 +1,4 @@
-package main.java;
+package utils;
 
 /* immutable pair class */
 public class Pair<A, B> {

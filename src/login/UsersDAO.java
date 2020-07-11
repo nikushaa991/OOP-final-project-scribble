@@ -1,21 +1,17 @@
 package login;
 
-import login.Encryptor;
-import login.User;
-import main.java.DBConnector;
+import utils.DBConnector;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-public class UsersDBConnector extends DBConnector {
+public class UsersDAO extends DBConnector {
 
     /*
      * creates and connects to a database
      */
-    public UsersDBConnector() throws SQLException {
+    public UsersDAO() throws SQLException {
         super();
         tableName = "users";
         nrows = nrow();

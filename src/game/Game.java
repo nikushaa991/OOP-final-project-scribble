@@ -5,6 +5,7 @@ import login.User;
 
 import javax.websocket.Session;
 import java.io.IOException;
+import java.sql.SQLException;
 
 //SEND TEXT TO PLAYER USING THIS!!!!!!!
 //session.getBasicRemote().sendText(text);
@@ -16,15 +17,19 @@ public class Game {
 
     private int playerCount;
     private int curRound;
+    private boolean ranked;
+    private GamesDAO dao;
     private Round[] rounds;
-    private Player[] players;
+    private Player[] players; //TODO: create better structure for this, accommodate for disconnects and painter queue.
 
-    public Game() {
+    public Game(boolean ranked, GamesDAO dao) {
 
         players = new Player[MAX_PLAYERS];
         rounds = new Round[N_ROUNDS];
         playerCount = 0;
         curRound = 0;
+        this.ranked = ranked;
+        this.dao = dao;
     }
 
     public synchronized int registerSession(Session session, User user) {
@@ -38,22 +43,19 @@ public class Game {
                 try
                 {
                     begin();
-                } catch (IOException e)
-                {
-                    e.printStackTrace();
-                } catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
+                } catch (IOException e) {e.printStackTrace();}
+                catch (InterruptedException | SQLException e) {e.printStackTrace();}
             }).start();
         }
         return playerCount - 1;
     }
 
-    private void begin() throws IOException, InterruptedException {
-        for(; curRound < N_ROUNDS; curRound++)
+    private void begin() throws IOException, InterruptedException, SQLException {
+        for(int painterNum = 0; curRound < N_ROUNDS; curRound++, painterNum++)
         {
-            rounds[curRound] = new Round(players[curRound % playerCount]);
+            while(players[painterNum % playerCount] == null)
+                painterNum++;
+            rounds[curRound] = new Round(players[painterNum % playerCount]);
             Round CurrentRound = rounds[curRound];
 
             CurrentRound.OnRoundBegin(players);
@@ -62,17 +64,24 @@ public class Game {
         }
         Player p = GetWinner(); //TODO: increase winner rating if ranked, game should store if it's ranked or not
         //TODO: store game in database, including all rounds
+        //updateDatabase(p);
     }
 
+    /* Writes new game entry after a game ends by
+    * accessing the context attribute DAO and saving new entry.
+    * */
+    private void updateDatabase(Player winner) throws SQLException {
+        dao.newGame(ranked, winner.getName(), winner.getScore());
+    }
 
     private Player GetWinner() {
         Player winner = null;
         int maxScore = 0;
         for(Player p : players)
         {
-            if(p != null && p.GetScore() > maxScore)
+            if(p != null && p.getScore() > maxScore)
             {
-                maxScore = p.GetScore();
+                maxScore = p.getScore();
                 winner = p;
             }
         }
@@ -90,11 +99,13 @@ public class Game {
     }
 
     public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException {
-        if(playerCount < 2 || curRound == 18) //TODO: make this prettier, sentinel instead of 18
+        if(!players[PlayerIndex].getCanGuess())
+            return;
+        if(playerCount < 2 || curRound == N_ROUNDS) //TODO: make this prettier, sentinel instead of 18
         {
             for(Player p : players)
                 if(p != null)
-                    p.notifyPlayer("C," + players[PlayerIndex].GetName() + ": " + guess);
+                    p.notifyPlayer("C," + players[PlayerIndex].getName() + ": " + guess);
             return;
         }
         Round round = rounds[curRound];
@@ -114,7 +125,8 @@ public class Game {
         }
     }
     //TODO: implement in a better way so disconnected player can't be null
-    public void unregister(int playerIndex){
+    public synchronized void unregister(int playerIndex){
         players[playerIndex] = null;
+        playerCount--;
     }
 }

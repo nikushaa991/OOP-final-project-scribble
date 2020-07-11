@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS games;
 CREATE TABLE games (
     ID INT NOT NULL,
     DATE DATE,
-    WINNER_ID INT,
+    WINNER_USERNAME VARCHAR(32),
     WINNING_SCORE INT,
     RANKED BIT
 );
@@ -22,5 +22,11 @@ create table scores (
     GAME_ID INT,
     N_ROUND INT,
     SCORE INT
+);
+
+DROP TABLE IF EXISTS friends;
+create table friends (
+    USERNAME_1 VARCHAR(32) NOT NULL,
+    USERNAME_2 VARCHAR(32) NOT NULL
 );
 

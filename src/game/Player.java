@@ -11,44 +11,42 @@ public class Player
 {
     private int score;
     private String name;
-    private Session session;
+    private Session wsSession;
     private boolean bCanGuess;
 
-    public Player(Session session, User user) {
+    public Player(Session wsSession, User user) {
 
         this.name = user.getUsername();
-        this.session = session;
-
+        this.wsSession = wsSession;
         score = 0;
     }
 
     /* Getters */
-    public int GetScore()
+    public int getScore()
     {
         return score;
     }
 
-    public String GetName()
+    public String getName()
     {
         return name;
     }
 
     //TODO: maybe do something with these two methods
-    public boolean GetCanGuess()
+    public boolean getCanGuess()
     {
         return bCanGuess;
     }
 
-
-    public Session getSession(){return session;}
+    public Session getSession(){return wsSession;}
     /* Setters */
 
-    public void IncreaseScore(int Score)
+    public void increaseScore(int Score)
     {
         score += Score;
     }
 
-    public void SetCanGuess(boolean b)
+    public void setCanGuess(boolean b)
     {
         bCanGuess = b;
     }
@@ -57,7 +55,7 @@ public class Player
 
     public void notifyPlayer(String text) throws IOException //TODO: move this to a negotiator class instead.
     {
-        session.getBasicRemote().sendText(text);
+        wsSession.getBasicRemote().sendText(text);
     }
 
 }

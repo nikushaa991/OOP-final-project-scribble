@@ -9,7 +9,7 @@ public class Matchmaker {
     private static Object lock;
 
     public Matchmaker() {
-        game = new Game();
+        game = new Game(true, null);
         inQueue = 0;
         lock = new Object();
     }
@@ -23,7 +23,7 @@ public class Matchmaker {
         if(inQueue == 6)
         {
             Game res = game;
-            game = new Game();
+            game = new Game(true, null);
             inQueue = 0;
             synchronized (lock)
             {

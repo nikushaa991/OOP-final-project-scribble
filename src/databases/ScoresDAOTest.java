@@ -1,6 +1,6 @@
 package databases;
 
-import main.java.Pair;
+import utils.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
@@ -8,12 +8,12 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ScoresDBConnectorTest {
+class ScoresDAOTest {
 
     /* Tests basic functionality of scores table*/
     @Test
     public void test1() throws SQLException {
-        ScoresDBConnector scoresDao = new ScoresDBConnector();
+        ScoresDAO scoresDao = new ScoresDAO();
         try {
             scoresDao.newScore("-1", -1, -1, 100);
             scoresDao.newScore("-2", -1, -1, 200);

@@ -5,6 +5,7 @@ import login.User;
 import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -27,11 +28,11 @@ public class Round{
         painter.notifyPlayer("P,");
         painter.notifyPlayer("S,The word is: " + hiddenWord); //TODO: send him a list of words instead, wait for his answer
         //TODO: might not be needed, we can add this to JS instead.
-        painter.SetCanGuess(false);
+        painter.setCanGuess(false);
         for(Player p : players)
         {
             if(p != painter && p!= null)
-                p.SetCanGuess(true);
+                p.setCanGuess(true);
         }
         TimeUnit.SECONDS.sleep(20);
         // Painter chooses one word
@@ -43,8 +44,8 @@ public class Round{
         {
             if(p != null)
             {
-                int score = p.GetScore();
-                String strScore = "S," + p.GetName() + " " + score;
+                int score = p.getScore();
+                String strScore = "S," + p.getName() + " " + score;
                 p.notifyPlayer(strScore); //TODO: notify all players, so they can update every score.
             }
         }
@@ -58,11 +59,11 @@ public class Round{
     public void OnCorrectGuess(Player[] players, int guesserIndex) throws IOException
     {
         Player guesser = players[guesserIndex];
-        String finalString = "S,!! " + guesser.GetName() + " has guessed the word!!"; //TODO: write directly into notifyAllPlayers maybe?
+        String finalString = "S,!! " + guesser.getName() + " has guessed the word!!"; //TODO: write directly into notifyAllPlayers maybe?
         notifyAllPlayers(players, finalString);
         int score = CalculateScore(hiddenWord, 10); // TODO: score should be based on order, not time, needs implementing anyway.
-        guesser.IncreaseScore(score);
-        guesser.SetCanGuess(false);
+        guesser.increaseScore(score);
+        guesser.setCanGuess(false);
         // Log out "guesser.name has guessed the word"
         // int score = Calculate score based on word difficulty and time
         // guesser.IncreaseScore(score);
@@ -71,7 +72,7 @@ public class Round{
 
     public void OnIncorrectGuess(Player[] players, int guesserIndex, String guess) throws IOException //TODO: do we really need this method?
     {
-        notifyAllPlayers(players, "C," + players[guesserIndex].GetName() + ": " + guess);
+        notifyAllPlayers(players, "C," + players[guesserIndex].getName() + ": " + guess);
         // Log out "guesser.name: " + "guess";
     }
 
