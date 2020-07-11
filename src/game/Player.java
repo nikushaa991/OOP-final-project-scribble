@@ -12,14 +12,12 @@ public class Player
     private int score;
     private String name;
     private Session wsSession;
-    private HttpSession httpSession;
     private boolean bCanGuess;
 
-    public Player(Session wsSession, User user, HttpSession httpSession) {
+    public Player(Session wsSession, User user) {
 
         this.name = user.getUsername();
         this.wsSession = wsSession;
-        this.httpSession = httpSession;
         score = 0;
     }
 
@@ -39,8 +37,6 @@ public class Player
     {
         return bCanGuess;
     }
-
-    public HttpSession getHttpSession(){return httpSession;}
 
     public Session getSession(){return wsSession;}
     /* Setters */

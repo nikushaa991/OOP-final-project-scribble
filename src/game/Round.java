@@ -21,7 +21,7 @@ public class Round{
         rand = new Random(); //TODO: new random?? instanceof maybe
     }
 
-    public void OnRoundBegin(ArrayList<Player> players) throws IOException, InterruptedException {
+    public void OnRoundBegin(Player[] players) throws IOException, InterruptedException {
         // Randomly take word out of WordDB:
         hiddenWord = WordsList.wordsList.get(rand.nextInt(3)); //TODO: choose a list of unique words instead
         notifyAllPlayers(players, "N,");
@@ -39,7 +39,7 @@ public class Round{
         // HiddenWord = that word;
     }
 
-    public void OnRoundEnd(ArrayList<Player> players) throws IOException {
+    public void OnRoundEnd(Player[] players) throws IOException {
         for(Player p : players)
         {
             if(p != null)
@@ -56,9 +56,9 @@ public class Round{
     }
 
     // Is used when a given player writes a correct guess
-    public void OnCorrectGuess(ArrayList<Player> players, int guesserIndex) throws IOException
+    public void OnCorrectGuess(Player[] players, int guesserIndex) throws IOException
     {
-        Player guesser = players.get(guesserIndex);
+        Player guesser = players[guesserIndex];
         String finalString = "S,!! " + guesser.getName() + " has guessed the word!!"; //TODO: write directly into notifyAllPlayers maybe?
         notifyAllPlayers(players, finalString);
         int score = CalculateScore(hiddenWord, 10); // TODO: score should be based on order, not time, needs implementing anyway.
@@ -70,9 +70,9 @@ public class Round{
         // Disable guesser-s ability to guess again
     }
 
-    public void OnIncorrectGuess(ArrayList<Player> players, int guesserIndex, String guess) throws IOException //TODO: do we really need this method?
+    public void OnIncorrectGuess(Player[] players, int guesserIndex, String guess) throws IOException //TODO: do we really need this method?
     {
-        notifyAllPlayers(players, "C," + players.get(guesserIndex).getName() + ": " + guess);
+        notifyAllPlayers(players, "C," + players[guesserIndex].getName() + ": " + guess);
         // Log out "guesser.name: " + "guess";
     }
 
@@ -82,7 +82,7 @@ public class Round{
         // Log out "guesser.name is close to the solution"
     }
 
-    public void notifyAllPlayers(ArrayList<Player> players, String text) throws IOException { //TODO: move this to a new negotiator class instead.
+    public void notifyAllPlayers(Player[] players, String text) throws IOException { //TODO: move this to a new negotiator class instead.
         for(Player p : players)
             if(p != null)
                 p.notifyPlayer(text);

@@ -21,24 +21,23 @@ public class Game {
     private int playerCount;
     private int curRound;
     private Round[] rounds;
-    /* changed players[] to arrayList. reason is more flexibility for DAO access and no
-    * pre-assigned memory.
-    * */
-    private ArrayList<Player> players;
+    GamesDAO dao;
+    private Player[] players;
     private boolean ranked;
 
-    public Game(boolean ranked) {
+    public Game(boolean ranked, GamesDAO dao) {
 
-        players = new ArrayList<Player>();
+        players = new Player[MAX_PLAYERS];
         rounds = new Round[N_ROUNDS];
         playerCount = 0;
         curRound = 0;
         this.ranked = ranked;
+        this.dao = dao;
     }
 
-    public synchronized int registerSession(Session session, User user, HttpSession httpSession) {
-        Player newPlayer = new Player(session, user, httpSession);
-        players.add(newPlayer);
+    public synchronized int registerSession(Session session, User user) {
+        Player newPlayer = new Player(session, user);
+        players[playerCount] = newPlayer;
         playerCount++;
         if(playerCount == 2)
         {
@@ -57,7 +56,7 @@ public class Game {
     private void begin() throws IOException, InterruptedException, SQLException {
         for(; curRound < N_ROUNDS; curRound++)
         {
-            rounds[curRound] = new Round(players.get(curRound % playerCount));
+            rounds[curRound] = new Round(players[curRound % playerCount]);
             Round CurrentRound = rounds[curRound];
 
             CurrentRound.OnRoundBegin(players);
@@ -73,8 +72,7 @@ public class Game {
     * accessing the context attribute DAO and saving new entry.
     * */
     private void updateDatabase(Player winner) throws SQLException {
-        GamesDAO gamesDAO = (GamesDAO) players.get(0).getHttpSession().getAttribute("gamesHistory");
-        gamesDAO.newGame(ranked, winner.getName(), winner.getScore());
+        dao.newGame(ranked, winner.getName(), winner.getScore());
     }
 
     private Player GetWinner() {
@@ -97,8 +95,8 @@ public class Game {
     //TODO: handle colors and sizes.
     public void stroke(String start, int id) throws IOException {
         for(int i = 0; i < playerCount; i++) //TODO: this should be a separate method in a negotiator class as notifyAllExceptOne()
-            if(players.get(i) != null && i != id)
-                players.get(i).notifyPlayer(start);
+            if(players[i] != null && i != id)
+                players[i].notifyPlayer(start);
     }
 
     public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException {
@@ -106,7 +104,7 @@ public class Game {
         {
             for(Player p : players)
                 if(p != null)
-                    p.notifyPlayer("C," + players.get(PlayerIndex).getName() + ": " + guess);
+                    p.notifyPlayer("C," + players[PlayerIndex].getName() + ": " + guess);
             return;
         }
         Round round = rounds[curRound];
@@ -118,7 +116,7 @@ public class Game {
         }
         else if(res == 2) //TODO: implement this
         {
-            round.OnCloseGuess(players.get(PlayerIndex));
+            round.OnCloseGuess(players[PlayerIndex]);
         }
         else
         {
@@ -127,7 +125,7 @@ public class Game {
     }
     //TODO: implement in a better way so disconnected player can't be null
     public synchronized void unregister(int playerIndex){
-        players.remove(playerIndex);
+        players[playerIndex] = null;
         playerCount--;
     }
 }

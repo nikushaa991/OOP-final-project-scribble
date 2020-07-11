@@ -16,7 +16,7 @@ public class GameWS {
     public void onOpen(Session session, EndpointConfig config) {
         HttpSession sess = (HttpSession) config.getUserProperties().get("httpSession");
         Game game = (Game) sess.getAttribute("GAME");
-        int id = game.registerSession(session, (User) sess.getAttribute("USER"), sess);
+        int id = game.registerSession(session, (User) sess.getAttribute("USER"));
         map.put(session, new Pair<>(game, id));
     }
 
