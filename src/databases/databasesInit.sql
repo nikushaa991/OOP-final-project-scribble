@@ -30,3 +30,9 @@ create table friends (
     USERNAME_2 VARCHAR(32) NOT NULL
 );
 
+DROP TABLE IF EXISTS friendRequests;
+create table friendRequests (
+    USERNAME_TO VARCHAR(32) NOT NULL,
+    USERNAME_FROM VARCHAR(32) NOT NULL
+);
+
