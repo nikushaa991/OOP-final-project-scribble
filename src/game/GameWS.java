@@ -31,7 +31,7 @@ public class GameWS {
     @OnMessage
     public String onMessage(String message, Session session) throws IOException {
         Pair<Game, Integer> p = map.get(session);
-        if(message.startsWith("L") || message.startsWith("B") || message.startsWith("S") || message.startsWith("W"))
+        if(message.startsWith("L") || message.startsWith("B") || message.startsWith("T") || message.startsWith("W"))
             p.getFirst().stroke(message, p.getSecond());
         else p.getFirst().CheckGuessFromGame(p.getSecond(), message.substring(2));
 

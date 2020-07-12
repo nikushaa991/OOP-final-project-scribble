@@ -56,7 +56,7 @@ window.onload = function () {
 
     function wsGetMessage(message) {
         //TODO: handle score updating.
-        if(message.data.startsWith("S")){
+        if(message.data.startsWith("T")){
             var paint = message.data.split(",");
             context.strokeStyle = paint[1];
         }
@@ -96,7 +96,7 @@ window.onload = function () {
 
     colors.addEventListener('click', function (event) {
         context.strokeStyle = event.target.value || 'black';
-        webSocket.send("S," +  context.strokeStyle);
+        webSocket.send("T," +  context.strokeStyle);
     });
 
     // Handle Brushes
