@@ -54,7 +54,7 @@ public class Round{
         {
             if(p != null)
             {
-                p.notifyPlayer(strScore);
+                p.notifyPlayer(result);
             }
         }
 

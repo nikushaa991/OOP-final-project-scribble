@@ -3,6 +3,7 @@ package listeners;
 import databases.ScoresDAO;
 import game.Game;
 import game.GamesDAO;
+import home.classes.Matchmaker;
 import login.UsersDAO;
 
 import javax.servlet.ServletContextEvent;
@@ -20,6 +21,7 @@ public class ContextCreatingListener implements ServletContextListener {
         UsersDAO usersDb = null;
         ScoresDAO scoresDb = null;
         GamesDAO gameDb = null;
+        Matchmaker mm = new Matchmaker();
         ArrayList<Game> currentGames = new ArrayList<>();
         try {
             usersDb = new UsersDAO();
@@ -30,6 +32,8 @@ public class ContextCreatingListener implements ServletContextListener {
         servletContextEvent.getServletContext().setAttribute("scoresHistory", scoresDb);
         servletContextEvent.getServletContext().setAttribute("gamesHistory", gameDb);
         servletContextEvent.getServletContext().setAttribute("games", currentGames);
+        servletContextEvent.getServletContext().setAttribute("MATCHMAKER", mm);
+
     }
 
     @Override

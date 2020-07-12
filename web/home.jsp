@@ -8,8 +8,12 @@
 
 <h1>HOME</h1>
 
-<form action="HomeServlet" method="POST">
-    <input type="submit" value="Play"/>
+<form action="QuickplayServlet" method="POST">
+    <input type="submit" value="Casual play"/>
+</form>
+
+<form action="RankedplayServlet" method="POST">
+    <input type="submit" value="Ranked play"/>
 </form>
 
 <form action="LeaderBoard" method="POST"> <%-- jerjerobit calke iyos da mere tu mogvinda amave gverdze gadmovitanot--%>
