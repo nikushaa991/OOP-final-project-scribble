@@ -53,6 +53,8 @@ public class Game {
     private void begin() throws IOException, InterruptedException, SQLException {
         for(int painterNum = 0; curRound < N_ROUNDS; curRound++, painterNum++)
         {
+            if(playerCount == 0)
+                return;
             while(players[painterNum % playerCount] == null)
                 painterNum++;
             rounds[curRound] = new Round(players[painterNum % playerCount]);
@@ -128,5 +130,9 @@ public class Game {
     public synchronized void unregister(int playerIndex){
         players[playerIndex] = null;
         playerCount--;
+    }
+
+    public synchronized int getPlayerCount(){
+        return playerCount;
     }
 }

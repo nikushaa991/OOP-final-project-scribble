@@ -23,8 +23,11 @@ public class Matchmaker {
     }
 
     synchronized public Game addToQueue() {
-        inQueue++;
-        if(inQueue == 6)
+        if(game.getPlayerCount() == 0)
+        {
+            game = new Game(false, null);
+            inQueue = 1;
+        } else if(++inQueue == 6)
         {
             Game res = game;
             game = new Game(false, null);
@@ -36,8 +39,13 @@ public class Matchmaker {
 
     synchronized public Game addToRankedQueue(int rating) {
         int bracket = rating / 300;
-        rankedQueue[bracket]++;
-        if(rankedQueue[bracket] == 6)
+
+        if(rankedGames[bracket].getPlayerCount() == 0)
+        {
+            rankedGames[bracket] = new Game(true, null);
+            rankedQueue[bracket] = 1;
+        }
+        if(++rankedQueue[bracket] == 6)
         {
             Game res = rankedGames[bracket];
             rankedGames[bracket] = new Game(true, null);
