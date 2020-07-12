@@ -56,7 +56,15 @@ window.onload = function () {
 
     function wsGetMessage(message) {
         //TODO: handle score updating.
-        if(message.data.startsWith("B"))
+        if(message.data.startsWith("S")){
+            var paint = message.data.split(",");
+            context.strokeStyle = paint[1];
+        }
+        else if (message.data.startsWith("W")){
+            var width = message.data.split(",");
+            context.lineWidth = width[1];
+        }
+        else if(message.data.startsWith("B"))
         {
             var coordinates = message.data.split(",");
             context.beginPath();
@@ -88,6 +96,7 @@ window.onload = function () {
 
     colors.addEventListener('click', function (event) {
         context.strokeStyle = event.target.value || 'black';
+        webSocket.send("S," +  context.strokeStyle);
     });
 
     // Handle Brushes
@@ -95,6 +104,7 @@ window.onload = function () {
 
     brushes.addEventListener('click', function (event) {
         context.lineWidth = event.target.value || 1;
+        webSocket.send("W," + context.lineWidth);
     });
 
     // Mouse Down Event

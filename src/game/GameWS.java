@@ -31,9 +31,10 @@ public class GameWS {
     @OnMessage
     public String onMessage(String message, Session session) throws IOException {
         Pair<Game, Integer> p = map.get(session);
-        if(message.startsWith("L") || message.startsWith("B"))
+        if(message.startsWith("L") || message.startsWith("B") || message.startsWith("S") || message.startsWith("W"))
             p.getFirst().stroke(message, p.getSecond());
         else p.getFirst().CheckGuessFromGame(p.getSecond(), message.substring(2));
+
         //TODO: return chosen word from artist
         //TODO: maybe echo something useful back to client?
         //TODO: handle clear canvas action

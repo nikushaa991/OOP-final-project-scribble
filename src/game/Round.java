@@ -34,7 +34,7 @@ public class Round{
             if(p != painter && p!= null)
                 p.setCanGuess(true);
         }
-        TimeUnit.SECONDS.sleep(20);
+        TimeUnit.SECONDS.sleep(2000);
         // Painter chooses one word
         // HiddenWord = that word;
     }
@@ -54,7 +54,7 @@ public class Round{
         {
             if(p != null)
             {
-                p.notifyPlayer(strScore);
+                p.notifyPlayer(result);
             }
         }
 
