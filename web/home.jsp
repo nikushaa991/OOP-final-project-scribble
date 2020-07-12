@@ -20,5 +20,9 @@
     <input type="submit" value="LeaderBoard"/>
 </form>
 
+<form action="FriendsList" method="POST"> <%-- jerjerobit calke iyos da mere tu mogvinda amave gverdze gadmovitanot--%>
+    <input type="submit" value="FriendsList"/>
+</form>
+
 </body>
 </html>
