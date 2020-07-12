@@ -8,15 +8,10 @@
     <script type="text/javascript" src="canvas.js"></script>
 </head>
 <body>
-<<<<<<< HEAD
 <main style="width: 100%">
     <div class="leaderBoard">
         <textarea disabled class="sideChart" rows="5" cols="20"></textarea>
     </div>
-=======
-<%--<<<<<<< HEAD--%>
-<main>
->>>>>>> 6fff7d0fefff2f90e548cc3c97beafa4e9996f87
     <div class="left-block">
         <div class="colors">
             <button type="button" value="#0000ff"></button>
@@ -65,16 +60,10 @@
     <div class="chat" >
         <textarea disabled id="echoText" class="sideChart" rows="5" cols="30"></textarea>
         <div class="textInputContainer">
-<<<<<<< HEAD
-            <textarea id="textInput"  onkeypress="enterPressed(event)"></textarea>
-            <button onclick="sendClicked()" id="textInputButton">Send</button>
-=======
             <textarea id="textInput"></textarea>
             <button id="textInputButton">Send</button>
->>>>>>> 6fff7d0fefff2f90e548cc3c97beafa4e9996f87
         </div>
     </div>
 </main>
-
 </body>
 </html>
