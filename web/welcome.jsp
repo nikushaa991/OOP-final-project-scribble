@@ -9,8 +9,8 @@
 </head>
 <body>
 <main style="width: 100%">
-    <div class="leaderBoard">
-        <textarea disabled class="sideChart" rows="5" cols="20"></textarea>
+    <div>
+        <textarea disabled class="sideChart" id="leaderBoard" rows="5" cols="20"></textarea>
     </div>
     <div class="left-block">
         <div class="colors">

@@ -41,13 +41,15 @@ public class Round{
 
     public void OnRoundEnd(Player[] players) throws IOException
     {
-        String result = "S,";
+        String result;
+        result = "Z,"; //did not have much choice... Z-tag for leader board data
+
         for(Player p : players)
         {
             if(p != null)
             {
                 int score = p.getScore();
-                result += p.getName() + " " + score + " ";
+                result += p.getName() + "-" + score + " ";
             }
         }
         for(Player p : players)
