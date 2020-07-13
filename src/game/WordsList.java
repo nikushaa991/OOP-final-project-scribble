@@ -26,8 +26,13 @@ public class WordsList {
     //TODO: add some lexicon from the internet instead of random words, difficulty not needed.
     //TODO: maybe store the words in database?
     public static ArrayList<String> wordsList = new ArrayList<String>(){{
-        add("dog");
-        add("cat");
-        add("frog");
+        add("Dog");
+        add("Cat");
+        add("Frog");
+        add("Calculator");
+        add("Book");
+        add("Computer");
+        add("Beach");
+        add("Space");
     }};
 }

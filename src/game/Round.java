@@ -9,10 +9,18 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+
+/*
+    M, - text gets shown in chat
+    S, - score gets shown in chat
+    A, - Array of WordChoices
+ */
+
 public class Round{
     private Player painter;
     private Random rand;
     private String hiddenWord;
+    public static final int WORD_CHOICE_NUM = 3;
     public static final int DURATION = 2000;
 
     public Round(Player painter)
@@ -23,10 +31,27 @@ public class Round{
 
     public void OnRoundBegin(Player[] players) throws IOException, InterruptedException {
         // Randomly take word out of WordDB:
+
+        String Choices[] = new String[WORD_CHOICE_NUM];
+        String painterChoice = "";
+        for(int i = 0; i < Choices.length; i++)
+        {
+            Choices[i] = WordsList.wordsList.get(rand.nextInt(Choices.length));
+            painterChoice += Choices[i] + " ";
+        }
+
+
+        painter.notifyPlayer("A, " + painterChoice);
+
+
+
         hiddenWord = WordsList.wordsList.get(rand.nextInt(3)); //TODO: choose a list of unique words instead
+
+		notifyAllPlayers(players, "M, New Round Started");
+
         notifyAllPlayers(players, "N,");
         painter.notifyPlayer("P,");
-        painter.notifyPlayer("S,The word is: " + hiddenWord); //TODO: send him a list of words instead, wait for his answer
+        painter.notifyPlayer("M, The word is: " + hiddenWord); //TODO: send him a list of words instead, wait for his answer
         //TODO: might not be needed, we can add this to JS instead.
         painter.setCanGuess(false);
         for(Player p : players)
@@ -42,7 +67,7 @@ public class Round{
     public void OnRoundEnd(Player[] players) throws IOException
     {
         String result;
-        result = "Z,"; //did not have much choice... Z-tag for leader board data
+        result = "S,";
 
         for(Player p : players)
         {
@@ -52,13 +77,9 @@ public class Round{
                 result += p.getName() + "-" + score + " ";
             }
         }
-        for(Player p : players)
-        {
-            if(p != null)
-            {
-                p.notifyPlayer(result);
-            }
-        }
+        notifyAllPlayers(players, result);
+
+        notifyAllPlayers(players, "M, Round Ended");
 
 
         // foreach(Player)
@@ -70,7 +91,7 @@ public class Round{
     public void OnCorrectGuess(Player[] players, int guesserIndex) throws IOException
     {
         Player guesser = players[guesserIndex];
-        String finalString = "S,!! " + guesser.getName() + " has guessed the word!!"; //TODO: write directly into notifyAllPlayers maybe?
+        String finalString = "M, !! " + guesser.getName() + " has guessed the word!!"; //TODO: write directly into notifyAllPlayers maybe?
         notifyAllPlayers(players, finalString);
         int score = CalculateScore(hiddenWord, 10); // TODO: score should be based on order, not time, needs implementing anyway.
         guesser.increaseScore(score);
@@ -84,12 +105,11 @@ public class Round{
     public void OnIncorrectGuess(Player[] players, int guesserIndex, String guess) throws IOException //TODO: do we really need this method?
     {
         notifyAllPlayers(players, "C," + players[guesserIndex].getName() + ": " + guess);
-        // Log out "guesser.name: " + "guess";
     }
 
     public void OnCloseGuess(Player guesser) throws IOException
     {
-        guesser.notifyPlayer("S,You're close to solution");
+        guesser.notifyPlayer("M, You're close to solution");
         // Log out "guesser.name is close to the solution"
     }
 
