@@ -1,6 +1,6 @@
 package home.classes;
 
-import game.Game;
+import game.classes.Game;
 
 //TODO: i'll do this myself
 public class Matchmaker {

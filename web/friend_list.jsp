@@ -1,5 +1,5 @@
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="game.Game" %>
+<%@ page import="game.classes.Game" %>
 <%--
   Created by IntelliJ IDEA.
   User: bubu

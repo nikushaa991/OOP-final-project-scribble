@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Canvas</title>
-    <link rel="stylesheet" href="canvas.css">
-    <link rel="stylesheet" href="chat.css">
+    <link rel="stylesheet" href="styles/canvas.css">
+    <link rel="stylesheet" href="styles/chat.css">
 </head>
 <body>
 <main style="width: 100%">
@@ -72,5 +72,5 @@
     </div>
 </main>
 </body>
-<script type="text/javascript" src="canvas.js"></script>
+<script type="text/javascript" src="scripts/canvas.js"></script>
 </html>

@@ -1,19 +1,18 @@
 package listeners;
 
-import databases.FriendRequestsDao;
-import databases.FriendsDAO;
-import databases.ScoresDAO;
-import game.Game;
-import game.GamesDAO;
+import databases.friends.FriendRequestsDao;
+import databases.friends.FriendsDAO;
+import databases.scores.ScoresDAO;
+import game.classes.Game;
+import databases.games.GamesDAO;
 import home.classes.Matchmaker;
-import login.UsersDAO;
+import databases.users.UsersDAO;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 @WebListener
