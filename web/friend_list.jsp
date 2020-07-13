@@ -44,23 +44,6 @@
     <input type="submit" value="Send"/>
 </form>
 
-<h2> Game invitations: </h2>
-<%
-
-    if(gameInvites != null) {
-        out.print("<ul style=\"list-style-type:none;\"><form action=\"GameAccept\" method=\"POST\" name=\"GameAccept\">");
-                    for(String gameInvitation : gameInvites){
-                        out.print("<li> <input type=\"radio\" name=\"gameAccept\" value=" + gameInvitation + " id = " + gameInvitation + "</li>"
-                                + "<label> " + gameInvitation + " </label>");
-                    }
-        out.print("</br></br>");
-            out.print("<input type=\"submit\" value=\"Enter Room\"/>");
-                out.print("</br></br>");
-                    out.print("</form>");
-                        out.print("</ul>");
-    }
-%>
-
 <h2> Pending friend requests: </h2>
 <ul style="list-style-type:none;">
     <form action="FriendRequestAccept" method="POST" name="FriendRequestAccept">
@@ -92,5 +75,24 @@
     </form>
     <script type="text/javascript">checkBoxLimit(<%=maxAdditionalPlayers%>)</script>
 </ul>
+
+
+<h2> Game invitations: </h2>
+<%
+    if(gameInvites != null)
+    {
+        out.print("<ul style=\"list-style-type:none;\"><form action=\"GameAccept\" method=\"POST\" name=\"GameAccept\">");
+        for(String gameInvitation : gameInvites){
+            out.print("<li> <input type=\"radio\" name=\"name\" value=" + gameInvitation + " id = \"name\"</li>"
+                    + "<label> " + gameInvitation + " </label>");
+        }
+        out.print("</br></br>");
+        out.print("<input type=\"submit\" value=\"Enter Room\"/>");
+        out.print("</br></br>");
+        out.print("</form>");
+        out.print("</ul>");
+    }
+%>
+
 </body>
 </html>
