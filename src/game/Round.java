@@ -4,6 +4,7 @@ import login.User;
 
 import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -14,6 +15,8 @@ import java.util.concurrent.TimeUnit;
     M, - text gets shown in chat
     S, - score gets shown in chat
     A, - Array of WordChoices
+    N, - Sets isArtist to false for all players and Clears the canvas
+    P, - sets isArtist to true for a particular player
  */
 
 public class Round{
@@ -21,6 +24,7 @@ public class Round{
     private Random rand;
     private String hiddenWord;
     public static final int WORD_CHOICE_NUM = 3;
+    public static final int PAINTER_CHOICE_TIME = 5;
     public static final int DURATION = 2000;
 
     public Round(Player painter)
@@ -32,24 +36,35 @@ public class Round{
     public void OnRoundBegin(Player[] players) throws IOException, InterruptedException {
         // Randomly take word out of WordDB:
 
+        hiddenWord = "?";
         String Choices[] = new String[WORD_CHOICE_NUM];
         String painterChoice = "";
-        for(int i = 0; i < Choices.length; i++)
-        {
-            Choices[i] = WordsList.wordsList.get(rand.nextInt(Choices.length));
+        int i = 0;
+        while(i < WORD_CHOICE_NUM) {
+            String word = WordsList.wordsList.get(rand.nextInt(WordsList.wordsList.size()));
+            for (int j = 0; j < i; j++)
+            {
+                if (word.equals(Choices[j]))
+                    continue;
+            }
+            Choices[i] = word;
             painterChoice += Choices[i] + " ";
+            i++;
         }
-
 
         painter.notifyPlayer("A, " + painterChoice);
 
+        notifyAllPlayers(players, "M, Painter is choosing word");
+        TimeUnit.SECONDS.sleep(PAINTER_CHOICE_TIME);
+        notifyAllPlayers(players, "M, Painter has chosen word");
 
-
-        hiddenWord = WordsList.wordsList.get(rand.nextInt(3)); //TODO: choose a list of unique words instead
+        if(hiddenWord.equals("?"))
+            hiddenWord = Choices[rand.nextInt(Choices.length)];
 
 		notifyAllPlayers(players, "M, New Round Started");
 
         notifyAllPlayers(players, "N,");
+
         painter.notifyPlayer("P,");
         painter.notifyPlayer("M, The word is: " + hiddenWord); //TODO: send him a list of words instead, wait for his answer
         //TODO: might not be needed, we can add this to JS instead.
@@ -119,7 +134,10 @@ public class Round{
                 p.notifyPlayer(text);
     }
 
-
+    public void ChooseHiddenWord(String str)
+    {
+        hiddenWord = str;
+    }
     /*
     * FUNCTION: CheckGuess
     * checks if the parameter "guess" is HiddenWord

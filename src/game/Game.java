@@ -132,6 +132,11 @@ public class Game {
         playerCount--;
     }
 
+    public synchronized void SetHiddenWord(String word)
+    {
+        rounds[curRound].ChooseHiddenWord(word);
+    }
+
     public synchronized int getPlayerCount(){
         return playerCount;
     }

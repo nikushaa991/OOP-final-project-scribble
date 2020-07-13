@@ -32,7 +32,14 @@ public class GameWS {
     public String onMessage(String message, Session session) throws IOException {
         Pair<Game, Integer> p = map.get(session);
         if(message.startsWith("L") || message.startsWith("B") || message.startsWith("T") || message.startsWith("W"))
+        {
             p.getFirst().stroke(message, p.getSecond());
+        }
+        else if(message.startsWith("A"))
+        {
+            String word = message.substring(2);
+            p.getFirst().SetHiddenWord(word);
+        }
         else p.getFirst().CheckGuessFromGame(p.getSecond(), message.substring(2));
 
         //TODO: return chosen word from artist
