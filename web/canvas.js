@@ -1,7 +1,11 @@
 var leaderBoard;
+var modal;
+var wordsArray;
+var webSocket;
 window.onload = function () {
+    modal = document.getElementById("chooseW");
     //TODO AFTER: make this an actual link, instead of localhost.
-    var webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
+    webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
     var echoText = document.getElementById("echoText");
     leaderBoard = document.getElementById("leaderBoard");
     echoText.value = "";
@@ -86,29 +90,51 @@ window.onload = function () {
         {
             isArtist = true;
         }
+        else if(message.data.startsWith("M")) {
+            // modal.style.display = "none";
+        }
+        else if(message.data.startsWith("S")) {
+            var ls = message.data.substr(2) + '\n';
+            var sp = ls.split(" ");
+            sp.sort(function (b, c) {
+                var w1 = b.split("-")[1];
+                var w2 = c.split("-")[1];
+                if (parseInt(w1) > parseInt(w2)) {
+                    return -1;
+                }
+                if (parseInt(w2) > parseInt(w1)) {
+                    return 1;
+                }
+                return 0;
+            });
+            //got sorted array now just show it;
+            displayLeaderBoard(sp);
+        }
+        else if(message.data.startsWith("A")) {
+            var ls = message.data.substr(2) + '\n';
+            var sp = ls.split(" ");
+            sp = sp.slice(1,sp.length-1);
+            chooseWordDisplay(sp);
+        }
         else if(message.data != "")
         {
-            if(message.data.startsWith("Z")) {
-                var ls = message.data.substr(2) + '\n';
-                var sp = ls.split(" ");
-                sp.sort(function( b , c) {
-                    var w1 = b.split("-")[1];
-                    var w2 = c.split("-")[1];
-                    if (parseInt(w1) > parseInt(w2)) {
-                        return -1;
-                    }
-                    if (parseInt(w2) > parseInt(w1)) {
-                        return 1;
-                    }
-                    return 0;
-                });
-                //got sorted array now just show it;
-                displayLeaderBoard(sp);
-            }else{
-                echoText.value += message.data.substr(2) + '\n';
-            }
+            echoText.value += message.data.substr(2) + '\n';
         }
     }
+
+    function chooseWordDisplay(posWords) {
+        var posW1 = document.getElementById("posWord1");
+        var posW2 = document.getElementById("posWord2");
+        var posW3 = document.getElementById("posWord3");
+        posW1.textContent = posWords[0];
+        posW2.textContent = posWords[1];
+        posW3.textContent = posWords[2];
+        modal.style.display = "block";
+        wordsArray = posWords;
+        console.log(wordsArray);
+    }
+
+
 
     function displayLeaderBoard(chart) {
         leaderBoard.value = "";
@@ -116,6 +142,8 @@ window.onload = function () {
             var place = i + 1;
             leaderBoard.value += place + ". " + chart[i] + "\n";
         }
+        wordsArray = null;
+        modal.style.display="none";
     }
 
     // Handle Colors
@@ -201,3 +229,11 @@ window.onload = function () {
         echoText.scrollTop = echoText.scrollHeight;
     }
 };
+
+function wordChoosen(index) {
+    var choosenWord = wordsArray[index];
+
+    console.log(choosenWord);
+    modal.style.display = "none";
+    webSocket.send("A," + choosenWord);
+}

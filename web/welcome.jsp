@@ -5,12 +5,18 @@
     <title>Canvas</title>
     <link rel="stylesheet" href="canvas.css">
     <link rel="stylesheet" href="chat.css">
-    <script type="text/javascript" src="canvas.js"></script>
 </head>
 <body>
 <main style="width: 100%">
     <div>
         <textarea disabled class="sideChart" id="leaderBoard" rows="5" cols="20"></textarea>
+    </div>
+    <div id="chooseW" class="chooseWord">
+        <div class="chooseWordContent">
+            <button id="posWord1" class="posWord" onclick="wordChoosen(0)"></button>
+            <button id="posWord2" class="posWord" onclick="wordChoosen(1)"></button>
+            <button id="posWord3" class="posWord" onclick="wordChoosen(2)"></button>
+        </div>
     </div>
     <div class="left-block">
         <div class="colors">
@@ -66,4 +72,5 @@
     </div>
 </main>
 </body>
+<script type="text/javascript" src="canvas.js"></script>
 </html>
