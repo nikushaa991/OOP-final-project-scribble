@@ -13,6 +13,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 @WebListener
@@ -26,7 +27,7 @@ public class ContextCreatingListener implements ServletContextListener {
         GamesDAO gameDb = null;
         FriendsDAO friendsDAO = null;
         FriendRequestsDao friendRequestsDao = null;
-        ArrayList<Game> currentGames = new ArrayList<>();
+        ConcurrentHashMap<String, Game> games = new ConcurrentHashMap<>();
         Matchmaker mm = new Matchmaker();
         ConcurrentHashMap<String, ArrayList<String> > gameInvites = new ConcurrentHashMap<>();
         try {
@@ -39,11 +40,12 @@ public class ContextCreatingListener implements ServletContextListener {
         servletContextEvent.getServletContext().setAttribute("users", usersDb);
         servletContextEvent.getServletContext().setAttribute("scoresHistory", scoresDb);
         servletContextEvent.getServletContext().setAttribute("gamesHistory", gameDb);
-        servletContextEvent.getServletContext().setAttribute("games", currentGames);
         servletContextEvent.getServletContext().setAttribute("friends", friendsDAO);
         servletContextEvent.getServletContext().setAttribute("friendRequests", friendRequestsDao);
         servletContextEvent.getServletContext().setAttribute("gameInvites", gameInvites);
         servletContextEvent.getServletContext().setAttribute("MATCHMAKER", mm);
+        servletContextEvent.getServletContext().setAttribute("HOSTED_GAMES", games);
+
     }
 
     @Override
