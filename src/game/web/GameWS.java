@@ -15,14 +15,13 @@ public class GameWS {
     private static ConcurrentHashMap<HttpSession, Session> sessMap = new ConcurrentHashMap<>();
 
     @OnOpen
-    public void onOpen(Session session, EndpointConfig config) throws IOException {
+    synchronized public void onOpen(Session session, EndpointConfig config) throws IOException {
         HttpSession sess = (HttpSession) config.getUserProperties().get("httpSession");
         boolean isInGame = (boolean) sess.getAttribute("INGAME");
         Game game = (Game) sess.getAttribute("GAME");
         if(!isInGame)
         {
             int id = game.registerSession(session, (User) sess.getAttribute("USER"));
-            System.out.println("CREATED SESSION FOR " + id);
             map.put(session, new PlayerInfo(sess, id, game));
             sess.setAttribute("INGAME", true);
             sessMap.put(sess, session);
@@ -38,9 +37,8 @@ public class GameWS {
 
 
     @OnClose
-    public void onClose(Session session) {
+    synchronized public void onClose(Session session) {
         PlayerInfo info = map.get(session);
-        System.out.println(info.getId());
         info.getGame().unregister(info.getId());
         if(info.getGame().getActivePlayerCount() == 0)
         {
@@ -77,10 +75,9 @@ public class GameWS {
 
     //TODO: unregister player and session on error
     @OnError
-    public void onError(Throwable e, Session session) {
+     synchronized public void onError(Throwable e, Session session) {
         e.printStackTrace();
         PlayerInfo info = map.get(session);
-        System.out.println(info.getId());
         info.getGame().unregister(info.getId());
         if(info.getGame().getActivePlayerCount() == 0)
         {

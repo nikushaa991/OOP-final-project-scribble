@@ -130,6 +130,8 @@ public class Round{
     public void notifyAllPlayers(Player[] players, String text) throws IOException { //TODO: move this to a new negotiator class instead.
         for(Player p : players)
             if(p != null)
+                //for(int i = 0; i < MAX_PLAYERS; i++) //TODO: FIX THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!! replace current code with commented code
+                   // if(isActive[i] && i != id)
                 p.notifyPlayer(text);
     }
 

@@ -17,26 +17,29 @@ import java.util.concurrent.ConcurrentHashMap;
 @WebServlet(value = "/GameInvite", name = "GameInvite")
 public class GameInviteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Game game = new Game(false, null);
-        String host = ((User) request.getSession().getAttribute("USER")).getUsername();
-        ((ConcurrentHashMap<String, Game>) getServletContext().getAttribute("HOSTED_GAMES")).put(host, game); //TODO: remove map entry if game terminated
-        String[] invitedUsers = request.getParameterValues("tickInvite");
-        if(invitedUsers != null)
+        if(!(boolean) request.getSession().getAttribute("INGAME"))
         {
-            ConcurrentHashMap<String, ArrayList<String>> userInvites = (ConcurrentHashMap<String, ArrayList<String>>) getServletContext().getAttribute("gameInvites");
-            for(String invited : invitedUsers)
+            Game game = new Game(false, null);
+            String host = ((User) request.getSession().getAttribute("USER")).getUsername();
+            ((ConcurrentHashMap<String, Game>) getServletContext().getAttribute("HOSTED_GAMES")).put(host, game); //TODO: remove map entry if game terminated
+            String[] invitedUsers = request.getParameterValues("tickInvite");
+            if(invitedUsers != null)
             {
-                ArrayList<String> invites = userInvites.get(invited);
-                if(invites == null)
+                ConcurrentHashMap<String, ArrayList<String>> userInvites = (ConcurrentHashMap<String, ArrayList<String>>) getServletContext().getAttribute("gameInvites");
+                for(String invited : invitedUsers)
                 {
-                    invites = new ArrayList<>();
-                    userInvites.put(invited, invites);
+                    ArrayList<String> invites = userInvites.get(invited);
+                    if(invites == null)
+                    {
+                        invites = new ArrayList<>();
+                        userInvites.put(invited, invites);
+                    }
+                    invites.add(host);
                 }
-                invites.add(host);
             }
+            HttpSession session = request.getSession();
+            session.setAttribute("GAME", game);
         }
-        HttpSession session = request.getSession();
-        session.setAttribute("GAME", game);
         RequestDispatcher rd = request.getRequestDispatcher("welcome.jsp"); // this should be changed probably??
         rd.forward(request, response);
     }

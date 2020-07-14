@@ -146,6 +146,7 @@ public class Game {
     //TODO: implement in a better way so disconnected player can't be null
     public synchronized void unregister(int playerIndex) {
         isActive[playerIndex] = false;
+        activePlayerCount--;
     }
 
     public synchronized void SetHiddenWord(String word) {
