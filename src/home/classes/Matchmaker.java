@@ -2,7 +2,6 @@ package home.classes;
 
 import game.classes.Game;
 
-//TODO: i'll do this myself
 public class Matchmaker {
     private Game game;
     private Game rankedGames[];
@@ -23,7 +22,7 @@ public class Matchmaker {
     }
 
     synchronized public Game addToQueue() {
-        if(game.getPlayerCount() == 0)
+        if(game.getRegisteredPlayers() == 0)
         {
             game = new Game(false, null);
             inQueue = 1;
@@ -40,7 +39,7 @@ public class Matchmaker {
     synchronized public Game addToRankedQueue(int rating) {
         int bracket = rating / 300;
 
-        if(rankedGames[bracket].getPlayerCount() == 0)
+        if(rankedGames[bracket].getRegisteredPlayers() == 0)
         {
             rankedGames[bracket] = new Game(true, null);
             rankedQueue[bracket] = 1;

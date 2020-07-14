@@ -12,7 +12,8 @@ public class SessionCreatingListener implements HttpSessionListener{
     @Override
     public void sessionCreated(HttpSessionEvent httpSessionEvent)
     {
-
+        System.out.println("SESSION CREATED");
+        httpSessionEvent.getSession().setAttribute("INGAME", false);
     }
 
     @Override

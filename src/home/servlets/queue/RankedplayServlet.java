@@ -17,9 +17,12 @@ import java.io.IOException;
 public class RankedplayServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        Matchmaker mm = (Matchmaker) getServletContext().getAttribute("MATCHMAKER");
-        Game game = mm.addToRankedQueue(((User)session.getAttribute("USER")).getRating());
-        session.setAttribute("GAME", game);
+        if(!(boolean) request.getSession().getAttribute("INGAME"))
+        {
+            Matchmaker mm = (Matchmaker) getServletContext().getAttribute("MATCHMAKER");
+            Game game = mm.addToRankedQueue(((User) session.getAttribute("USER")).getRating());
+            session.setAttribute("GAME", game);
+        }
         RequestDispatcher rd = request.getRequestDispatcher("welcome.jsp");
         rd.forward(request, response);
     }

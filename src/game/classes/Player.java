@@ -6,8 +6,7 @@ import javax.websocket.Session;
 import java.io.IOException;
 
 
-public class Player
-{
+public class Player {
     private int score;
     private String name;
     private Session wsSession;
@@ -21,35 +20,31 @@ public class Player
     }
 
     /* Getters */
-    public int getScore()
-    {
+    public int getScore() {
         return score;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     //TODO: maybe do something with these two methods
-    public boolean getCanGuess()
-    {
+    public boolean getCanGuess() {
         return bCanGuess;
     }
 
-    public Session getSession(){return wsSession;}
+    public Session getSession() {
+        return wsSession;
+    }
     /* Setters */
 
-    public void increaseScore(int Score)
-    {
+    public void increaseScore(int Score) {
         score += Score;
     }
 
-    public void setCanGuess(boolean b)
-    {
+    public void setCanGuess(boolean b) {
         bCanGuess = b;
     }
-
 
 
     public void notifyPlayer(String text) throws IOException //TODO: move this to a negotiator class instead.
@@ -57,4 +52,7 @@ public class Player
         wsSession.getBasicRemote().sendText(text);
     }
 
+    public void setSession(Session session) {
+        wsSession = session;
+    }
 }
