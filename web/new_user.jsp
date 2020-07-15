@@ -1,22 +1,23 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <meta charset=\"UTF-8\" />
-    <title>Create Account</title>
+    <title>Registration</title>
+    <link rel="stylesheet" href="styles/new_user.css">
 </head>
 <body>
-
-<h1>Create New Account</h1>
-
-Please enter proposed name and password
-<form action="UserCreated" method="POST">
-    <label>User Name:</label>
-    <input type="text" name="username" title="accountName"/>
-    </br></br>
-    <label>Password:</label>
-    <input type="password" name="password" title="accountPassword"/>
-    <input type="submit" value="Register"/>
-</form>
-</br>
+<div id="header">
+    OOP
+</div>
+<div id="login">
+    <form action="UserCreated" method="POST">
+        <div class="field">
+            <input type="text" id="user" name="username" title="accountName" placeholder="Username" />
+        </div>
+        <div class="field">
+            <input type="password" id="pass" name="password" title="accountPassword" placeholder="Password" />
+        </div>
+            <input type="submit" value="Register" id="reg"/>
+        </form>
+</div>
 </body>
 </html>

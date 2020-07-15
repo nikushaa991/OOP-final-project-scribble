@@ -1,0 +1,74 @@
+#header {
+    background: #1c1f26;
+    color: #fff;
+    width: 100%;
+    height: 10vh;
+    font-size: 10vh;
+    user-select: none;
+    line-height: 10vh;
+    box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0px 4px 6px -5px black;
+}
+#login{
+  background: #1c1f26;
+  color: #fff;
+  width: 70vw;
+  height: 70vh;  
+  border-radius: 15px;
+  position: absolute;
+  margin: auto;
+  top: 10vh;
+  right: 0; 
+  bottom: 0;
+  left: 0;
+  box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0px 4px 6px -5px black;
+}
+
+input[type=text], input[type=password]{
+    font-size: 3vh;
+    text-align:center;
+    height: 5%;
+    width: 50%;
+    margin-top: 6px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0px 4px 6px -5px black;
+    position: absolute;
+    margin: auto;
+    top: -20%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+#log, #reg{
+font-size: 2vh;
+text-align:center;
+border-radius: 7px;
+width: 24%;
+height: 5%;
+position: absolute;
+margin: auto;
+top: 10%;
+right: 0;
+bottom: 0;
+left: -26%;
+}
+#lbl{
+font-size: 2vh;
+position: absolute;
+text-align:center;
+margin: auto;
+top: 30%;
+right: 0;
+bottom: 0;
+left: 0;
+}
+#reg{
+    left: 26%;
+}
+input[type=password]{
+    top: -5%;
+}
+body {
+    font-family: Arial;
+    margin: 0;
+  }
+

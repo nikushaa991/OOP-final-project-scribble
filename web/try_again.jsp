@@ -1,23 +1,25 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <meta charset=\"UTF-8\" />
-    <title>Information Incorrect</title>
+    <title>Login</title>
+    <link rel="stylesheet" href="styles/try-again.css">
 </head>
 <body>
-
-<h1>Please Try Again</h1>
-
-Either your user name or password is incorrect. Please try again.
-<form action="Login" method="POST">
-    <label>User Name:</label>
-    <input type="text" name="username" title="accountName"/>
-    </br></br>
-    <label>Password:</label>
-    <input type="password" name="password" title="accountPassword"/>
-    <input type="submit" value="Login"/>
-</form>
-</br>
-<a href="new_user.jsp">Create New Account</a>
+<div id="header">
+    OOP
+</div>
+<div id="login">
+    <form action="Login" method="POST">
+	<label id="lbl"> Invalid credentials, try again. </label>
+        <div class="field">
+            <input type="text" id="user" name="username" title="accountName" placeholder="Username" />
+        </div>
+        <div class="field">
+            <input type="password" id="pass" name="password" title="accountPassword" placeholder="Password" />
+        </div>
+            <input type="submit" value="Login" id="log"/>
+        </form>
+            <input type="submit" onclick="window.location.href='new_user.jsp';" value="Register" id="reg" />
+</div>
 </body>
 </html>
