@@ -16,5 +16,6 @@ public class SessionCreatingListener implements HttpSessionListener{
     }
 
     @Override
-    public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {}
+    public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
+    }
 }

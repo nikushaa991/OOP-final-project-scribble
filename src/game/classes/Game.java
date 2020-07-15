@@ -6,6 +6,7 @@ import login.classes.User;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 //SEND TEXT TO PLAYER USING THIS!!!!!!!
 //session.getBasicRemote().sendText(text);
@@ -23,7 +24,8 @@ public class Game {
     private Round[] rounds;
     private Player[] players; //TODO: create better structure for this, accommodate for disconnects and painter queue.
     private boolean[] isActive;
-
+    private ArrayList<String> instructions;
+    private int painterId;
     public Game(boolean ranked, GamesDAO dao) {
 
         players = new Player[MAX_PLAYERS];
@@ -34,15 +36,19 @@ public class Game {
         curRound = 0;
         this.ranked = ranked;
         this.dao = dao;
+        instructions = new ArrayList<>();
+        painterId = 0;
     }
 
     public void reconnect(int id, Session session) throws IOException {
         players[id].setSession(session);
         isActive[id] = true;
         players[id].notifyPlayer("M,Reconnected to an old game!");
+        activePlayerCount++;
+        catchup(id);
     }
 
-    public synchronized int registerSession(Session session, User user) {
+    public synchronized int registerSession(Session session, User user) throws IOException {
         Player newPlayer = new Player(session, user);
         players[activePlayerCount] = newPlayer;
         isActive[activePlayerCount] = true;
@@ -64,6 +70,7 @@ public class Game {
                 }
             }).start();
         }
+        else if (activePlayerCount > 2) catchup(activePlayerCount-1);
         return activePlayerCount - 1;
     }
 
@@ -74,12 +81,13 @@ public class Game {
                 return;
             while (!isActive[painterNum % MAX_PLAYERS])
                 painterNum++;
-            rounds[curRound] = new Round(players[painterNum % MAX_PLAYERS]);
+            painterId = painterNum % MAX_PLAYERS;
+            rounds[curRound] = new Round(players[painterId]);
             Round CurrentRound = rounds[curRound];
-
-            CurrentRound.OnRoundBegin(players);
+            instructions.clear();
+            CurrentRound.OnRoundBegin(players, isActive);
             // Game in Progress
-            CurrentRound.OnRoundEnd(players);
+            CurrentRound.OnRoundEnd(players, isActive);
         }
         Player p = GetWinner(); //TODO: increase winner rating if ranked, game should store if it's ranked or not
         //TODO: store game in database, including all rounds
@@ -113,6 +121,7 @@ public class Game {
     //TODO: store all strokes to store in database, for live replay of drawing.
     //TODO: handle colors and sizes.
     public void stroke(String start, int id) throws IOException {
+        instructions.add(start);
         for(int i = 0; i < MAX_PLAYERS; i++) //TODO: this should be a separate method in a negotiator class as notifyAllExceptOne()
             if(isActive[i] && i != id)
                 players[i].notifyPlayer(start);
@@ -129,18 +138,10 @@ public class Game {
             return;
         }
         Round round = rounds[curRound];
-        int res = round.CheckGuess(guess);
-        //TODO: make ifs prettier, enum maybe
-        if(res == 1) //TODO: capitalization shouldn't matter
-        {
-            round.OnCorrectGuess(players, PlayerIndex);
-        } else if(res == 2) //TODO: implement this
-        {
-            round.OnCloseGuess(players[PlayerIndex]);
-        } else
-        {
-            round.OnIncorrectGuess(players, PlayerIndex, guess);
-        }
+        if(round.CheckGuess(guess)) //TODO: capitalization shouldn't matter
+            round.OnCorrectGuess(players, isActive,PlayerIndex);
+         else
+            round.OnIncorrectGuess(players, isActive,PlayerIndex, guess);
     }
 
     //TODO: implement in a better way so disconnected player can't be null
@@ -161,5 +162,11 @@ public class Game {
         return registeredPlayers;
     }
 
+    private void catchup(int id) throws IOException {
+        for(String s : instructions)
+            players[id].notifyPlayer(s);
+        if(id == painterId)
+            players[id].notifyPlayer("P,");
 
+    }
 }

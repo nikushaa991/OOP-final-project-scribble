@@ -60,36 +60,28 @@ window.onload = function () {
     }
 
     function wsGetMessage(message) {
-        if(message.data.startsWith("L"))
-        {
+        if (message.data.startsWith("L")) {
             var coordinates = message.data.split(",");
             context.lineTo(coordinates[1], coordinates[2]);
             context.stroke();
-        }
-        else if(message.data.startsWith("T")){
+        } else if (message.data.startsWith("CLEAR,")) {
+            clear();
+        } else if (message.data.startsWith("T")) {
             var paint = message.data.split(",");
             context.strokeStyle = paint[1];
-        }
-        else if (message.data.startsWith("W")){
+        } else if (message.data.startsWith("W")) {
             var width = message.data.split(",");
             context.lineWidth = width[1];
-        }
-        else if(message.data.startsWith("B"))
-        {
+        } else if (message.data.startsWith("B")) {
             var coordinates = message.data.split(",");
             context.beginPath();
             context.moveTo(coordinates[1], coordinates[2]);
-        }
-        else if(message.data.startsWith("N"))
-        {
+        } else if (message.data.startsWith("N")) {
             isArtist = false;
             context.clearRect(0, 0, canvas.width, canvas.height);
-        }
-        else if(message.data.startsWith("P"))
-        {
+        } else if (message.data.startsWith("P")) {
             isArtist = true;
-        }
-        else if(message.data.startsWith("S")) {
+        } else if (message.data.startsWith("S")) {
             var ls = message.data.substr(2) + '\n';
             var sp = ls.split(" ");
             sp.sort(function (b, c) {
@@ -105,15 +97,12 @@ window.onload = function () {
             });
             //got sorted array now just show it;
             displayLeaderBoard(sp);
-        }
-        else if(message.data.startsWith("A")) {
+        } else if (message.data.startsWith("A")) {
             var ls = message.data.substr(2) + '\n';
             var sp = ls.split(" ");
-            sp = sp.slice(1,sp.length-1);
+            sp = sp.slice(1, sp.length - 1);
             chooseWordDisplay(sp);
-        }
-        else if(message.data != "")
-        {
+        } else if (message.data != "") {
             echoText.value += message.data.substr(2) + '\n';
         }
     }
@@ -131,15 +120,14 @@ window.onload = function () {
     }
 
 
-
     function displayLeaderBoard(chart) {
         leaderBoard.value = "";
-        for(let i = 0; i < chart.length - 1; i++){
+        for (let i = 0; i < chart.length - 1; i++) {
             var place = i + 1;
             leaderBoard.value += place + ". " + chart[i] + "\n";
         }
         wordsArray = null;
-        modal.style.display="none";
+        modal.style.display = "none";
     }
 
     // Handle Colors
@@ -147,7 +135,7 @@ window.onload = function () {
 
     colors.addEventListener('click', function (event) {
         context.strokeStyle = event.target.value || 'black';
-        webSocket.send("T," +  context.strokeStyle);
+        webSocket.send("T," + context.strokeStyle);
     });
 
     // Handle Brushes
@@ -161,8 +149,7 @@ window.onload = function () {
     // Mouse Down Event
     canvas.addEventListener('mousedown', function (event) {
         setMouseCoordinates(event);
-        if(isArtist)
-        {
+        if (isArtist) {
             isDrawing = true;
             // Start Drawing
             webSocket.send("B," + mouseX + "," + mouseY);
@@ -179,8 +166,7 @@ window.onload = function () {
             context.lineTo(mouseX, mouseY);
             context.stroke();
         }
-        if(isArtist && (mouseX < 3 || mouseX > 797 || mouseY < 3 || mouseY > 447))
-        {
+        if (isArtist && (mouseX < 3 || mouseX > 797 || mouseY < 3 || mouseY > 447)) {
             webSocket.send("B," + mouseX + "," + mouseY);
             context.beginPath();
             context.moveTo(mouseX, mouseY);
@@ -195,30 +181,39 @@ window.onload = function () {
 
     // Handle Mouse Coordinates
     function setMouseCoordinates(event) {
-        var boundings = canvas.getBoundingClientRect();
+        var bounds = canvas.getBoundingClientRect();
         var root = document.documentElement;
 
-        mouseY = event.clientY - boundings.top - root.scrollTop;
-        mouseX = event.clientX - boundings.left - root.scrollLeft;
+        mouseY = event.clientY - bounds.top - root.scrollTop;
+        mouseX = event.clientX - bounds.left - root.scrollLeft;
     }
 
     // Handle Clear Button
     //TODO: only painter must be able to use this, send this action to server and handle it.
 
     clearButton.addEventListener('click', function () {
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        if (isArtist) {
+            clear();
+            webSocket.send("CLEAR,")
+        }
     });
 
+    function clear() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
 
-    chatInput.addEventListener("keyup", function(event) {
+    chatInput.addEventListener("keyup", function (event) {
         if (event.key === 'Enter') {
             sendClicked();
         }
     });
-    chatButton.onclick = function(){sendClicked()};
-    function sendClicked(){
+    chatButton.onclick = function () {
+        sendClicked()
+    };
+
+    function sendClicked() {
         var text = chatInput.value.trim();
-        if(text !== "") {
+        if (text !== "") {
             webSocket.send("C," + text);
         }
         chatInput.value = "";

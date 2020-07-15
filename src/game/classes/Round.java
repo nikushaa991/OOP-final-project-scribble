@@ -6,19 +6,11 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-
-/*
-    M, - text gets shown in chat
-    S, - score gets shown in chat
-    A, - Array of WordChoices
-    N, - Sets isArtist to false for all players and Clears the canvas
-    P, - sets isArtist to true for a particular player
- */
-
 public class Round{
     private Player painter;
     private Random rand;
     private String hiddenWord;
+    private int guessed;
     public static final int WORD_CHOICE_NUM = 3;
     public static final int PAINTER_CHOICE_TIME = 5;
     public static final int ROUND_DURATION = 35;
@@ -26,10 +18,10 @@ public class Round{
     public Round(Player painter)
     {
         this.painter = painter;
-        rand = new Random(); //TODO: new random?? instanceof maybe
+        rand = new Random();
     }
 
-    public void OnRoundBegin(Player[] players) throws IOException, InterruptedException {
+    public void OnRoundBegin(Player[] players, boolean[] isActive) throws IOException, InterruptedException {
         // Randomly take word out of WordDB:
 
         hiddenWord = "?";
@@ -54,20 +46,19 @@ public class Round{
 
         painter.notifyPlayer("A, " + painterChoice);
 
-        notifyAllPlayers(players, "M, Painter is choosing word");
+        notifyAllPlayers(players, isActive,"M, Painter is choosing word");
         TimeUnit.SECONDS.sleep(PAINTER_CHOICE_TIME);
-        notifyAllPlayers(players, "M, Painter has chosen word");
+        notifyAllPlayers(players, isActive,"M, Painter has chosen word");
 
         if(hiddenWord.equals("?"))
             hiddenWord = Choices[rand.nextInt(Choices.length)];
 
-		notifyAllPlayers(players, "M, New Round Started");
+		notifyAllPlayers(players, isActive,"M, New Round Started");
 
-        notifyAllPlayers(players, "N,");
+        notifyAllPlayers(players, isActive,"N,");
 
         painter.notifyPlayer("P,");
-        painter.notifyPlayer("M, The word is: " + hiddenWord); //TODO: send him a list of words instead, wait for his answer
-        //TODO: might not be needed, we can add this to JS instead.
+        painter.notifyPlayer("M, The word is: " + hiddenWord);
         painter.setCanGuess(false);
         for(Player p : players)
         {
@@ -75,15 +66,11 @@ public class Round{
                 p.setCanGuess(true);
         }
         TimeUnit.SECONDS.sleep(ROUND_DURATION);
-        // Painter chooses one word
-        // HiddenWord = that word;
     }
 
-    public void OnRoundEnd(Player[] players) throws IOException
+    public void OnRoundEnd(Player[] players, boolean[] isActive) throws IOException
     {
-        String result;
-        result = "S,";
-
+        String result = "S,";
         for(Player p : players)
         {
             if(p != null)
@@ -92,71 +79,47 @@ public class Round{
                 result += p.getName() + "-" + score + " ";
             }
         }
-        notifyAllPlayers(players, result);
+        notifyAllPlayers(players, isActive, result);
 
-        notifyAllPlayers(players, "M, Round Ended");
-
-
-        // foreach(Player)
-            // int score = Player.getScore();
-            // Update Session user score
+        notifyAllPlayers(players, isActive, "M, Round Ended");
     }
 
-    // Is used when a given player writes a correct guess
-    public void OnCorrectGuess(Player[] players, int guesserIndex) throws IOException
+    public void OnCorrectGuess(Player[] players, boolean[] isActive, int guesserIndex) throws IOException
     {
         Player guesser = players[guesserIndex];
-        notifyAllPlayers(players, "M," + guesser.getName() + " has guessed the word!");
-        int score = CalculateScore(hiddenWord, 10); // TODO: score should be based on order, not time, needs implementing anyway.
+        notifyAllPlayers(players, isActive, "M," + guesser.getName() + " has guessed the word!");
+        int score = CalculateScore(); // TODO: score should be based on order, not time, needs implementing anyway.
         guesser.increaseScore(score);
         guesser.setCanGuess(false);
-        // Log out "guesser.name has guessed the word"
-        // int score = Calculate score based on word difficulty and time
-        // guesser.IncreaseScore(score);
-        // Disable guesser-s ability to guess again
+        guessed++;
     }
 
-    public void OnIncorrectGuess(Player[] players, int guesserIndex, String guess) throws IOException //TODO: do we really need this method?
+    public void OnIncorrectGuess(Player[] players, boolean[] isActive, int guesserIndex, String guess) throws IOException //TODO: do we really need this method?
     {
-        notifyAllPlayers(players, "C," + players[guesserIndex].getName() + ": " + guess);
+        notifyAllPlayers(players, isActive, "C," + players[guesserIndex].getName() + ": " + guess);
     }
 
-    public void OnCloseGuess(Player guesser) throws IOException
+    public void notifyAllPlayers(Player[] players, boolean[] isActive, String text) throws IOException { //TODO: move this to a new negotiator class instead.
+        for(int i = 0; i < Game.MAX_PLAYERS; i++) //TODO: FIX THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!! replace current code with commented code
+            if(isActive[i])
+                players[i].notifyPlayer(text);
+    }
+
+    public boolean CheckGuess(String guess)
     {
-        guesser.notifyPlayer("M, You're close to solution");
-        // Log out "guesser.name is close to the solution"
+        if(guess.toLowerCase().equals(hiddenWord.toLowerCase()))
+            return true;
+        return false;
     }
 
-    public void notifyAllPlayers(Player[] players, String text) throws IOException { //TODO: move this to a new negotiator class instead.
-        for(Player p : players)
-            if(p != null)
-                //for(int i = 0; i < MAX_PLAYERS; i++) //TODO: FIX THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!! replace current code with commented code
-                   // if(isActive[i] && i != id)
-                p.notifyPlayer(text);
+    private int CalculateScore()
+    {
+        return (Game.MAX_PLAYERS - guessed) * 10;
     }
 
     public void ChooseHiddenWord(String str)
     {
         hiddenWord = str;
-    }
-    /*
-    * FUNCTION: CheckGuess
-    * checks if the parameter "guess" is HiddenWord
-    * Returnes:
-    *   1 --- If guess == HiddenWord
-    *   2 --- If Guess ~ HiddenWord
-    *   0 --- If Guess != HiddenWord
-    * */
-    public int CheckGuess(String guess) //TODO: implement close guess
-    {
-        if(guess.equals(hiddenWord))
-            return 1;
-        return 0;
-    }
-
-    private int CalculateScore(String word, int time) //TODO: make it based on order instead of time, implement.
-    {
-        return 10;
     }
 
 }

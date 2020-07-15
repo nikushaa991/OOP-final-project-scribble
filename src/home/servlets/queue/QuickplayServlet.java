@@ -24,7 +24,7 @@ public class QuickplayServlet extends HttpServlet {
             session.setAttribute("GAME", game);
         }
 
-        RequestDispatcher rd = request.getRequestDispatcher("welcome.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("game.jsp");
         rd.forward(request, response);
     }
 

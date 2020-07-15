@@ -72,5 +72,5 @@
     </div>
 </main>
 </body>
-<script type="text/javascript" src="scripts/canvas.js"></script>
+<script type="text/javascript" src="scripts/game.js"></script>
 </html>

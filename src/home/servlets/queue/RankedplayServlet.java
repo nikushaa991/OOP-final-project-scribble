@@ -23,7 +23,7 @@ public class RankedplayServlet extends HttpServlet {
             Game game = mm.addToRankedQueue(((User) session.getAttribute("USER")).getRating());
             session.setAttribute("GAME", game);
         }
-        RequestDispatcher rd = request.getRequestDispatcher("welcome.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("game.jsp");
         rd.forward(request, response);
     }
 

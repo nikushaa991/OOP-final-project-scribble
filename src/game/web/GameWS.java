@@ -21,12 +21,14 @@ public class GameWS {
         Game game = (Game) sess.getAttribute("GAME");
         if(!isInGame)
         {
+            System.out.println("AXALI SHEVQMENI");
             int id = game.registerSession(session, (User) sess.getAttribute("USER"));
             map.put(session, new PlayerInfo(sess, id, game));
             sess.setAttribute("INGAME", true);
             sessMap.put(sess, session);
         } else
         {
+            System.out.println("ELSESHI SHEMOVEDI");
             Session oldSess = sessMap.get(sess);
             sessMap.remove(sess);
             sessMap.put(sess, session);
@@ -58,7 +60,7 @@ public class GameWS {
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
         PlayerInfo info = map.get(session);
-        if(message.startsWith("L") || message.startsWith("B") || message.startsWith("T") || message.startsWith("W"))
+        if(message.startsWith("L") || message.startsWith("B") || message.startsWith("T") || message.startsWith("W") || message.startsWith("CLEAR"))
         {
             info.getGame().stroke(message, info.getId());
         } else if(message.startsWith("A"))
@@ -66,11 +68,6 @@ public class GameWS {
             String word = message.substring(2);
             info.getGame().SetHiddenWord(word);
         } else info.getGame().CheckGuessFromGame(info.getId(), message.substring(2));
-
-        //TODO: return chosen word from artist
-        //TODO: maybe echo something useful back to client?
-        //TODO: handle clear canvas action
-        //TODO: handle stroke color and size.
     }
 
     //TODO: unregister player and session on error
