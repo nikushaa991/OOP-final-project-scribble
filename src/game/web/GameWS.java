@@ -21,14 +21,12 @@ public class GameWS {
         Game game = (Game) sess.getAttribute("GAME");
         if(!isInGame)
         {
-            System.out.println("AXALI SHEVQMENI");
             int id = game.registerSession(session, (User) sess.getAttribute("USER"));
             map.put(session, new PlayerInfo(sess, id, game));
             sess.setAttribute("INGAME", true);
             sessMap.put(sess, session);
         } else
         {
-            System.out.println("ELSESHI SHEMOVEDI");
             Session oldSess = sessMap.get(sess);
             sessMap.remove(sess);
             sessMap.put(sess, session);
@@ -58,7 +56,7 @@ public class GameWS {
 
     //CLIENT TO SERVER COMMUNICATION
     @OnMessage
-    public void onMessage(String message, Session session) throws IOException {
+    synchronized public void onMessage(String message, Session session) throws IOException {
         PlayerInfo info = map.get(session);
         if(message.startsWith("L") || message.startsWith("B") || message.startsWith("T") || message.startsWith("W") || message.startsWith("CLEAR"))
         {

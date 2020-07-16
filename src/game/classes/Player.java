@@ -47,9 +47,15 @@ public class Player {
     }
 
 
-    public void notifyPlayer(String text) throws IOException //TODO: move this to a negotiator class instead.
+    public void notifyPlayer(String text) //TODO: move this to a negotiator class instead.
     {
-        wsSession.getBasicRemote().sendText(text);
+        try
+        {
+            wsSession.getBasicRemote().sendText(text);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void setSession(Session session) {

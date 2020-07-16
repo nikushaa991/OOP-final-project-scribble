@@ -11,7 +11,7 @@
 
 <head>
     <title>Friendlist</title>
-    <link rel="stylesheet" href="styles/friend_list.scss">
+    <link rel="stylesheet" href="styles/friend_list.css">
 </head>
 
 <body>
