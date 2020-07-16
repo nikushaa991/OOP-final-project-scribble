@@ -4,8 +4,7 @@ let wordsArray;
 let webSocket;
 window.onload = function() {
     modal = document.getElementById("chooseW");
-    //TODO AFTER: make this an actual link, instead of localhost.
-    webSocket = new WebSocket("ws://localhost:8080/FINAL_PROJECT_war_exploded/WS");
+    webSocket = new WebSocket('ws://' + location.hostname + ':25565/FINAL_PROJECT_war_exploded/WS');
     let echoText = document.getElementById("echoText");
     leaderBoard = document.getElementById("leaderBoard");
     echoText.value = "";
