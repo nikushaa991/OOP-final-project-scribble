@@ -33,8 +33,8 @@
         <div id="friends">
             <h2 class="txt">Friends</h2>
             <form action="GameInvite" method="POST" name="GameInvite">
-                <div id="scroll-container">
-                    <ul id="ul-scroll">
+                <div class="scroll-container">
+                    <ul class="ul-scroll">
 
                         <%
             for(String friend : friendsList){
@@ -52,8 +52,8 @@
         <div id="invites">
             <h2 class="txt">Invites</h2>
             <form action="GameAccept" method="POST" name="GameAccept">
-                <div id="scroll-container">
-                    <ul id="ul-scroll">
+                <div class="scroll-container">
+                    <ul class="ul-scroll">
                         <%
         if(gameInvites != null)
         for(String gameInvitation : gameInvites){

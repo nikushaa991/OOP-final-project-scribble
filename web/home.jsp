@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> <%-- need jstl:jstl:1.2 library for this (I got it from maven) --%>
 <html>
 <head>
     <meta charset=\"UTF-8\"/>

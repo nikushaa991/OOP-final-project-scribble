@@ -4,7 +4,7 @@ let wordsArray;
 let webSocket;
 window.onload = function() {
     modal = document.getElementById("chooseW");
-    webSocket = new WebSocket('ws://' + location.hostname + ':25565/FINAL_PROJECT_war_exploded/WS');
+    webSocket = new WebSocket('ws://' + location.hostname + ':25565/WS');
     let echoText = document.getElementById("echoText");
     leaderBoard = document.getElementById("leaderBoard");
     echoText.value = "";

@@ -55,13 +55,13 @@ body {
     margin: 0;
  }
 
-#scroll-container{
+.scroll-container{
   overflow: auto;
   margin: auto;
   height: 70%;
   position: relative;
 }
-  #ul-scroll {
+  .ul-scroll {
     list-style: none;
     list-style-type: none;
     position: relative;
