@@ -4,10 +4,7 @@ package databases.games;
 import utils.DBConnector;
 import utils.Pair;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class GamesDAO extends DBConnector {
@@ -20,20 +17,31 @@ public class GamesDAO extends DBConnector {
     }
 
     /* Adds new game to table */
-    public  void newGame(boolean isRanked, String winnerUsername, int winnerScore) throws SQLException {
+    public int newGame(boolean isRanked) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("INSERT INTO " + tableName +
                 " VALUES (?, DATE(SYSDATE()), ?, ?, ?)");
         nrowLock.lock();
         ps.setInt(1, nrows);
+        int result = nrows;
         nrows++;
         nrowLock.unlock();
-        ps.setString(2, winnerUsername);
-        ps.setInt(3, winnerScore);
+        ps.setNull(2, Types.NCHAR);
+        ps.setNull(3, Types.NCHAR);
         ps.setBoolean(4, isRanked);
+        ps.execute();
+        return result;
+    }
+
+    /* update winner and winning score */
+    public void updateGame(int gameId, String winnerUsername, int winnerScore) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("UPDATE " + tableName +
+                " SET WINNER_USERNAME = ?, WINNING_SCORE = ? WHERE ID = " + gameId);
+        ps.setString(1, winnerUsername);
+        ps.setInt(2, winnerScore);
         ps.execute();
     }
 
-    /* Delete game from table identified by game id. Mainly created for testing purposes */
+    /* Delete game from table identified by game winner Mainly created for testing purposes */
     public void deleteGame(String username) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("DELETE FROM " + tableName + " WHERE WINNER_USERNAME = ?");
         ps.setString(1, username);

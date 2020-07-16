@@ -1,8 +1,10 @@
 package game.classes;
 
 import databases.WordsList;
+import databases.scores.ScoresDAO;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -15,10 +17,17 @@ public class Round{
     public static final int PAINTER_CHOICE_TIME = 5;
     public static final int ROUND_DURATION = 35;
 
-    public Round(Player painter)
+    private int gameId;
+    private int index;
+    private ScoresDAO scoresDAO;
+
+    public Round(Player painter, int gameId, ScoresDAO scoresDAO, int index)
     {
         this.painter = painter;
         rand = new Random();
+        this.gameId = gameId;
+        this.scoresDAO = scoresDAO;
+        this.index = index;
     }
 
     public void OnRoundBegin(Player[] players, boolean[] isActive) throws IOException, InterruptedException {
@@ -84,12 +93,12 @@ public class Round{
         notifyAllPlayers(players, isActive, "M, Round Ended");
     }
 
-    public void OnCorrectGuess(Player[] players, boolean[] isActive, int guesserIndex) throws IOException
-    {
+    public void OnCorrectGuess(Player[] players, boolean[] isActive, int guesserIndex) throws IOException, SQLException {
         Player guesser = players[guesserIndex];
         notifyAllPlayers(players, isActive, "M," + guesser.getName() + " has guessed the word!");
         int score = CalculateScore(); // TODO: score should be based on order, not time, needs implementing anyway.
         guesser.increaseScore(score);
+        scoresDAO.newScore(guesser.getName(), gameId, index, score); //write to db
         guesser.setCanGuess(false);
         guessed++;
     }

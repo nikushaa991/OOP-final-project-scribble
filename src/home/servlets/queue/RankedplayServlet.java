@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet(value = "/RankedplayServlet", name = "RankedplayServlet")
 public class RankedplayServlet extends HttpServlet {
@@ -20,7 +21,10 @@ public class RankedplayServlet extends HttpServlet {
         if(!(boolean) request.getSession().getAttribute("INGAME"))
         {
             Matchmaker mm = (Matchmaker) getServletContext().getAttribute("MATCHMAKER");
-            Game game = mm.addToRankedQueue(((User) session.getAttribute("USER")).getRating());
+            Game game = null;
+            try {
+                game = mm.addToRankedQueue(((User) session.getAttribute("USER")).getRating());
+            } catch (SQLException e) { e.printStackTrace(); }
             session.setAttribute("GAME", game);
         }
         RequestDispatcher rd = request.getRequestDispatcher("game.jsp");

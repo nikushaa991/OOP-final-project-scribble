@@ -27,14 +27,15 @@ public class ContextCreatingListener implements ServletContextListener {
         FriendsDAO friendsDAO = null;
         FriendRequestsDao friendRequestsDao = null;
         ConcurrentHashMap<String, Game> games = new ConcurrentHashMap<>();
-        Matchmaker mm = new Matchmaker();
         ConcurrentHashMap<String, ArrayList<String> > gameInvites = new ConcurrentHashMap<>();
+        Matchmaker mm = null;
         try {
             usersDb = new UsersDAO();
             scoresDb =  new ScoresDAO();
             gameDb =  new GamesDAO();
             friendsDAO = new FriendsDAO();
             friendRequestsDao = new FriendRequestsDao();
+            mm = new Matchmaker(gameDb, scoresDb);
         } catch (SQLException e) { e.printStackTrace(); }
         servletContextEvent.getServletContext().setAttribute("users", usersDb);
         servletContextEvent.getServletContext().setAttribute("scoresHistory", scoresDb);

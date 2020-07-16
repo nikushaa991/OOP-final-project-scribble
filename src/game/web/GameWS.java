@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint(value = "/WS", configurator = GameSocketConfig.class)
@@ -56,7 +57,7 @@ public class GameWS {
 
     //CLIENT TO SERVER COMMUNICATION
     @OnMessage
-    synchronized public void onMessage(String message, Session session) throws IOException {
+    synchronized public void onMessage(String message, Session session) throws IOException, SQLException {
         PlayerInfo info = map.get(session);
         if(message.startsWith("L") || message.startsWith("B") || message.startsWith("T") || message.startsWith("W") || message.startsWith("CLEAR"))
         {

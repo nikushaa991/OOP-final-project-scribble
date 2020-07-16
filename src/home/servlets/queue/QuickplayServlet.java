@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 
 @WebServlet(value = "/QuickplayServlet", name = "QuickplayServlet")
@@ -20,7 +21,10 @@ public class QuickplayServlet extends HttpServlet {
         if(!(boolean) request.getSession().getAttribute("INGAME"))
         {
             Matchmaker mm = (Matchmaker) getServletContext().getAttribute("MATCHMAKER");
-            Game game = mm.addToQueue();
+            Game game = null;
+            try {
+                game = mm.addToQueue();
+            } catch (SQLException e) { e.printStackTrace(); }
             session.setAttribute("GAME", game);
         }
 

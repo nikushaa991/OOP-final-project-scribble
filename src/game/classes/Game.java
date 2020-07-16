@@ -1,6 +1,7 @@
 package game.classes;
 
 import databases.games.GamesDAO;
+import databases.scores.ScoresDAO;
 import login.classes.User;
 
 import javax.websocket.Session;
@@ -13,20 +14,23 @@ import java.util.ArrayList;
 
 
 public class Game {
-    public static final int N_ROUNDS = 18;
+    public static final int N_ROUNDS = 2;
     public static final int MAX_PLAYERS = 6;
 
     private int registeredPlayers;
     private int activePlayerCount;
     private int curRound;
     private boolean ranked;
-    private GamesDAO dao;
     private Round[] rounds;
     private Player[] players; //TODO: create better structure for this, accommodate for disconnects and painter queue.
     private boolean[] isActive;
     private ArrayList<String> instructions;
     private int painterId;
-    public Game(boolean ranked, GamesDAO dao) {
+
+    private GamesDAO gamesDAO;
+    private ScoresDAO scoresDAO;
+    private int gameId;
+    public Game(boolean ranked, GamesDAO gamesDAO, ScoresDAO scoresDAO) throws SQLException {
 
         players = new Player[MAX_PLAYERS];
         rounds = new Round[N_ROUNDS];
@@ -35,9 +39,11 @@ public class Game {
         registeredPlayers = 0;
         curRound = 0;
         this.ranked = ranked;
-        this.dao = dao;
         instructions = new ArrayList<>();
         painterId = 0;
+        this.gamesDAO = gamesDAO;
+        this.scoresDAO = scoresDAO;
+        gameId = gamesDAO.newGame(ranked);
     }
 
     public void reconnect(int id, Session session) throws IOException {
@@ -82,7 +88,7 @@ public class Game {
             while (!isActive[painterNum % MAX_PLAYERS])
                 painterNum++;
             painterId = painterNum % MAX_PLAYERS;
-            rounds[curRound] = new Round(players[painterId]);
+            rounds[curRound] = new Round(players[painterId], gameId, scoresDAO, curRound);
             Round CurrentRound = rounds[curRound];
             instructions.clear();
             CurrentRound.OnRoundBegin(players, isActive);
@@ -91,14 +97,14 @@ public class Game {
         }
         Player p = GetWinner(); //TODO: increase winner rating if ranked, game should store if it's ranked or not
         //TODO: store game in database, including all rounds
-        //updateDatabase(p);
+        updateGamesDAO(p);
     }
 
     /* Writes new game entry after a game ends by
      * accessing the context attribute DAO and saving new entry.
      * */
-    private void updateDatabase(Player winner) throws SQLException {
-        dao.newGame(ranked, winner.getName(), winner.getScore());
+    private void updateGamesDAO(Player winner) throws SQLException {
+        gamesDAO.updateGame(gameId, winner.getName(), winner.getScore());
     }
 
     private Player GetWinner() {
@@ -127,7 +133,7 @@ public class Game {
                 players[i].notifyPlayer(start);
     }
 
-    public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException {
+    public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException, SQLException {
         if(!players[PlayerIndex].getCanGuess())
             return;
         if(registeredPlayers < 2 || curRound == N_ROUNDS) //TODO: make this prettier, sentinel instead of 18
