@@ -9,11 +9,12 @@ import java.io.IOException;
 public class Player {
     private int score;
     private String name;
+    private User user;
     private Session wsSession;
     private boolean bCanGuess;
 
     public Player(Session wsSession, User user) {
-
+        this.user = user;
         this.name = user.getUsername();
         this.wsSession = wsSession;
         score = 0;
@@ -47,7 +48,7 @@ public class Player {
     }
 
 
-    public void notifyPlayer(String text) //TODO: move this to a negotiator class instead.
+    public void notifyPlayer(String text)
     {
         try
         {
@@ -60,5 +61,10 @@ public class Player {
 
     public void setSession(Session session) {
         wsSession = session;
+    }
+
+    public void UpdateRank(int score)
+    {
+        user.changeRating(score);
     }
 }

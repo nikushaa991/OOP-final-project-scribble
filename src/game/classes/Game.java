@@ -95,9 +95,45 @@ public class Game {
             // Game in Progress
             CurrentRound.OnRoundEnd(players, isActive);
         }
-        Player p = GetWinner(); //TODO: increase winner rating if ranked, game should store if it's ranked or not
-        //TODO: store game in database, including all rounds
+        Player p = GetWinner();
+
         updateGamesDAO(p);
+        if(ranked)
+            UpdatePlayerRanks();
+
+    }
+
+
+    //TODO: Test if this works
+    void UpdatePlayerRanks()
+    {
+        // sort the players
+        for(int i = 0; i < players.length; i++)
+        {
+            if(players[i] == null) continue;
+            int min = i;
+            for(int j = i + 1; j < players.length; j++)
+            {
+                if(players[j] == null) continue;
+
+                if(players[j].getScore() < players[min].getScore())
+                    min = j;
+            }
+
+            Player tmp = players[min];
+            players[min] = players[i];
+            players[i] = tmp;
+        }
+        // Update scores
+        int rankScore = (players.length / 2) * 10;
+        for (Player p : players) {
+            if (p != null) {
+                p.UpdateRank(rankScore);
+                rankScore -= 10;
+                if (rankScore == 0) rankScore -= 10;
+            }
+        }
+
     }
 
     /* Writes new game entry after a game ends by
@@ -136,7 +172,7 @@ public class Game {
     public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException, SQLException {
         if(!players[PlayerIndex].getCanGuess())
             return;
-        if(registeredPlayers < 2 || curRound == N_ROUNDS) //TODO: make this prettier, sentinel instead of 18
+        if(registeredPlayers < 2 || curRound == N_ROUNDS)
         {
             for(int i = 0; i < MAX_PLAYERS; i++) //TODO: this should be a separate method in a negotiator class as notifyAllExceptOne()
                 if(isActive[i])
