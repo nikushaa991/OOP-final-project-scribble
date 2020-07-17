@@ -47,4 +47,15 @@ public class ScoresDAO extends DBConnector {
         }
         return top;
     }
+
+    /* Per user total score */
+    public int userScore(String username) throws SQLException {
+        Statement queryStm = connection.createStatement();
+        ResultSet rs = queryStm.executeQuery(
+                "select SUM(SCORE) from  " + tableName +
+                        " WHERE USERNAME = \"" + username + "\" GROUP BY USERNAME;");
+        if(rs.next())
+            return rs.getInt(1);
+        return 0;
+    }
 }
