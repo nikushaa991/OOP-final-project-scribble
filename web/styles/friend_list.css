@@ -76,7 +76,7 @@ body {
 }
 
 #friends{
-    width:40%;
+    width:25%;
     height:70%;
     position: absolute;
     margin: auto;
@@ -86,7 +86,7 @@ body {
     left: 0;
 }
 #invites{
-    width:40%;
+    width:25%;
     height:70%;
     position: absolute;
     margin: auto;
@@ -96,10 +96,22 @@ body {
     right: 0;
 }
 
+#friendRequests{
+    width:25%;
+    height:70%;
+    position: absolute;
+    margin: auto;
+    top: 15vh;
+    left: 0vw;
+    bottom: 0;
+    right: 0;
+}
+
 #inviteToPlay{
     left: -5vw;
     margin-top:5px;
 }
+
 .txt{
     text-align: center;
 }
