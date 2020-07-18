@@ -17,7 +17,7 @@ class UsersDAOTest {
         String username = "testusername2";
         String password = "molly";
         UsersDAO dao = new UsersDAO();
-        dao.newUser(username, password);
+        dao.newUser(username, password, 1000);
         assertTrue(dao.passwordMatches(username, "molly"));
         assertTrue(dao.exists(username));
         Assertions.assertEquals(dao.nrow()-1, dao.getUser(username).getId());

@@ -68,21 +68,22 @@
             </form>
         </div>
 
-        <div id="friendRequests">
-            <h2 class="txt"> Friend Requests </h2>
-            <ul class="ul-scroll">
-                <form action="FriendRequestAccept" method="POST" name="FriendRequestAccept">
-                    <div class="scroll-container">
-                    <%
-                        for(String friendRequest : friendRequestsList){
-                            out.print("<li> <input type=\"checkbox\" name=\"accept\" value=" + friendRequest + " id = " + friendRequest + "</li>"
-                                    + "<label> " + friendRequest + " </label>");
-                        }
-                    %>
-                    </div>
-                    <input type="submit" value="Accept" class ="bttn" id="friendAccept" />
-                </form>
-            </ul>
+        <div id="friendRequests"> <!-- au amis button ragac araa mtlad sworad-->
+            <h2 class="txt"> Requests </h2>
+            <form action="FriendRequestAccept" method="POST" name="FriendRequestAccept">
+                <div class="scroll-container">
+                    <ul class="ul-scroll">
+                            <div class="scroll-container">
+                            <%
+                                for(String friendRequest : friendRequestsList){
+                                    out.print("<li> <input type=\"checkbox\" name=\"accept\" value=" + friendRequest + " id = " + friendRequest + "</li>"
+                                            + "<label> " + friendRequest + " </label>");
+                                }
+                            %>
+                    </ul>
+                </div>
+                <input type="submit" value="Accept" class ="bttn" id="friendAccept" />
+            </form>
         </div>
 
     </div>

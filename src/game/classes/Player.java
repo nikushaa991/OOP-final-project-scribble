@@ -1,9 +1,11 @@
 package game.classes;
 
+import databases.users.UsersDAO;
 import login.classes.User;
 
 import javax.websocket.Session;
 import java.io.IOException;
+import java.sql.SQLException;
 
 
 public class Player {
@@ -12,11 +14,13 @@ public class Player {
     private User user;
     private Session wsSession;
     private boolean bCanGuess;
+    private UsersDAO usersDAO;
 
-    public Player(Session wsSession, User user) {
+    public Player(Session wsSession, User user, UsersDAO usersDAO) {
         this.user = user;
         this.name = user.getUsername();
         this.wsSession = wsSession;
+        this.usersDAO = usersDAO;
         score = 0;
     }
 
@@ -63,8 +67,7 @@ public class Player {
         wsSession = session;
     }
 
-    public void UpdateRank(int score)
-    {
-        user.changeRating(score);
+    public void UpdateRank(int score) throws SQLException {
+        user.changeRating(score, usersDAO);
     }
 }

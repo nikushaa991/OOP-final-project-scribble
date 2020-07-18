@@ -2,6 +2,7 @@ package home.servlets.games;
 
 import databases.games.GamesDAO;
 import databases.scores.ScoresDAO;
+import databases.users.UsersDAO;
 import game.classes.Game;
 import login.classes.User;
 
@@ -24,9 +25,10 @@ public class GameInviteServlet extends HttpServlet {
         {
             ScoresDAO scoresDAO =  (ScoresDAO) getServletContext().getAttribute("scoresHistory");
             GamesDAO gamesDAO = (GamesDAO) getServletContext().getAttribute("gamesHistory");
+            UsersDAO usersDAO = (UsersDAO) getServletContext().getAttribute("users");
             Game game = null;
             try {
-                game = new Game(false, gamesDAO, scoresDAO);
+                game = new Game(false, gamesDAO, scoresDAO, usersDAO);
             } catch (SQLException e) { e.printStackTrace(); }
             String host = ((User) request.getSession().getAttribute("USER")).getUsername();
             ((ConcurrentHashMap<String, Game>) getServletContext().getAttribute("HOSTED_GAMES")).put(host, game); //TODO: remove map entry if game terminated

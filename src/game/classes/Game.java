@@ -2,6 +2,7 @@ package game.classes;
 
 import databases.games.GamesDAO;
 import databases.scores.ScoresDAO;
+import databases.users.UsersDAO;
 import login.classes.User;
 
 import javax.websocket.Session;
@@ -29,8 +30,9 @@ public class Game {
 
     private GamesDAO gamesDAO;
     private ScoresDAO scoresDAO;
+    private UsersDAO usersDAO;
     private int gameId;
-    public Game(boolean ranked, GamesDAO gamesDAO, ScoresDAO scoresDAO) throws SQLException {
+    public Game(boolean ranked, GamesDAO gamesDAO, ScoresDAO scoresDAO, UsersDAO usersDAO) throws SQLException {
 
         players = new Player[MAX_PLAYERS];
         rounds = new Round[N_ROUNDS];
@@ -43,6 +45,7 @@ public class Game {
         painterId = 0;
         this.gamesDAO = gamesDAO;
         this.scoresDAO = scoresDAO;
+        this.usersDAO = usersDAO;
         gameId = gamesDAO.newGame(ranked);
     }
 
@@ -55,7 +58,7 @@ public class Game {
     }
 
     public synchronized int registerSession(Session session, User user) throws IOException {
-        Player newPlayer = new Player(session, user);
+        Player newPlayer = new Player(session, user, usersDAO);
         players[activePlayerCount] = newPlayer;
         isActive[activePlayerCount] = true;
         activePlayerCount++;
@@ -95,22 +98,21 @@ public class Game {
             // Game in Progress
             CurrentRound.OnRoundEnd(players, isActive);
         }
-        
         for(int i = 0; i < Game.MAX_PLAYERS; i++)
             if(isActive[i])
                 players[i].notifyPlayer("M,The game is over.");
 
         Player p = GetWinner();
+
+
         if(ranked)
             UpdatePlayerRanks();
         updateGamesDAO(p);
-
     }
 
 
     //TODO: Test if this works
-    void UpdatePlayerRanks()
-    {
+    void UpdatePlayerRanks() throws SQLException {
         // sort the players
         for(int i = 0; i < players.length; i++)
         {
@@ -144,7 +146,10 @@ public class Game {
      * accessing the context attribute DAO and saving new entry.
      * */
     private void updateGamesDAO(Player winner) throws SQLException {
-        gamesDAO.updateGame(gameId, winner.getName(), winner.getScore());
+        if(winner == null)
+            System.out.println("there is no winner!");
+        if(winner != null)
+            gamesDAO.updateGame(gameId, winner.getName(), winner.getScore());
     }
 
     private Player GetWinner() {
@@ -186,7 +191,7 @@ public class Game {
         Round round = rounds[curRound];
         if(round.CheckGuess(guess)) //TODO: capitalization shouldn't matter
             round.OnCorrectGuess(players, isActive,PlayerIndex);
-         else
+        else
             round.OnIncorrectGuess(players, isActive,PlayerIndex, guess);
     }
 

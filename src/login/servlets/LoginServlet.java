@@ -28,7 +28,7 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session = req.getSession();
                 session.setAttribute("USER", userDb.getUser(username));
                 ScoresDAO scoresDb = (ScoresDAO) getServletContext().getAttribute("scoresHistory");
-                ArrayList<Pair<String, Integer>> leaderboard = scoresDb.overallTopScores(topScoreCnt);
+                ArrayList<Pair<String, Integer>> leaderboard = userDb.topRankedUsers(topScoreCnt);
                 getServletContext().setAttribute("leaderboard", leaderboard);
                 req.getRequestDispatcher("home.jsp").forward(req, resp);
             } else

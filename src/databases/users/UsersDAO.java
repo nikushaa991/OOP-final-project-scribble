@@ -3,6 +3,7 @@ package databases.users;
 import login.classes.Encryptor;
 import login.classes.User;
 import utils.DBConnector;
+import utils.Pair;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
@@ -19,16 +20,36 @@ public class UsersDAO extends DBConnector {
         nrows = nrow();
     }
 
-    /* converts table records to a list and writes them on passed argument */
+    /* converts table records to a list  */
     public ArrayList<User> toList() throws SQLException {
         ArrayList<User> usersArray = new ArrayList<User>();
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + ";");
         while (rs.next()) {
-            User newItem = new User(rs.getInt(1), rs.getString(2), rs.getString(3));
+            User newItem = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4));
             usersArray.add(newItem);
         }
         return usersArray;
+    }
+
+    /* converts table records to a list of top ranked users */
+    public ArrayList<Pair<String, Integer>> topRankedUsers(int count) throws SQLException {
+        ArrayList<Pair<String, Integer>> usersArray = new ArrayList<>();
+        Statement queryStm = connection.createStatement();
+        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + " ORDER BY RNK DESC LIMIT " + count + ";");
+        while (rs.next()) {
+            Pair newItem = new Pair(rs.getString(2), rs.getInt(4));
+            usersArray.add(newItem);
+        }
+        return usersArray;
+    }
+
+    /* updates ranks of user */
+    public void updateRank(String username, int newRank) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("UPDATE " + tableName +
+                " SET RNK = ? WHERE USERNAME = \"" + username + "\";");
+        ps.setInt(1, newRank);
+        ps.execute();
     }
 
     /* returns user record from knowing it's username */
@@ -36,7 +57,7 @@ public class UsersDAO extends DBConnector {
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + " WHERE username = \"" + username + "\"");
         if(rs.next())
-            return new User(rs.getInt(1), rs.getString(2), rs.getString(3));
+            return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4));
         return null;
     }
 
@@ -50,15 +71,16 @@ public class UsersDAO extends DBConnector {
     }
 
     /* Creates and adds new user to the table if such does not exist yet */
-    public void newUser(String username, String password) throws SQLException, NoSuchAlgorithmException {
+    public void newUser(String username, String password, int ranking) throws SQLException, NoSuchAlgorithmException {
         if(!exists(username)) {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO " + tableName + " VALUES (?, ?, ?)");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO " + tableName + " VALUES (?, ?, ?, ?)");
             nrowLock.lock();
             ps.setInt(1, nrows);
             nrows++;
             nrowLock.unlock();
             ps.setString(2, username);
             ps.setString(3, Encryptor.shaVal(password));
+            ps.setInt(4, ranking);
             ps.execute();
         }
     }

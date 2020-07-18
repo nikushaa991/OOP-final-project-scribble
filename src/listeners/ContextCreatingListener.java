@@ -35,7 +35,7 @@ public class ContextCreatingListener implements ServletContextListener {
             gameDb =  new GamesDAO();
             friendsDAO = new FriendsDAO();
             friendRequestsDao = new FriendRequestsDao();
-            mm = new Matchmaker(gameDb, scoresDb);
+            mm = new Matchmaker(gameDb, scoresDb, usersDb);
         } catch (SQLException e) { e.printStackTrace(); }
         servletContextEvent.getServletContext().setAttribute("users", usersDb);
         servletContextEvent.getServletContext().setAttribute("scoresHistory", scoresDb);
