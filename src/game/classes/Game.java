@@ -83,7 +83,8 @@ public class Game {
         return activePlayerCount - 1;
     }
 
-    private void begin() throws IOException, InterruptedException, SQLException {
+    private void begin() throws IOException, InterruptedException, SQLException
+    {
         for(int painterNum = 0; curRound < N_ROUNDS; curRound++, painterNum++)
         {
             if(activePlayerCount == 0)
@@ -98,20 +99,26 @@ public class Game {
             // Game in Progress
             CurrentRound.OnRoundEnd(players, isActive);
         }
+
         Player p = GetWinner();
+
         for(int i = 0; i < Game.MAX_PLAYERS; i++)
             if(isActive[i])
             {
                 players[i].notifyPlayer("N,");
                 players[i].notifyPlayer("M," + p.getName() + " has won the game!");
             }
+
         if(ranked)
             UpdatePlayerRanks();
+
         updateGamesDAO(p);
     }
 
 
-    //TODO: Test if this works
+    /*
+     * Runs trough all the players, sorts them and Updates each Ranking based on players place
+     */
     void UpdatePlayerRanks() throws SQLException {
         // sort the players
         for(int i = 0; i < players.length; i++)
@@ -165,15 +172,12 @@ public class Game {
             }
         }
         return winner;
-
-        // Debug winner won the game
     }
 
-    //TODO: store all strokes to store in database, for live replay of drawing.
-    //TODO: handle colors and sizes.
+
     public void stroke(String start, int id) throws IOException {
         instructions.add(start);
-        for(int i = 0; i < MAX_PLAYERS; i++) //TODO: this should be a separate method in a negotiator class as notifyAllExceptOne()
+        for(int i = 0; i < MAX_PLAYERS; i++)
             if(isActive[i] && i != id)
                 players[i].notifyPlayer(start);
     }
@@ -183,7 +187,7 @@ public class Game {
             return;
         if(registeredPlayers < 2 || curRound == N_ROUNDS)
         {
-            for(int i = 0; i < MAX_PLAYERS; i++) //TODO: this should be a separate method in a negotiator class as notifyAllExceptOne()
+            for(int i = 0; i < MAX_PLAYERS; i++)
                 if(isActive[i])
                     players[i].notifyPlayer("C," + players[PlayerIndex].getName() + ": " + guess);
             return;
