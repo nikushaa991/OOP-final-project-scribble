@@ -20,18 +20,6 @@ public class UsersDAO extends DBConnector {
         nrows = nrow();
     }
 
-    /* converts table records to a list  */
-    public ArrayList<User> toList() throws SQLException {
-        ArrayList<User> usersArray = new ArrayList<User>();
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + ";");
-        while (rs.next()) {
-            User newItem = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4));
-            usersArray.add(newItem);
-        }
-        return usersArray;
-    }
-
     /* converts table records to a list of top ranked users */
     public ArrayList<Pair<String, Integer>> topRankedUsers(int count) throws SQLException {
         ArrayList<Pair<String, Integer>> usersArray = new ArrayList<>();
