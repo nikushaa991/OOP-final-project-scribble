@@ -95,11 +95,14 @@ public class Game {
             // Game in Progress
             CurrentRound.OnRoundEnd(players, isActive);
         }
-        Player p = GetWinner();
+        for(int i = 0; i < Game.MAX_PLAYERS; i++)
+            if(isActive[i])
+                players[i].notifyPlayer("S,The game is over.");
 
-        updateGamesDAO(p);
+        Player p = GetWinner();
         if(ranked)
             UpdatePlayerRanks();
+        updateGamesDAO(p);
 
     }
 
