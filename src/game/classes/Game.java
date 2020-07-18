@@ -10,28 +10,27 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-//SEND TEXT TO PLAYER USING THIS!!!!!!!
-//session.getBasicRemote().sendText(text);
-
-
 public class Game {
     public static final int N_ROUNDS = 2;
     public static final int MAX_PLAYERS = 6;
+    public static final String[] colors = {"#98fb98", "#6495ed", "#9370db", "#dda0dd", "#27927", "#e2a50e"};
 
     private int registeredPlayers;
     private int activePlayerCount;
     private int curRound;
+    private int painterId;
     private boolean ranked;
     private Round[] rounds;
-    private Player[] players; //TODO: create better structure for this, accommodate for disconnects and painter queue.
+    private Player[] players;
     private boolean[] isActive;
     private ArrayList<String> instructions;
-    private int painterId;
+    private boolean isOver;
 
     private GamesDAO gamesDAO;
     private ScoresDAO scoresDAO;
     private UsersDAO usersDAO;
     private int gameId;
+
     public Game(boolean ranked, GamesDAO gamesDAO, ScoresDAO scoresDAO, UsersDAO usersDAO) throws SQLException {
 
         players = new Player[MAX_PLAYERS];
@@ -40,9 +39,10 @@ public class Game {
         activePlayerCount = 0;
         registeredPlayers = 0;
         curRound = 0;
-        this.ranked = ranked;
-        instructions = new ArrayList<>();
         painterId = 0;
+        isOver = false;
+        instructions = new ArrayList<>();
+        this.ranked = ranked;
         this.gamesDAO = gamesDAO;
         this.scoresDAO = scoresDAO;
         this.usersDAO = usersDAO;
@@ -52,18 +52,18 @@ public class Game {
     public void reconnect(int id, Session session) throws IOException {
         players[id].setSession(session);
         isActive[id] = true;
-        players[id].notifyPlayer("M,Reconnected to an old game!");
         activePlayerCount++;
+        players[id].notifyPlayer("M,Reconnected to an old game!");
         catchup(id);
     }
 
     public synchronized int registerSession(Session session, User user) throws IOException {
         Player newPlayer = new Player(session, user, usersDAO);
-        players[activePlayerCount] = newPlayer;
-        isActive[activePlayerCount] = true;
+        players[registeredPlayers] = newPlayer;
+        isActive[registeredPlayers] = true;
         activePlayerCount++;
         registeredPlayers++;
-        if(activePlayerCount == 2)
+        if(registeredPlayers == 2)
         {
             //TODO: make this look prettier
             new Thread(() -> {
@@ -78,16 +78,18 @@ public class Game {
                     e.printStackTrace();
                 }
             }).start();
-        }
-        else if (activePlayerCount > 2) catchup(activePlayerCount-1);
-        return activePlayerCount - 1;
+        } else if(registeredPlayers > 2) catchup(registeredPlayers - 1);
+        return registeredPlayers - 1;
     }
 
     private void begin() throws IOException, InterruptedException, SQLException {
         for(int painterNum = 0; curRound < N_ROUNDS; curRound++, painterNum++)
         {
             if(activePlayerCount == 0)
+            {
+                isOver = true;
                 return;
+            }
             while (!isActive[painterNum % MAX_PLAYERS])
                 painterNum++;
             painterId = painterNum % MAX_PLAYERS;
@@ -98,6 +100,8 @@ public class Game {
             // Game in Progress
             CurrentRound.OnRoundEnd(players, isActive);
         }
+        isOver = true;
+        painterId = -1;
         Player p = GetWinner();
         for(int i = 0; i < Game.MAX_PLAYERS; i++)
             if(isActive[i])
@@ -132,16 +136,16 @@ public class Game {
         }
         // Update scores
         int rankScore = 30;
-        int increment = 60/getRegisteredPlayers();
-        for (Player p : players) {
-            if (p != null)
+        int increment = 60 / registeredPlayers;
+        for(Player p : players)
+        {
+            if(p != null)
             {
                 p.UpdateRank(rankScore);
                 rankScore -= increment;
-                if (rankScore == 0) rankScore -= increment;
+                if(rankScore == 0) rankScore -= increment;
             }
         }
-
     }
 
     /* Writes new game entry after a game ends by
@@ -169,33 +173,30 @@ public class Game {
         // Debug winner won the game
     }
 
-    //TODO: store all strokes to store in database, for live replay of drawing.
-    //TODO: handle colors and sizes.
     public void stroke(String start, int id) throws IOException {
         instructions.add(start);
-        for(int i = 0; i < MAX_PLAYERS; i++) //TODO: this should be a separate method in a negotiator class as notifyAllExceptOne()
+        for(int i = 0; i < MAX_PLAYERS; i++)
             if(isActive[i] && i != id)
                 players[i].notifyPlayer(start);
     }
 
     public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException, SQLException {
-        if(!players[PlayerIndex].getCanGuess())
-            return;
         if(registeredPlayers < 2 || curRound == N_ROUNDS)
         {
-            for(int i = 0; i < MAX_PLAYERS; i++) //TODO: this should be a separate method in a negotiator class as notifyAllExceptOne()
+            for(int i = 0; i < MAX_PLAYERS; i++)
                 if(isActive[i])
-                    players[i].notifyPlayer("C," + players[PlayerIndex].getName() + ": " + guess);
+                    players[i].notifyPlayer("C," + Game.colors[i] + ',' + players[PlayerIndex].getName() + "," + guess);
             return;
         }
+        if(!players[PlayerIndex].getCanGuess())
+            return;
         Round round = rounds[curRound];
-        if(round.CheckGuess(guess)) //TODO: capitalization shouldn't matter
-            round.OnCorrectGuess(players, isActive,PlayerIndex);
+        if(round.CheckGuess(guess))
+            round.OnCorrectGuess(players, isActive, PlayerIndex);
         else
-            round.OnIncorrectGuess(players, isActive,PlayerIndex, guess);
+            round.OnIncorrectGuess(players, isActive, PlayerIndex, guess);
     }
 
-    //TODO: implement in a better way so disconnected player can't be null
     public synchronized void unregister(int playerIndex) {
         isActive[playerIndex] = false;
         activePlayerCount--;
@@ -205,12 +206,8 @@ public class Game {
         rounds[curRound].ChooseHiddenWord(word);
     }
 
-    public synchronized int getActivePlayerCount() {
-        return activePlayerCount;
-    }
-
-    public synchronized int getRegisteredPlayers() {
-        return registeredPlayers;
+    public synchronized boolean isOver() {
+        return isOver;
     }
 
     private void catchup(int id) throws IOException {
@@ -218,6 +215,6 @@ public class Game {
             players[id].notifyPlayer(s);
         if(id == painterId)
             players[id].notifyPlayer("P,");
-
     }
+
 }

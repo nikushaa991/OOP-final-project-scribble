@@ -33,7 +33,7 @@ public class Matchmaker {
     }
 
     synchronized public Game addToQueue() throws SQLException {
-        if(game.getRegisteredPlayers() == 0)
+        if(game.isOver())
         {
             game = new Game(false, gamesDAO, scoresDAO, usersDAO);
             inQueue = 1;
@@ -50,12 +50,11 @@ public class Matchmaker {
     synchronized public Game addToRankedQueue(int rating) throws SQLException {
         int bracket = rating / 300;
 
-        if(rankedGames[bracket].getRegisteredPlayers() == 0)
+        if(rankedGames[bracket].isOver())
         {
             rankedGames[bracket] = new Game(true, gamesDAO, scoresDAO, usersDAO);
             rankedQueue[bracket] = 1;
-        }
-        if(++rankedQueue[bracket] == 6)
+        } else if(++rankedQueue[bracket] == 6)
         {
             Game res = rankedGames[bracket];
             rankedGames[bracket] = new Game(true, gamesDAO, scoresDAO, usersDAO);

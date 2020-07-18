@@ -1,6 +1,7 @@
 package game.web;
 
 import game.classes.Game;
+import home.classes.Matchmaker;
 import login.classes.User;
 
 import javax.servlet.http.HttpSession;
@@ -16,12 +17,20 @@ public class GameWS {
     private static ConcurrentHashMap<HttpSession, Session> sessMap = new ConcurrentHashMap<>();
 
     @OnOpen
-    synchronized public void onOpen(Session session, EndpointConfig config) throws IOException {
+    synchronized public void onOpen(Session session, EndpointConfig config) throws IOException, SQLException {
         HttpSession sess = (HttpSession) config.getUserProperties().get("httpSession");
         boolean isInGame = (boolean) sess.getAttribute("INGAME");
         Game game = (Game) sess.getAttribute("GAME");
         if(!isInGame)
         {
+            if(game.isOver())
+            {
+                session.getBasicRemote().sendText("M,You have attempted to reconnect to a finished game");
+                session.getBasicRemote().sendText("M,Starting a new unranked game...");
+                Matchmaker mm = (Matchmaker) sess.getServletContext().getAttribute("MATCHMAKER");
+                game = mm.addToQueue();
+                sess.setAttribute("GAME", game);
+            }
             int id = game.registerSession(session, (User) sess.getAttribute("USER"));
             map.put(session, new PlayerInfo(sess, id, game));
             sess.setAttribute("INGAME", true);
@@ -29,29 +38,9 @@ public class GameWS {
         } else
         {
             Session oldSess = sessMap.get(sess);
-            sessMap.remove(sess);
             sessMap.put(sess, session);
             map.put(session, map.remove(oldSess));
             game.reconnect(map.get(session).getId(), session);
-        }
-    }
-
-
-    @OnClose
-    synchronized public void onClose(Session session) {
-        PlayerInfo info = map.get(session);
-        info.getGame().unregister(info.getId());
-        if(info.getGame().getActivePlayerCount() == 0)
-        {
-            for(Session sess : map.keySet())
-            {
-                if(map.get(sess).getGame().equals(info.getGame()))
-                {
-                    HttpSession hsess = map.get(sess).getSess();
-                    hsess.setAttribute("INGAME", false);
-                    map.remove(sess);
-                }
-            }
         }
     }
 
@@ -69,24 +58,23 @@ public class GameWS {
         } else info.getGame().CheckGuessFromGame(info.getId(), message.substring(2));
     }
 
-    //TODO: unregister player and session on error
-    @OnError
-     synchronized public void onError(Throwable e, Session session) {
-        e.printStackTrace();
+    @OnClose
+    synchronized public void onClose(Session session) {
         PlayerInfo info = map.get(session);
         info.getGame().unregister(info.getId());
-        if(info.getGame().getActivePlayerCount() == 0)
+        if(info.getGame().isOver())
         {
-            for(Session sess : map.keySet())
-            {
-                if(map.get(sess).getGame().equals(info.getGame()))
-                {
-                    HttpSession hsess = map.get(sess).getSess();
-                    hsess.setAttribute("INGAME", false);
-                    map.remove(sess);
-                }
-            }
+            HttpSession hsess = map.get(session).getSess();
+            hsess.setAttribute("INGAME", false);
+            sessMap.remove(hsess);
+            map.remove(session);
+
         }
     }
 
+    @OnError
+    synchronized public void onError(Throwable e, Session session) {
+        e.printStackTrace();
+        onClose(session);
+    }
 }

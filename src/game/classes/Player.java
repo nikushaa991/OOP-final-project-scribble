@@ -33,15 +33,9 @@ public class Player {
         return name;
     }
 
-    //TODO: maybe do something with these two methods
     public boolean getCanGuess() {
         return bCanGuess;
     }
-
-    public Session getSession() {
-        return wsSession;
-    }
-    /* Setters */
 
     public void increaseScore(int Score) {
         score += Score;

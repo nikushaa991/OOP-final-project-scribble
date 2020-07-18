@@ -73,6 +73,7 @@ public class Round{
                 e.printStackTrace();
             }
         }).start();
+
         synchronized (lock)
         {
             try
@@ -117,7 +118,7 @@ public class Round{
     public void OnCorrectGuess(Player[] players, boolean[] isActive, int guesserIndex) throws IOException, SQLException {
         Player guesser = players[guesserIndex];
         notifyAllPlayers(players, isActive, "M," + guesser.getName() + " has guessed the word!");
-        int score = CalculateScore(); // TODO: score should be based on order, not time, needs implementing anyway.
+        int score = CalculateScore();
         guesser.increaseScore(score);
         scoresDAO.newScore(guesser.getName(), gameId, index, score); //write to db
         guesser.setCanGuess(false);
@@ -125,7 +126,7 @@ public class Round{
     }
 
     public void OnIncorrectGuess(Player[] players, boolean[] isActive, int guesserIndex, String guess) throws IOException {
-        notifyAllPlayers(players, isActive, "C," + players[guesserIndex].getName() + ": " + guess);
+        notifyAllPlayers(players, isActive, "C," +Game.colors[guesserIndex] + ',' + players[guesserIndex].getName() + "," + guess);
     }
 
     public void notifyAllPlayers(Player[] players, boolean[] isActive, String text) throws IOException {

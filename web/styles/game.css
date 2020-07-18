@@ -232,6 +232,7 @@ body {
 }
 
 .sideChart {
+    border:none;
     height: 70vh;
     width: 15vw;
     background-color: transparent;
@@ -239,32 +240,40 @@ body {
     outline-width: 0;
     color: white;
     font-size: 1.2vw;
-    box-shadow: inset 0px 3px 9px -3px rgba(0, 0, 0, 1);
 }
 
-#echoText {
-    height: 70vh;
+.right-block {
+    height: 60vh;
     overflow: auto;
     margin: auto;
     position: absolute;
     top: 0;
     left: 85vw;
+}
+#chat{
+    display:inline-block;
+    margin-left: 10px;
+}
+#chat > p{
     font-size: 1vw;
 }
-
 .textInputContainer {
     position: absolute;
-    top: 70vh;
+    top: 60vh;
     left: 85vw;
 }
 
 #textInput {
     font-size: 1vw;
-    width: 15vw;
+    width: 13vw;
     height: 10vh;
+    margin-left: 1vw;
     -moz-user-select: none;
     -webkit-user-drag: none;
     -webkit-user-select: none;
     -ms-user-select: none;
     resize: none;
+}
+::-webkit-scrollbar {
+    display: none;
 }

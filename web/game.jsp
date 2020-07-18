@@ -43,17 +43,17 @@
                 </div>
             </div>
             <canvas id="paint-canvas"></canvas>
-            <div class="chat">
-                <textarea disabled id="echoText" class="sideChart" rows="5" cols="30"></textarea>
-                <div class="textInputContainer">
-                    <textarea id="textInput"></textarea>
-                </div>
+            <div class="right-block" id="right-block">
+                <div id="chat"></div>
+            </div>
+            <div class="textInputContainer">
+                <textarea id="textInput"></textarea>
             </div>
             <div id="chooseW" class="chooseWord">
                 <div class="chooseWordContent">
-                    <button id="posWord1" class="posWord" onclick="wordChoosen(0)"></button>
-                    <button id="posWord2" class="posWord" onclick="wordChoosen(1)"></button>
-                    <button id="posWord3" class="posWord" onclick="wordChoosen(2)"></button>
+                    <button id="posWord1" class="posWord" onclick="wordChosen(0)"></button>
+                    <button id="posWord2" class="posWord" onclick="wordChosen(1)"></button>
+                    <button id="posWord3" class="posWord" onclick="wordChosen(2)"></button>
                 </div>
             </div>
         </div>

@@ -2,21 +2,20 @@ let leaderBoard;
 let modal;
 let wordsArray;
 let webSocket;
-window.onload = function() {
+window.onload = function () {
     modal = document.getElementById("chooseW");
     webSocket = new WebSocket('ws://' + location.hostname + ':25565/WS');
-    let echoText = document.getElementById("echoText");
     leaderBoard = document.getElementById("leaderBoard");
-    echoText.value = "";
 
     let chatInput = document.getElementById("textInput");
+    let block = document.getElementById('right-block')
 
     let canvas = document.getElementById("paint-canvas");
     let context = canvas.getContext("2d");
     let xScale = 0.7 * window.innerWidth;
     let upscaleRatio = 2000 / xScale;
-    let yScale = 0.7 *window.innerHeight;
-    context.canvas.width  = xScale;
+    let yScale = 0.7 * window.innerHeight;
+    context.canvas.width = xScale;
     context.canvas.height = yScale;
     let clearButton = document.getElementById('clear');
 
@@ -30,24 +29,24 @@ window.onload = function() {
     let isArtist = false;
 
 
-    webSocket.onopen = function(message) {
+    webSocket.onopen = function (message) {
         wsOpen(message);
     };
-    webSocket.onclose = function(message) {
+    webSocket.onclose = function (message) {
         wsClose(message);
     };
-    webSocket.onerror = function(message) {
+    webSocket.onerror = function (message) {
         wsError(message);
     };
     //RECEIVE MESSAGES FROM SERVER ON THIS METHOD
-    webSocket.onmessage = function(message) {
+    webSocket.onmessage = function (message) {
         wsGetMessage(message);
     };
 
     //SEND MESSAGES TO SERVER USING SEND
 
     function wsOpen(message) {
-        echoText.value += "Connected... \n";
+        addSystemMessage("CONNECTED")
     }
 
     function wsCloseConnection() {
@@ -55,39 +54,41 @@ window.onload = function() {
     }
 
     function wsClose(message) {
-        echoText.value += "Disconnected... \n";
+        addSystemMessage("DISCONNECTED")
+
     }
 
     function wsError(message) {
-        echoText.value += "Error... \n";
+        addSystemMessage("ERROR")
+
     }
 
     function wsGetMessage(message) {
-        if (message.data.startsWith("L")) {
+        if (message.data.startsWith("L")) {  //line to
             let coordinates = message.data.split(",");
             context.lineTo(coordinates[1] / upscaleRatio, coordinates[2] / upscaleRatio);
             context.stroke();
-        } else if (message.data.startsWith("CLEAR,")) {
+        } else if (message.data.startsWith("CLEAR,")) {  //clear canvas
             clear();
-        } else if (message.data.startsWith("T")) {
+        } else if (message.data.startsWith("T")) {  //color
             let paint = message.data.split(",");
             context.strokeStyle = paint[1];
-        } else if (message.data.startsWith("W")) {
+        } else if (message.data.startsWith("W")) {  //stroke width
             let width = message.data.split(",");
             context.lineWidth = width[1];
-        } else if (message.data.startsWith("B")) {
+        } else if (message.data.startsWith("B")) {  //begin line
             let coordinates = message.data.split(",");
             context.beginPath();
             context.moveTo(coordinates[1] / upscaleRatio, coordinates[2] / upscaleRatio);
-        } else if (message.data.startsWith("N")) {
+        } else if (message.data.startsWith("N")) {  //new round
             isArtist = false;
             context.clearRect(0, 0, canvas.width, canvas.height);
-        } else if (message.data.startsWith("P")) {
+        } else if (message.data.startsWith("P")) {  //you're the artist
             isArtist = true;
-        } else if (message.data.startsWith("S")) {
+        } else if (message.data.startsWith("S")) {  //score update
             let ls = message.data.substr(2) + '\n';
             let sp = ls.split(" ");
-            sp.sort(function(b, c) {
+            sp.sort(function (b, c) {
                 let w1 = b.split("-")[1];
                 let w2 = c.split("-")[1];
                 if (parseInt(w1) > parseInt(w2)) {
@@ -100,14 +101,20 @@ window.onload = function() {
             });
             //got sorted array now just show it;
             displayLeaderBoard(sp);
-        } else if (message.data.startsWith("A")) {
+        } else if (message.data.startsWith("A")) {  //choose word
             let ls = message.data.substr(2) + '\n';
             let sp = ls.split(" ");
             sp = sp.slice(1, sp.length - 1);
-            setTimeout(function() { modal.style.display = "none"; }, 5000);
+            setTimeout(function () {
+                modal.style.display = "none";
+            }, 5000);
             chooseWordDisplay(sp);
-        } else if (message.data != "") {
-            echoText.value += message.data.substr(2) + '\n';
+        } else if (message.data.startsWith("C")) {  //print user message to chat
+            let data = message.data.split(',') //0 = C, 1 = color, 2 = user, 3 = text
+            addUserMessage(data[1], data[2], data[3])
+        } else if (message.data != "") {  //print system message to chat
+            let data = message.data.split(',') //0 = M, 1 = text
+            addSystemMessage(data[1])
         }
     }
 
@@ -137,7 +144,7 @@ window.onload = function() {
     // Handle Colors
     let colors = document.getElementsByClassName('colors')[0];
 
-    colors.addEventListener('click', function(event) {
+    colors.addEventListener('click', function (event) {
         context.strokeStyle = event.target.value || 'black';
         webSocket.send("T," + context.strokeStyle);
     });
@@ -145,13 +152,13 @@ window.onload = function() {
     // Handle Brushes
     let brushes = document.getElementsByClassName('brushes')[0];
 
-    brushes.addEventListener('click', function(event) {
+    brushes.addEventListener('click', function (event) {
         context.lineWidth = event.target.value || 1;
         webSocket.send("W," + context.lineWidth);
     });
 
     // Mouse Down Event
-    canvas.addEventListener('mousedown', function(event) {
+    canvas.addEventListener('mousedown', function (event) {
         setMouseCoordinates(event);
         if (isArtist) {
             isDrawing = true;
@@ -163,7 +170,7 @@ window.onload = function() {
     });
 
     // Mouse Move Event
-    canvas.addEventListener('mousemove', function(event) {
+    canvas.addEventListener('mousemove', function (event) {
         setMouseCoordinates(event);
         if (isDrawing && isArtist) {
             webSocket.send("L," + upscaleRatio * mouseX + "," + upscaleRatio * mouseY);
@@ -178,7 +185,7 @@ window.onload = function() {
     });
 
     // Mouse Up Event
-    canvas.addEventListener('mouseup', function(event) {
+    canvas.addEventListener('mouseup', function (event) {
         setMouseCoordinates(event);
         isDrawing = false;
     });
@@ -193,9 +200,8 @@ window.onload = function() {
     }
 
     // Handle Clear Button
-    //TODO: only painter must be able to use this, send this action to server and handle it.
 
-    clearButton.addEventListener('click', function() {
+    clearButton.addEventListener('click', function () {
         if (isArtist) {
             clear();
             webSocket.send("CLEAR,")
@@ -206,7 +212,7 @@ window.onload = function() {
         context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    chatInput.addEventListener("keyup", function(event) {
+    chatInput.addEventListener("keyup", function (event) {
         if (event.key === 'Enter') {
             sendClicked();
         }
@@ -218,12 +224,36 @@ window.onload = function() {
             webSocket.send("C," + text);
         }
         chatInput.value = "";
-        echoText.scrollTop = echoText.scrollHeight;
+    }
+
+    function addUserMessage(color, username, text) {
+        let div = document.createElement('div');
+
+        div.className = 'textRow';
+
+        div.innerHTML =
+            `<p><span style="color:` + color +
+            `;font-weight:bold">` + username + `</span>: ` + text + `</p>`
+
+        document.getElementById('chat').appendChild(div);
+        block.scrollTop = block.scrollHeight;
+    }
+
+    function addSystemMessage(text) {
+        let div = document.createElement('div');
+
+        div.className = 'textRow';
+
+        div.innerHTML =
+            `<p><span style="color:#d50000;font-weight:bold">SYSTEM</span>: ` + text + `</p>`
+
+        document.getElementById('chat').appendChild(div);
+        block.scrollTop = block.scrollHeight;
     }
 };
-
-function wordChoosen(index) {
-    let choosenWord = wordsArray[index];
+function wordChosen(index) {
+    let chosenWord = wordsArray[index];
     modal.style.display = "none";
-    webSocket.send("A," + choosenWord);
+    webSocket.send("A," + chosenWord);
 }
+
