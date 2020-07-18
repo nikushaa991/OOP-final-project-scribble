@@ -20,32 +20,37 @@ public class Round{
     private int gameId;
     private int index;
     private ScoresDAO scoresDAO;
+    private Object lock;
 
-    public Round(Player painter, int gameId, ScoresDAO scoresDAO, int index)
-    {
+    public Round(Player painter, int gameId, ScoresDAO scoresDAO, int index) {
         this.painter = painter;
         rand = new Random();
         this.gameId = gameId;
         this.scoresDAO = scoresDAO;
         this.index = index;
+        this.lock = new Object();
     }
 
     public void OnRoundBegin(Player[] players, boolean[] isActive) throws IOException, InterruptedException {
         // Randomly take word out of WordDB:
 
+        notifyAllPlayers(players, isActive, "M,New Round Started");
+
+        notifyAllPlayers(players, isActive, "N,");
         hiddenWord = "?";
         String Choices[] = new String[WORD_CHOICE_NUM];
         String painterChoice = "";
         int i = 0;
-        while(i < WORD_CHOICE_NUM) {
+        while (i < WORD_CHOICE_NUM)
+        {
             String word = WordsList.wordsList.get(rand.nextInt(WordsList.wordsList.size()));
-            for (int j = 0; j < i; j++)
+            for(int j = 0; j < i; j++)
             {
-                if (word.equals(Choices[j]))
-                    {
-                        word = Choices[--i];
-                        break;
-                    }
+                if(word.equals(Choices[j]))
+                {
+                    word = Choices[--i];
+                    break;
+                }
             }
             Choices[i] = word;
             i++;
@@ -55,30 +60,48 @@ public class Round{
 
         painter.notifyPlayer("A, " + painterChoice);
 
-        notifyAllPlayers(players, isActive,"M, Painter is choosing word");
-        TimeUnit.SECONDS.sleep(PAINTER_CHOICE_TIME);
-        notifyAllPlayers(players, isActive,"M, Painter has chosen word");
+        new Thread(() -> {
+            try
+            {
+                TimeUnit.SECONDS.sleep(PAINTER_CHOICE_TIME);
+                synchronized (lock)
+                {
+                    lock.notify();
+                }
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }).start();
+        synchronized (lock)
+        {
+            try
+            {
+                lock.wait();
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+        }
+
+        notifyAllPlayers(players, isActive, "M,Painter has chosen a word");
 
         if(hiddenWord.equals("?"))
             hiddenWord = Choices[rand.nextInt(Choices.length)];
 
-		notifyAllPlayers(players, isActive,"M, New Round Started");
-
-        notifyAllPlayers(players, isActive,"N,");
-
         painter.notifyPlayer("P,");
-        painter.notifyPlayer("M, The word is: " + hiddenWord);
+        painter.notifyPlayer("M,You have chosen the word: " + hiddenWord);
         painter.setCanGuess(false);
         for(Player p : players)
         {
-            if(p != painter && p!= null)
+            if(p != painter && p != null)
                 p.setCanGuess(true);
         }
         TimeUnit.SECONDS.sleep(ROUND_DURATION);
     }
 
-    public void OnRoundEnd(Player[] players, boolean[] isActive) throws IOException
-    {
+    public void OnRoundEnd(Player[] players, boolean[] isActive) throws IOException {
         String result = "S,";
         for(Player p : players)
         {
@@ -89,8 +112,6 @@ public class Round{
             }
         }
         notifyAllPlayers(players, isActive, result);
-
-        notifyAllPlayers(players, isActive, "M, Round Ended");
     }
 
     public void OnCorrectGuess(Player[] players, boolean[] isActive, int guesserIndex) throws IOException, SQLException {
@@ -103,32 +124,37 @@ public class Round{
         guessed++;
     }
 
-    public void OnIncorrectGuess(Player[] players, boolean[] isActive, int guesserIndex, String guess) throws IOException //TODO: do we really need this method?
-    {
+    public void OnIncorrectGuess(Player[] players, boolean[] isActive, int guesserIndex, String guess) throws IOException {
         notifyAllPlayers(players, isActive, "C," + players[guesserIndex].getName() + ": " + guess);
     }
 
-    public void notifyAllPlayers(Player[] players, boolean[] isActive, String text) throws IOException { //TODO: move this to a new negotiator class instead.
-        for(int i = 0; i < Game.MAX_PLAYERS; i++) //TODO: FIX THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!! replace current code with commented code
+    public void notifyAllPlayers(Player[] players, boolean[] isActive, String text) throws IOException {
+        for(int i = 0; i < Game.MAX_PLAYERS; i++)
             if(isActive[i])
                 players[i].notifyPlayer(text);
     }
 
-    public boolean CheckGuess(String guess)
-    {
+    public boolean CheckGuess(String guess) {
         if(guess.toLowerCase().equals(hiddenWord.toLowerCase()))
             return true;
         return false;
     }
 
-    private int CalculateScore()
-    {
+    private int CalculateScore() {
         return (Game.MAX_PLAYERS - guessed) * 10;
     }
 
-    public void ChooseHiddenWord(String str)
-    {
+    public void ChooseHiddenWord(String str) {
         hiddenWord = str;
+        synchronized (lock)
+        {
+            try
+            {
+                lock.notify();
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
-
 }

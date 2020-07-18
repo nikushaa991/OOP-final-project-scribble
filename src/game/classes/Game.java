@@ -98,13 +98,13 @@ public class Game {
             // Game in Progress
             CurrentRound.OnRoundEnd(players, isActive);
         }
+        Player p = GetWinner();
         for(int i = 0; i < Game.MAX_PLAYERS; i++)
             if(isActive[i])
-                players[i].notifyPlayer("M,The game is over.");
-
-        Player p = GetWinner();
-
-
+            {
+                players[i].notifyPlayer("N,");
+                players[i].notifyPlayer("M," + p.getName() + " has won the game!");
+            }
         if(ranked)
             UpdatePlayerRanks();
         updateGamesDAO(p);
@@ -131,12 +131,14 @@ public class Game {
             players[i] = tmp;
         }
         // Update scores
-        int rankScore = (players.length / 2) * 10;
+        int rankScore = 30;
+        int increment = 60/getRegisteredPlayers();
         for (Player p : players) {
-            if (p != null) {
+            if (p != null)
+            {
                 p.UpdateRank(rankScore);
-                rankScore -= 10;
-                if (rankScore == 0) rankScore -= 10;
+                rankScore -= increment;
+                if (rankScore == 0) rankScore -= increment;
             }
         }
 
@@ -146,15 +148,13 @@ public class Game {
      * accessing the context attribute DAO and saving new entry.
      * */
     private void updateGamesDAO(Player winner) throws SQLException {
-        if(winner == null)
-            System.out.println("there is no winner!");
         if(winner != null)
             gamesDAO.updateGame(gameId, winner.getName(), winner.getScore());
     }
 
     private Player GetWinner() {
         Player winner = null;
-        int maxScore = 0;
+        int maxScore = -5;
         for(int i = 0; i < MAX_PLAYERS; i++)
         {
             Player p = players[i];

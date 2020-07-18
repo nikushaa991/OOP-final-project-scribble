@@ -18,7 +18,7 @@
         </div>
             <input type="submit" value="Login" id="log"/>
         </form>
-            <input type="submit" onclick="window.location.href='new_user.jsp';" value="Register" id="reg" />
+            <input type="submit" onclick="window.location.href='new_user.jsp';" value="Registration" id="reg" />
 </div>
 </body>
 </html>
