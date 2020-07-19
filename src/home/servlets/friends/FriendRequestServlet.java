@@ -16,13 +16,14 @@ import java.sql.SQLException;
 public class FriendRequestServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String sendRequestTo = request.getParameter("friendRequest");
-        FriendRequestsDao requestsDao = (FriendRequestsDao) getServletContext().getAttribute("friendRequests");
-        try
-        {
-            requestsDao.newFriendshipRequest(sendRequestTo, ((User) request.getSession().getAttribute("USER")).getUsername());
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
+        String from = ((User) request.getSession().getAttribute("USER")).getUsername();
+        if(!sendRequestTo.equals(from)) {
+            FriendRequestsDao requestsDao = (FriendRequestsDao) getServletContext().getAttribute("friendRequests");
+            try {
+                requestsDao.newFriendshipRequest(sendRequestTo, from);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         RequestDispatcher rd = request.getRequestDispatcher("FriendsList");
         rd.forward(request, response);
