@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint(value = "/WS", configurator = GameSocketConfig.class)
 public class GameWS {
-    private static ConcurrentHashMap<Session, PlayerInfo> map = new ConcurrentHashMap<>();
-    private static ConcurrentHashMap<HttpSession, Session> sessMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Session, PlayerInfo> map = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<HttpSession, Session> sessMap = new ConcurrentHashMap<>();
 
     @OnOpen
     synchronized public void onOpen(Session session, EndpointConfig config) throws IOException, SQLException {

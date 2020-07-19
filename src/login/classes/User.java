@@ -4,27 +4,29 @@ import databases.users.UsersDAO;
 
 import java.sql.SQLException;
 
-public class User{
-    private int id;
+public class User {
+    private final int id;
+    private final String username;
     private int rating;
-    private String username;
-    private String password; //TODO: why store password?
 
-    public User(int id, String username, String password, int rating){
+    public User(int id, String username, int rating) {
         this.id = id;
         this.username = username;
-        this.password = password;
         this.rating = rating;
     }
 
     /* getter methods*/
-    public int getId(){return id;}
+    public int getId() {
+        return id;
+    }
 
-    public String getUsername(){return username;}
+    public String getUsername() {
+        return username;
+    }
 
-    public String getPassword(){return password;}
-
-    public int getRating(){return rating;}
+    public int getRating() {
+        return rating;
+    }
 
     public void changeRating(int amount, UsersDAO usersDAO) throws SQLException {
         rating += amount;

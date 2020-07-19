@@ -8,7 +8,6 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class GamesDAO extends DBConnector {
-    private int gamesCount;
 
     public GamesDAO() throws SQLException {
         super();
@@ -49,15 +48,16 @@ public class GamesDAO extends DBConnector {
     }
 
     /* gets top scores of single game and scorers. number of top records is passed as an argument by client.
-    * First integer of the pair is username and second integer is score of the user.
-    * */
+     * First integer of the pair is username and second integer is score of the user.
+     * */
     public ArrayList<Pair<String, Integer>> topScores(int count) throws SQLException {
-        ArrayList<Pair<String, Integer> > topScores = new ArrayList<>();
+        ArrayList<Pair<String, Integer>> topScores = new ArrayList<>();
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName +
                 " WHERE RANKED = true ORDER BY WINNING_SCORE DESC LIMIT " + count + ";");
-        while (rs.next()) {
-            Pair<String, Integer> nextUser = new Pair(rs.getString(3), rs.getInt(4));
+        while (rs.next())
+        {
+            Pair nextUser = new Pair(rs.getString(3), rs.getInt(4));
             topScores.add(nextUser);
         }
         return topScores;

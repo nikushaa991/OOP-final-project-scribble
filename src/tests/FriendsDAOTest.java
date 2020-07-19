@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FriendsDAOTest {
 
@@ -14,16 +14,19 @@ class FriendsDAOTest {
     @Test
     public void test1() throws SQLException {
         FriendsDAO dao = new FriendsDAO();
-        try {
+        try
+        {
             dao.newFriendship("adami", "eva");
             dao.newFriendship("adami", "gveli");
             dao.newFriendship("chichiko", "bichiko");
             ArrayList<String> friendsList = dao.friendsList("adami");
-            assertTrue(friendsList.get(0).equals("eva"));
-            assertTrue(friendsList.get(1).equals("gveli"));
-        } catch (SQLException e) {
+            assertEquals("eva", friendsList.get(0));
+            assertEquals("gveli", friendsList.get(1));
+        } catch (SQLException e)
+        {
             e.printStackTrace();
-        } finally {
+        } finally
+        {
             dao.deleteFriendship("adami", "eva");
             dao.deleteFriendship("chichiko", "bichiko");
             dao.deleteFriendship("adami", "gveli");

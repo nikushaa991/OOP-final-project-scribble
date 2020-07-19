@@ -6,7 +6,10 @@ import utils.DBConnector;
 import utils.Pair;
 
 import java.security.NoSuchAlgorithmException;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class UsersDAO extends DBConnector {
@@ -25,7 +28,8 @@ public class UsersDAO extends DBConnector {
         ArrayList<Pair<String, Integer>> usersArray = new ArrayList<>();
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + " ORDER BY RNK DESC LIMIT " + count + ";");
-        while (rs.next()) {
+        while (rs.next())
+        {
             Pair newItem = new Pair(rs.getString(2), rs.getInt(4));
             usersArray.add(newItem);
         }
@@ -45,7 +49,7 @@ public class UsersDAO extends DBConnector {
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + " WHERE username = \"" + username + "\"");
         if(rs.next())
-            return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4));
+            return new User(rs.getInt(1), rs.getString(2), rs.getInt(4));
         return null;
     }
 
@@ -53,14 +57,13 @@ public class UsersDAO extends DBConnector {
     public boolean exists(String username) throws SQLException {
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + " WHERE username = \"" + username + "\"");
-        if(rs.next())
-            return true;
-        return false;
+        return rs.next();
     }
 
     /* Creates and adds new user to the table if such does not exist yet */
     public void newUser(String username, String password, int ranking) throws SQLException, NoSuchAlgorithmException {
-        if(!exists(username)) {
+        if(!exists(username))
+        {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO " + tableName + " VALUES (?, ?, ?, ?)");
             nrowLock.lock();
             ps.setInt(1, nrows);
@@ -83,10 +86,10 @@ public class UsersDAO extends DBConnector {
     /* Checks if SHA value of password matches username's password */
     public boolean passwordMatches(String username, String password) throws NoSuchAlgorithmException, SQLException {
         Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName +" WHERE username = \"" + username + "\"");
-        if(rs.next()){
-            if(rs.getString(3).equals(Encryptor.shaVal(password)))
-                return true;
+        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + " WHERE username = \"" + username + "\"");
+        if(rs.next())
+        {
+            return rs.getString(3).equals(Encryptor.shaVal(password));
         }
         return false;
     }

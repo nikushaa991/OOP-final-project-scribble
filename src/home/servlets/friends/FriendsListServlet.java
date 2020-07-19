@@ -20,14 +20,18 @@ public class FriendsListServlet extends HttpServlet {
         ArrayList<String> friendsList = null;
         ArrayList<String> friendRequestsList = null;
         FriendsDAO friendsDAO = (FriendsDAO) getServletContext().getAttribute("friends");
-        FriendRequestsDao friendRequestsDao = (FriendRequestsDao)getServletContext().getAttribute("friendRequests");
-        String username = ((User)request.getSession().getAttribute("USER")).getUsername();
+        FriendRequestsDao friendRequestsDao = (FriendRequestsDao) getServletContext().getAttribute("friendRequests");
+        String username = ((User) request.getSession().getAttribute("USER")).getUsername();
         ConcurrentHashMap<String, ArrayList<String>> userInvites = (ConcurrentHashMap<String, ArrayList<String>>) getServletContext().getAttribute("gameInvites");
         ArrayList<String> gameInvites = userInvites.get(username);
-        try {
+        try
+        {
             friendsList = friendsDAO.friendsList(username);
             friendRequestsList = friendRequestsDao.friendshipRequestsList(username);
-        } catch (SQLException e) {  e.printStackTrace();  }
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
         request.setAttribute("friendsList", friendsList);
         request.setAttribute("friendRequestsList", friendRequestsList);
         request.setAttribute("username", username);

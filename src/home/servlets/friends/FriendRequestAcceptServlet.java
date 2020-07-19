@@ -18,20 +18,24 @@ public class FriendRequestAcceptServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         FriendsDAO friendsDao = (FriendsDAO) getServletContext().getAttribute("friends");
-        FriendRequestsDao requestsDao = (FriendRequestsDao)getServletContext().getAttribute("friendRequests");
+        FriendRequestsDao requestsDao = (FriendRequestsDao) getServletContext().getAttribute("friendRequests");
         String[] accepts = request.getParameterValues("accept");
-        if(accepts != null) {
+        if(accepts != null)
+        {
             String currentUser = ((User) request.getSession().getAttribute("USER")).getUsername();
-            for (String friendRequest : accepts) {
-                try {
+            for(String friendRequest : accepts)
+            {
+                try
+                {
                     requestsDao.deleteFriendshipRequest(currentUser, friendRequest);
                     friendsDao.newFriendship(friendRequest, currentUser);
-                } catch (SQLException e) {
+                } catch (SQLException e)
+                {
                     e.printStackTrace();
                 }
             }
         }
         RequestDispatcher rd = request.getRequestDispatcher("FriendsList");
-        rd.forward(request,response);
+        rd.forward(request, response);
     }
 }

@@ -9,11 +9,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 /*
-*
-* */
+ *
+ * */
 public class FriendsDAO extends DBConnector {
 
-    public FriendsDAO(){
+    public FriendsDAO() {
         super();
         tableName = "friends";
     }
@@ -23,7 +23,8 @@ public class FriendsDAO extends DBConnector {
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery(
                 "select USERNAME_1 FROM " + tableName + " WHERE USERNAME_1 = \"" + user1 + "\" AND USERNAME_2 = \"" + user2 + "\";");
-        if(!rs.next()) {
+        if(!rs.next())
+        {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO " + tableName +
                     " VALUES (?, ?), (?, ?)");
             ps.setString(1, user1);
@@ -51,7 +52,8 @@ public class FriendsDAO extends DBConnector {
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery(
                 "select USERNAME_2 FROM " + tableName + " WHERE USERNAME_1 = \"" + user + "\";");
-        while (rs.next()) {
+        while (rs.next())
+        {
             String friend = rs.getString(1);
             friends.add(friend);
         }
