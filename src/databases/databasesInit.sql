@@ -1,39 +1,44 @@
 USE SCRIBBLE;
 
 DROP TABLE IF EXISTS users;
-CREATE TABLE users (
-    ID INT NOT NULL,
-    USERNAME VARCHAR(32) NOT NULL,
+CREATE TABLE users
+(
+    ID       INT          NOT NULL,
+    USERNAME VARCHAR(32)  NOT NULL,
     PASSWORD VARCHAR(256) NOT NULL,
-    RNK INT
+    RNK      INT
 );
 
 DROP TABLE IF EXISTS games;
-CREATE TABLE games (
-    ID INT NOT NULL,
-    DATE DATE,
+CREATE TABLE games
+(
+    ID              INT NOT NULL,
+    DATE            DATE,
     WINNER_USERNAME VARCHAR(32),
-    WINNING_SCORE INT,
-    RANKED BIT
+    WINNING_SCORE   INT,
+    RANKED          BIT
 );
 
 DROP TABLE IF EXISTS scores;
-create table scores (
+create table scores
+(
     USERNAME VARCHAR(32) NOT NULL,
-    GAME_ID INT,
-    N_ROUND INT,
-    SCORE INT
+    GAME_ID  INT,
+    N_ROUND  INT,
+    SCORE    INT
 );
 
 DROP TABLE IF EXISTS friends;
-create table friends (
+create table friends
+(
     USERNAME_1 VARCHAR(32) NOT NULL,
     USERNAME_2 VARCHAR(32) NOT NULL
 );
 
 DROP TABLE IF EXISTS friendRequests;
-create table friendRequests (
-    USERNAME_TO VARCHAR(32) NOT NULL,
+create table friendRequests
+(
+    USERNAME_TO   VARCHAR(32) NOT NULL,
     USERNAME_FROM VARCHAR(32) NOT NULL
 );
 

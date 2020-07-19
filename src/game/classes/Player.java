@@ -4,17 +4,16 @@ import databases.users.UsersDAO;
 import login.classes.User;
 
 import javax.websocket.Session;
-import java.io.IOException;
 import java.sql.SQLException;
 
 
 public class Player {
+    private final String name;
+    private final User user;
+    private final UsersDAO usersDAO;
     private int score;
-    private String name;
-    private User user;
     private Session wsSession;
     private boolean bCanGuess;
-    private UsersDAO usersDAO;
 
     public Player(Session wsSession, User user, UsersDAO usersDAO) {
         this.user = user;
@@ -37,22 +36,20 @@ public class Player {
         return bCanGuess;
     }
 
-    public void increaseScore(int Score) {
-        score += Score;
-    }
-
     public void setCanGuess(boolean b) {
         bCanGuess = b;
     }
 
+    public void increaseScore(int Score) {
+        score += Score;
+    }
 
-    public void notifyPlayer(String text)
-    {
+    public void notifyPlayer(String text) {
         try
         {
             wsSession.getBasicRemote().sendText(text);
-        }
-        catch (Exception e){
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
     }

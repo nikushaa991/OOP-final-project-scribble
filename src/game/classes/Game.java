@@ -11,24 +11,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Game {
-    public static final int N_ROUNDS = 2;
+    public static final int N_ROUNDS = 18;
     public static final int MAX_PLAYERS = 6;
-    public static final String[] colors = {"#98fb98", "#6495ed", "#9370db", "#dda0dd", "#27927", "#e2a50e"};
-
+    public static final String[] colors = {"#98fb98", "#6495ed", "#9370db", "#dda0dd", "#f27927", "#e2a50e"};
+    private final boolean ranked;
+    private final Round[] rounds;
+    private final Player[] players;
+    private final boolean[] isActive;
+    private final ArrayList<String> instructions;
+    private final GamesDAO gamesDAO;
+    private final ScoresDAO scoresDAO;
+    private final UsersDAO usersDAO;
     private int registeredPlayers;
     private int activePlayerCount;
     private int curRound;
     private int painterId;
-    private boolean ranked;
-    private Round[] rounds;
-    private Player[] players;
-    private boolean[] isActive;
-    private ArrayList<String> instructions;
     private boolean isOver;
-
-    private GamesDAO gamesDAO;
-    private ScoresDAO scoresDAO;
-    private UsersDAO usersDAO;
     private int gameId;
 
     public Game(boolean ranked, GamesDAO gamesDAO, ScoresDAO scoresDAO, UsersDAO usersDAO) throws SQLException {
@@ -49,7 +47,7 @@ public class Game {
         gameId = gamesDAO.newGame(ranked);
     }
 
-    public void reconnect(int id, Session session) throws IOException {
+    public void reconnect(int id, Session session) {
         players[id].setSession(session);
         isActive[id] = true;
         activePlayerCount++;
@@ -57,7 +55,7 @@ public class Game {
         catchup(id);
     }
 
-    public synchronized int registerSession(Session session, User user) throws IOException {
+    public synchronized int registerSession(Session session, User user) {
         Player newPlayer = new Player(session, user, usersDAO);
         players[registeredPlayers] = newPlayer;
         isActive[registeredPlayers] = true;
@@ -70,10 +68,7 @@ public class Game {
                 try
                 {
                     begin();
-                } catch (IOException e)
-                {
-                    e.printStackTrace();
-                } catch (InterruptedException | SQLException e)
+                } catch (IOException | InterruptedException | SQLException e)
                 {
                     e.printStackTrace();
                 }
@@ -82,8 +77,7 @@ public class Game {
         return registeredPlayers - 1;
     }
 
-    private void begin() throws IOException, InterruptedException, SQLException
-    {
+    private void begin() throws IOException, InterruptedException, SQLException {
         for(int painterNum = 0; curRound < N_ROUNDS; curRound++, painterNum++)
         {
             if(activePlayerCount == 0)
@@ -177,7 +171,7 @@ public class Game {
         return winner;
     }
 
-    public void stroke(String start, int id) throws IOException {
+    public void stroke(String start, int id) {
         instructions.add(start);
         for(int i = 0; i < MAX_PLAYERS; i++)
             if(isActive[i] && i != id)
@@ -214,7 +208,11 @@ public class Game {
         return isOver;
     }
 
-    private void catchup(int id) throws IOException {
+    public synchronized boolean isFull() {
+        return registeredPlayers == MAX_PLAYERS;
+    }
+
+    private void catchup(int id) {
         for(String s : instructions)
             players[id].notifyPlayer(s);
         if(id == painterId)

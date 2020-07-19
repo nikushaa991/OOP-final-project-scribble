@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>Registration</title>
@@ -11,13 +11,13 @@
 <div id="login">
     <form action="UserCreated" method="POST">
         <div class="field">
-            <input type="text" id="user" name="username" title="accountName" placeholder="Username" />
+            <input type="text" id="user" name="username" title="accountName" placeholder="Username"/>
         </div>
         <div class="field">
-            <input type="password" id="pass" name="password" title="accountPassword" placeholder="Password" />
+            <input type="password" id="pass" name="password" title="accountPassword" placeholder="Password"/>
         </div>
-            <input type="submit" value="Register" id="reg"/>
-        </form>
+        <input type="submit" value="Register" id="reg"/>
+    </form>
 </div>
 </body>
 </html>

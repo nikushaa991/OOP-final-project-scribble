@@ -12,10 +12,11 @@ public class Encryptor {
 	*/
     public static String hexToString(byte[] bytes) {
         StringBuffer buff = new StringBuffer();
-        for (int i=0; i<bytes.length; i++) {
+        for(int i = 0; i < bytes.length; i++)
+        {
             int val = bytes[i];
             val = val & 0xff;  // remove higher bits, sign
-            if (val<16) buff.append('0'); // leading 0
+            if(val < 16) buff.append('0'); // leading 0
             buff.append(Integer.toString(val, 16));
         }
         return buff.toString();
@@ -23,7 +24,7 @@ public class Encryptor {
 
     /* Returns SHA representation of the string */
     public static String shaVal(String psw) throws NoSuchAlgorithmException {
-        String result = "";
+        String result;
         MessageDigest md = MessageDigest.getInstance("SHA");
         byte[] res = md.digest(psw.getBytes());
         result = hexToString(res);

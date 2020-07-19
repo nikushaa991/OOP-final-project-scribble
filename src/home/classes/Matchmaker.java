@@ -8,13 +8,13 @@ import game.classes.Game;
 import java.sql.SQLException;
 
 public class Matchmaker {
+    private final GamesDAO gamesDAO;
+    private final ScoresDAO scoresDAO;
+    private final UsersDAO usersDAO;
     private Game game;
-    private Game rankedGames[];
+    private Game[] rankedGames;
     private int inQueue;
-    private int rankedQueue[];
-    private GamesDAO gamesDAO;
-    private ScoresDAO scoresDAO;
-    private UsersDAO usersDAO;
+    private int[] rankedQueue;
 
     public Matchmaker(GamesDAO gamesDAO, ScoresDAO scoresDAO, UsersDAO usersDAO) throws SQLException {
         this.gamesDAO = gamesDAO;
@@ -37,7 +37,7 @@ public class Matchmaker {
         {
             game = new Game(false, gamesDAO, scoresDAO, usersDAO);
             inQueue = 1;
-        } else if(++inQueue == 6)
+        } else if(++inQueue == Game.MAX_PLAYERS)
         {
             Game res = game;
             game = new Game(false, gamesDAO, scoresDAO, usersDAO);
@@ -54,7 +54,7 @@ public class Matchmaker {
         {
             rankedGames[bracket] = new Game(true, gamesDAO, scoresDAO, usersDAO);
             rankedQueue[bracket] = 1;
-        } else if(++rankedQueue[bracket] == 6)
+        } else if(++rankedQueue[bracket] == Game.MAX_PLAYERS)
         {
             Game res = rankedGames[bracket];
             rankedGames[bracket] = new Game(true, gamesDAO, scoresDAO, usersDAO);

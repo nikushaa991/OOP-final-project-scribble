@@ -14,19 +14,23 @@ import java.sql.SQLException;
 @WebServlet(value = "/UserCreated", name = "UserCreated")
 public class UserCreationServlet extends HttpServlet {
     private static final int START_RANKING = 1000;
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UsersDAO userDb = (UsersDAO) getServletContext().getAttribute("users");
         String name = req.getParameter("username");
         String psw = req.getParameter("password");
-        try {
+        try
+        {
             if(userDb.exists(name))
                 req.getRequestDispatcher("user_exists.jsp").forward(req, resp);
-            else {
+            else
+            {
                 userDb.newUser(name, psw, START_RANKING);
                 req.getRequestDispatcher("index.jsp").forward(req, resp);
             }
-        } catch (SQLException | NoSuchAlgorithmException e) {
+        } catch (SQLException | NoSuchAlgorithmException e)
+        {
             e.printStackTrace();
         }
     }

@@ -23,14 +23,19 @@ public class GameInviteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if(!(boolean) request.getSession().getAttribute("INGAME"))
         {
-            ScoresDAO scoresDAO =  (ScoresDAO) getServletContext().getAttribute("scoresHistory");
+            ScoresDAO scoresDAO = (ScoresDAO) getServletContext().getAttribute("scoresHistory");
             GamesDAO gamesDAO = (GamesDAO) getServletContext().getAttribute("gamesHistory");
             UsersDAO usersDAO = (UsersDAO) getServletContext().getAttribute("users");
             Game game = null;
-            try {
+            try
+            {
                 game = new Game(false, gamesDAO, scoresDAO, usersDAO);
-            } catch (SQLException e) { e.printStackTrace(); }
+            } catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
             String host = ((User) request.getSession().getAttribute("USER")).getUsername();
+            assert game != null;
             ((ConcurrentHashMap<String, Game>) getServletContext().getAttribute("HOSTED_GAMES")).put(host, game); //TODO: remove map entry if game terminated
             String[] invitedUsers = request.getParameterValues("tickInvite");
             if(invitedUsers != null)
@@ -38,12 +43,7 @@ public class GameInviteServlet extends HttpServlet {
                 ConcurrentHashMap<String, ArrayList<String>> userInvites = (ConcurrentHashMap<String, ArrayList<String>>) getServletContext().getAttribute("gameInvites");
                 for(String invited : invitedUsers)
                 {
-                    ArrayList<String> invites = userInvites.get(invited);
-                    if(invites == null)
-                    {
-                        invites = new ArrayList<>();
-                        userInvites.put(invited, invites);
-                    }
+                    ArrayList<String> invites = userInvites.computeIfAbsent(invited, k -> new ArrayList<>());
                     invites.add(host);
                 }
             }

@@ -7,10 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
 /* Todo: This class is very similar TO FriendsDao. I will do something about it (interitance or other) */
 public class FriendRequestsDao extends DBConnector {
 
-    public FriendRequestsDao(){
+    public FriendRequestsDao() {
         super();
         tableName = "friendRequests";
     }
@@ -20,7 +21,8 @@ public class FriendRequestsDao extends DBConnector {
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery(
                 "select USERNAME_FROM FROM " + tableName + " WHERE USERNAME_TO = \"" + to + "\" AND USERNAME_FROM = \"" + from + "\";");
-        if(!rs.next()) {
+        if(!rs.next())
+        {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO " + tableName +
                     " VALUES (?, ?)");
             ps.setString(1, to);
@@ -44,7 +46,8 @@ public class FriendRequestsDao extends DBConnector {
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery(
                 "select USERNAME_FROM FROM " + tableName + " WHERE USERNAME_TO = \"" + to + "\";");
-        while (rs.next()) {
+        while (rs.next())
+        {
             String friend = rs.getString(1);
             friendRequests.add(friend);
         }

@@ -8,7 +8,7 @@ window.onload = function () {
     leaderBoard = document.getElementById("leaderBoard");
 
     let chatInput = document.getElementById("textInput");
-    let block = document.getElementById('right-block')
+    let block = document.getElementById('right-block');
 
     let canvas = document.getElementById("paint-canvas");
     let context = canvas.getContext("2d");
@@ -30,13 +30,13 @@ window.onload = function () {
 
 
     webSocket.onopen = function (message) {
-        wsOpen(message);
+        wsOpen();
     };
     webSocket.onclose = function (message) {
-        wsClose(message);
+        wsClose();
     };
     webSocket.onerror = function (message) {
-        wsError(message);
+        wsError();
     };
     //RECEIVE MESSAGES FROM SERVER ON THIS METHOD
     webSocket.onmessage = function (message) {
@@ -45,20 +45,16 @@ window.onload = function () {
 
     //SEND MESSAGES TO SERVER USING SEND
 
-    function wsOpen(message) {
+    function wsOpen() {
         addSystemMessage("CONNECTED")
     }
 
-    function wsCloseConnection() {
-        webSocket.close();
-    }
-
-    function wsClose(message) {
+    function wsClose() {
         addSystemMessage("DISCONNECTED")
 
     }
 
-    function wsError(message) {
+    function wsError() {
         addSystemMessage("ERROR")
 
     }
@@ -110,10 +106,10 @@ window.onload = function () {
             }, 5000);
             chooseWordDisplay(sp);
         } else if (message.data.startsWith("C")) {  //print user message to chat
-            let data = message.data.split(',') //0 = C, 1 = color, 2 = user, 3 = text
+            let data = message.data.split(','); //0 = C, 1 = color, 2 = user, 3 = text
             addUserMessage(data[1], data[2], data[3])
-        } else if (message.data != "") {  //print system message to chat
-            let data = message.data.split(',') //0 = M, 1 = text
+        } else if (message.data !== "") {  //print system message to chat
+            let data = message.data.split(','); //0 = M, 1 = text
             addSystemMessage(data[1])
         }
     }
@@ -233,7 +229,7 @@ window.onload = function () {
 
         div.innerHTML =
             `<p><span style="color:` + color +
-            `;font-weight:bold">` + username + `</span>: ` + text + `</p>`
+            `;font-weight:bold">` + username + `</span>: ` + text + `</p>`;
 
         document.getElementById('chat').appendChild(div);
         block.scrollTop = block.scrollHeight;
@@ -245,12 +241,13 @@ window.onload = function () {
         div.className = 'textRow';
 
         div.innerHTML =
-            `<p><span style="color:#d50000;font-weight:bold">SYSTEM</span>: ` + text + `</p>`
+            `<p><span style="color:#d50000;font-weight:bold">SYSTEM</span>: ` + text + `</p>`;
 
         document.getElementById('chat').appendChild(div);
         block.scrollTop = block.scrollHeight;
     }
 };
+
 function wordChosen(index) {
     let chosenWord = wordsArray[index];
     modal.style.display = "none";

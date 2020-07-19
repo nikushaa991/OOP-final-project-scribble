@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class ScoresDAO extends DBConnector {
 
-    public ScoresDAO() throws SQLException {
+    public ScoresDAO() {
         super();
         tableName = "scores";
     }
@@ -35,13 +35,14 @@ public class ScoresDAO extends DBConnector {
     }
 
     /* returns list of all-time top scorer usernames and respective total scores */
-    public  ArrayList<Pair<String, Integer>> overallTopScores(int count) throws SQLException {
-        ArrayList<Pair<String, Integer> > top = new ArrayList<>();
+    public ArrayList<Pair<String, Integer>> overallTopScores(int count) throws SQLException {
+        ArrayList<Pair<String, Integer>> top = new ArrayList<>();
         Statement queryStm = connection.createStatement();
         ResultSet rs = queryStm.executeQuery(
                 "select * from (SELECT USERNAME, SUM(SCORE) SUM_SCORE FROM " + tableName +
-                " GROUP BY USERNAME) a ORDER BY SUM_SCORE DESC LIMIT " + count + ";");
-        while (rs.next()) {
+                        " GROUP BY USERNAME) a ORDER BY SUM_SCORE DESC LIMIT " + count + ";");
+        while (rs.next())
+        {
             Pair<String, Integer> nextUser = new Pair(rs.getString(1), rs.getInt(2));
             top.add(nextUser);
         }

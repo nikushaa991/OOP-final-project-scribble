@@ -3,24 +3,22 @@ package game.classes;
 import databases.WordsList;
 import databases.scores.ScoresDAO;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class Round{
-    private Player painter;
-    private Random rand;
-    private String hiddenWord;
-    private int guessed;
+public class Round {
     public static final int WORD_CHOICE_NUM = 3;
     public static final int PAINTER_CHOICE_TIME = 5;
     public static final int ROUND_DURATION = 35;
-
-    private int gameId;
-    private int index;
-    private ScoresDAO scoresDAO;
-    private Object lock;
+    private final Player painter;
+    private final Random rand;
+    private final int gameId;
+    private final int index;
+    private final ScoresDAO scoresDAO;
+    private final Object lock;
+    private String hiddenWord;
+    private int guessed;
 
     public Round(Player painter, int gameId, ScoresDAO scoresDAO, int index) {
         this.painter = painter;
@@ -31,9 +29,8 @@ public class Round{
         this.lock = new Object();
     }
 
-    String[] GenerateWordsForPainter()
-    {
-        String Choices[] = new String[WORD_CHOICE_NUM];
+    String[] GenerateWordsForPainter() {
+        String[] Choices = new String[WORD_CHOICE_NUM];
 
         int i = 0;
         while (i < WORD_CHOICE_NUM)
@@ -54,20 +51,19 @@ public class Round{
         return Choices;
     }
 
-    public void OnRoundBegin(Player[] players, boolean[] isActive) throws IOException, InterruptedException
-    {
+    public void OnRoundBegin(Player[] players, boolean[] isActive) throws InterruptedException {
         notifyAllPlayers(players, isActive, "M,New Round Started");
 
         notifyAllPlayers(players, isActive, "N,");
 
         hiddenWord = "?";
 
-        String painterChoice = "";
+        StringBuilder painterChoice = new StringBuilder();
 
         String[] Choices = GenerateWordsForPainter();
 
         for(int i = 0; i < WORD_CHOICE_NUM; i++)
-            painterChoice += Choices[i] + " ";
+            painterChoice.append(Choices[i]).append(" ");
 
         painter.notifyPlayer("A, " + painterChoice);
 
@@ -90,8 +86,7 @@ public class Round{
             try
             {
                 lock.wait();
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 e.printStackTrace();
             }
@@ -113,20 +108,20 @@ public class Round{
         TimeUnit.SECONDS.sleep(ROUND_DURATION);
     }
 
-    public void OnRoundEnd(Player[] players, boolean[] isActive) throws IOException {
-        String result = "S,";
+    public void OnRoundEnd(Player[] players, boolean[] isActive) {
+        StringBuilder result = new StringBuilder("S,");
         for(Player p : players)
         {
             if(p != null)
             {
                 int score = p.getScore();
-                result += p.getName() + "-" + score + " ";
+                result.append(p.getName()).append("-").append(score).append(" ");
             }
         }
-        notifyAllPlayers(players, isActive, result);
+        notifyAllPlayers(players, isActive, result.toString());
     }
 
-    public void OnCorrectGuess(Player[] players, boolean[] isActive, int guesserIndex) throws IOException, SQLException {
+    public void OnCorrectGuess(Player[] players, boolean[] isActive, int guesserIndex) throws SQLException {
         Player guesser = players[guesserIndex];
         notifyAllPlayers(players, isActive, "M," + guesser.getName() + " has guessed the word!");
         int score = CalculateScore();
@@ -136,20 +131,18 @@ public class Round{
         guessed++;
     }
 
-    public void OnIncorrectGuess(Player[] players, boolean[] isActive, int guesserIndex, String guess) throws IOException {
-        notifyAllPlayers(players, isActive, "C," +Game.colors[guesserIndex] + ',' + players[guesserIndex].getName() + "," + guess);
+    public void OnIncorrectGuess(Player[] players, boolean[] isActive, int guesserIndex, String guess) {
+        notifyAllPlayers(players, isActive, "C," + Game.colors[guesserIndex] + ',' + players[guesserIndex].getName() + "," + guess);
     }
 
-    public void notifyAllPlayers(Player[] players, boolean[] isActive, String text) throws IOException {
+    public void notifyAllPlayers(Player[] players, boolean[] isActive, String text) {
         for(int i = 0; i < Game.MAX_PLAYERS; i++)
             if(isActive[i])
                 players[i].notifyPlayer(text);
     }
 
     public boolean CheckGuess(String guess) {
-        if(guess.toLowerCase().equals(hiddenWord.toLowerCase()))
-            return true;
-        return false;
+        return guess.toLowerCase().equals(hiddenWord.toLowerCase());
     }
 
     private int CalculateScore() {

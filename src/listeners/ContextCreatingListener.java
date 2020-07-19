@@ -2,11 +2,11 @@ package listeners;
 
 import databases.friends.FriendRequestsDao;
 import databases.friends.FriendsDAO;
-import databases.scores.ScoresDAO;
-import game.classes.Game;
 import databases.games.GamesDAO;
-import home.classes.Matchmaker;
+import databases.scores.ScoresDAO;
 import databases.users.UsersDAO;
+import game.classes.Game;
+import home.classes.Matchmaker;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -27,16 +27,20 @@ public class ContextCreatingListener implements ServletContextListener {
         FriendsDAO friendsDAO = null;
         FriendRequestsDao friendRequestsDao = null;
         ConcurrentHashMap<String, Game> games = new ConcurrentHashMap<>();
-        ConcurrentHashMap<String, ArrayList<String> > gameInvites = new ConcurrentHashMap<>();
+        ConcurrentHashMap<String, ArrayList<String>> gameInvites = new ConcurrentHashMap<>();
         Matchmaker mm = null;
-        try {
+        try
+        {
             usersDb = new UsersDAO();
-            scoresDb =  new ScoresDAO();
-            gameDb =  new GamesDAO();
+            scoresDb = new ScoresDAO();
+            gameDb = new GamesDAO();
             friendsDAO = new FriendsDAO();
             friendRequestsDao = new FriendRequestsDao();
             mm = new Matchmaker(gameDb, scoresDb, usersDb);
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
         servletContextEvent.getServletContext().setAttribute("users", usersDb);
         servletContextEvent.getServletContext().setAttribute("scoresHistory", scoresDb);
         servletContextEvent.getServletContext().setAttribute("gamesHistory", gameDb);
@@ -51,9 +55,13 @@ public class ContextCreatingListener implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         UsersDAO usersDb = (UsersDAO) servletContextEvent.getServletContext().getAttribute("users");
-        try {
+        try
+        {
             usersDb.closeConnection();
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
         System.out.println("System undeployed.");
     }
 }

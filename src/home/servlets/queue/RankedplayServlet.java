@@ -22,16 +22,20 @@ public class RankedplayServlet extends HttpServlet {
         {
             Matchmaker mm = (Matchmaker) getServletContext().getAttribute("MATCHMAKER");
             Game game = null;
-            try {
+            try
+            {
                 game = mm.addToRankedQueue(((User) session.getAttribute("USER")).getRating());
-            } catch (SQLException e) { e.printStackTrace(); }
+            } catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
             session.setAttribute("GAME", game);
         }
         RequestDispatcher rd = request.getRequestDispatcher("game.jsp");
         rd.forward(request, response);
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 
     }
 }
