@@ -51,7 +51,24 @@ public class Round {
         return Choices;
     }
 
-    public void OnRoundBegin(Player[] players, boolean[] isActive) throws InterruptedException {
+    void UpdateScores(Player[] players, boolean[] isActive) throws IOException 
+    {
+	    String result = "S,";
+	    for(Player p : players)
+	    {
+	        if(p != null)
+	        {
+	            int score = p.getScore();
+	            result += p.getName() + "-" + score + " ";
+	        }
+	    }
+	    notifyAllPlayers(players, isActive, result);
+    }
+
+    public void OnRoundBegin(Player[] players, boolean[] isActive) throws InterruptedException 
+    {
+    	UpdateScores(players, isActive);
+
         notifyAllPlayers(players, isActive, "M,New Round Started");
 
         notifyAllPlayers(players, isActive, "N,");
@@ -108,17 +125,9 @@ public class Round {
         TimeUnit.SECONDS.sleep(ROUND_DURATION);
     }
 
-    public void OnRoundEnd(Player[] players, boolean[] isActive) {
-        StringBuilder result = new StringBuilder("S,");
-        for(Player p : players)
-        {
-            if(p != null)
-            {
-                int score = p.getScore();
-                result.append(p.getName()).append("-").append(score).append(" ");
-            }
-        }
-        notifyAllPlayers(players, isActive, result.toString());
+    public void OnRoundEnd(Player[] players, boolean[] isActive) 
+    {
+    	UpdateScores(players, isActive);
     }
 
     public void OnCorrectGuess(Player[] players, boolean[] isActive, int guesserIndex) throws SQLException {

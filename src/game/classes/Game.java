@@ -217,6 +217,8 @@ public class Game {
             players[id].notifyPlayer(s);
         if(id == painterId)
             players[id].notifyPlayer("P,");
+
+        rounds[curRound].UpdateScores(players,isActive);
     }
 
 }
