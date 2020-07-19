@@ -82,7 +82,8 @@ public class Game {
         return registeredPlayers - 1;
     }
 
-    private void begin() throws IOException, InterruptedException, SQLException {
+    private void begin() throws IOException, InterruptedException, SQLException
+    {
         for(int painterNum = 0; curRound < N_ROUNDS; curRound++, painterNum++)
         {
             if(activePlayerCount == 0)
@@ -103,19 +104,24 @@ public class Game {
         isOver = true;
         painterId = -1;
         Player p = GetWinner();
+
         for(int i = 0; i < Game.MAX_PLAYERS; i++)
             if(isActive[i])
             {
                 players[i].notifyPlayer("N,");
                 players[i].notifyPlayer("M," + p.getName() + " has won the game!");
             }
+
         if(ranked)
             UpdatePlayerRanks();
+
         updateGamesDAO(p);
     }
 
 
-    //TODO: Test if this works
+    /*
+     * Runs trough all the players, sorts them and Updates each Ranking based on players place
+     */
     void UpdatePlayerRanks() throws SQLException {
         // sort the players
         for(int i = 0; i < players.length; i++)
@@ -169,8 +175,6 @@ public class Game {
             }
         }
         return winner;
-
-        // Debug winner won the game
     }
 
     public void stroke(String start, int id) throws IOException {

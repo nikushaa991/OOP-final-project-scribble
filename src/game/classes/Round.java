@@ -31,15 +31,10 @@ public class Round{
         this.lock = new Object();
     }
 
-    public void OnRoundBegin(Player[] players, boolean[] isActive) throws IOException, InterruptedException {
-        // Randomly take word out of WordDB:
-
-        notifyAllPlayers(players, isActive, "M,New Round Started");
-
-        notifyAllPlayers(players, isActive, "N,");
-        hiddenWord = "?";
+    String[] GenerateWordsForPainter()
+    {
         String Choices[] = new String[WORD_CHOICE_NUM];
-        String painterChoice = "";
+
         int i = 0;
         while (i < WORD_CHOICE_NUM)
         {
@@ -55,7 +50,23 @@ public class Round{
             Choices[i] = word;
             i++;
         }
-        for(i = 0; i < WORD_CHOICE_NUM; i++)
+
+        return Choices;
+    }
+
+    public void OnRoundBegin(Player[] players, boolean[] isActive) throws IOException, InterruptedException
+    {
+        notifyAllPlayers(players, isActive, "M,New Round Started");
+
+        notifyAllPlayers(players, isActive, "N,");
+
+        hiddenWord = "?";
+
+        String painterChoice = "";
+
+        String[] Choices = GenerateWordsForPainter();
+
+        for(int i = 0; i < WORD_CHOICE_NUM; i++)
             painterChoice += Choices[i] + " ";
 
         painter.notifyPlayer("A, " + painterChoice);
@@ -79,11 +90,11 @@ public class Round{
             try
             {
                 lock.wait();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
             }
-
         }
 
         notifyAllPlayers(players, isActive, "M,Painter has chosen a word");
@@ -94,11 +105,11 @@ public class Round{
         painter.notifyPlayer("P,");
         painter.notifyPlayer("M,You have chosen the word: " + hiddenWord);
         painter.setCanGuess(false);
+
         for(Player p : players)
-        {
             if(p != painter && p != null)
                 p.setCanGuess(true);
-        }
+
         TimeUnit.SECONDS.sleep(ROUND_DURATION);
     }
 
