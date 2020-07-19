@@ -47,7 +47,7 @@ public class Game {
         gameId = gamesDAO.newGame(ranked);
     }
 
-    public void reconnect(int id, Session session) {
+    public void reconnect(int id, Session session) throws IOException {
         players[id].setSession(session);
         isActive[id] = true;
         activePlayerCount++;
@@ -55,7 +55,7 @@ public class Game {
         catchup(id);
     }
 
-    public synchronized int registerSession(Session session, User user) {
+    public synchronized int registerSession(Session session, User user) throws IOException {
         Player newPlayer = new Player(session, user, usersDAO);
         players[registeredPlayers] = newPlayer;
         isActive[registeredPlayers] = true;
@@ -212,7 +212,7 @@ public class Game {
         return registeredPlayers == MAX_PLAYERS;
     }
 
-    private void catchup(int id) {
+    private void catchup(int id) throws IOException {
         for(String s : instructions)
             players[id].notifyPlayer(s);
         if(id == painterId)

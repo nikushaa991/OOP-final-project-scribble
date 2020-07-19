@@ -3,6 +3,7 @@ package game.classes;
 import databases.WordsList;
 import databases.scores.ScoresDAO;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -51,7 +52,7 @@ public class Round {
         return Choices;
     }
 
-    void UpdateScores(Player[] players, boolean[] isActive) throws IOException 
+    void UpdateScores(Player[] players, boolean[] isActive) throws IOException
     {
 	    String result = "S,";
 	    for(Player p : players)
@@ -65,8 +66,7 @@ public class Round {
 	    notifyAllPlayers(players, isActive, result);
     }
 
-    public void OnRoundBegin(Player[] players, boolean[] isActive) throws InterruptedException 
-    {
+    public void OnRoundBegin(Player[] players, boolean[] isActive) throws InterruptedException, IOException {
     	UpdateScores(players, isActive);
 
         notifyAllPlayers(players, isActive, "M,New Round Started");
@@ -125,8 +125,7 @@ public class Round {
         TimeUnit.SECONDS.sleep(ROUND_DURATION);
     }
 
-    public void OnRoundEnd(Player[] players, boolean[] isActive) 
-    {
+    public void OnRoundEnd(Player[] players, boolean[] isActive) throws IOException {
     	UpdateScores(players, isActive);
     }
 
