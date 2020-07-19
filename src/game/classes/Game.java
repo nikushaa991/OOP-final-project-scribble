@@ -32,7 +32,7 @@ public class Game {
     private int gameId;
 
     public Game(boolean ranked, GamesDAO gamesDAO, ScoresDAO scoresDAO, UsersDAO usersDAO) throws SQLException {
-
+// this should be only in case of ranked/casual play, in case of game invite, MAX players should be taken as an argument
         players = new Player[MAX_PLAYERS];
         rounds = new Round[N_ROUNDS];
         isActive = new boolean[MAX_PLAYERS];
