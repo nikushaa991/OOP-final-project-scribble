@@ -9,9 +9,10 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Round {
-    public static final int WORD_CHOICE_NUM = 3;
-    public static final int PAINTER_CHOICE_TIME = 5;
-    public static final int ROUND_DURATION = 35;
+    private static final int WORD_CHOICE_NUM = 3;
+    private static final int PAINTER_CHOICE_TIME = 5;
+    private static final int ROUND_DURATION = 35;
+    private static final String defaultWord = "NOWORD";
     private final Player painter;
     private final Random rand;
     private final int gameId;
@@ -23,11 +24,12 @@ public class Round {
 
     public Round(Player painter, int gameId, ScoresDAO scoresDAO, int index) {
         this.painter = painter;
-        rand = new Random();
         this.gameId = gameId;
         this.scoresDAO = scoresDAO;
         this.index = index;
         this.lock = new Object();
+        rand = new Random();
+
     }
 
     String[] GenerateWordsForPainter() {
@@ -52,15 +54,14 @@ public class Round {
         return Choices;
     }
 
-    void UpdateScores(Player[] players, boolean[] isActive) throws IOException
-    {
+    void UpdateScores(Player[] players, boolean[] isActive) {
 	    String result = "S,";
 	    for(Player p : players)
 	    {
 	        if(p != null)
 	        {
 	            int score = p.getScore();
-	            result += p.getName() + "-" + score + " ";
+	            result += p.getName() + " - " + score + ",";
 	        }
 	    }
 	    notifyAllPlayers(players, isActive, result);
@@ -69,11 +70,13 @@ public class Round {
     public void OnRoundBegin(Player[] players, boolean[] isActive) throws InterruptedException, IOException {
     	UpdateScores(players, isActive);
 
-        notifyAllPlayers(players, isActive, "M,New Round Started");
-
         notifyAllPlayers(players, isActive, "N,");
 
-        hiddenWord = "?";
+        for(Player p : players)
+            if(p != null)
+                p.setCanGuess(true);
+
+        hiddenWord = defaultWord;
 
         StringBuilder painterChoice = new StringBuilder();
 
@@ -111,16 +114,12 @@ public class Round {
 
         notifyAllPlayers(players, isActive, "M,Painter has chosen a word");
 
-        if(hiddenWord.equals("?"))
+        if(hiddenWord.equals(defaultWord))
             hiddenWord = Choices[rand.nextInt(Choices.length)];
 
         painter.notifyPlayer("P,");
         painter.notifyPlayer("M,You have chosen the word: " + hiddenWord);
         painter.setCanGuess(false);
-
-        for(Player p : players)
-            if(p != painter && p != null)
-                p.setCanGuess(true);
 
         TimeUnit.SECONDS.sleep(ROUND_DURATION);
     }
@@ -150,7 +149,7 @@ public class Round {
     }
 
     public boolean CheckGuess(String guess) {
-        return guess.toLowerCase().equals(hiddenWord.toLowerCase());
+        return guess.toLowerCase().equals(hiddenWord.toLowerCase()) && !guess.equals(defaultWord);
     }
 
     private int CalculateScore() {

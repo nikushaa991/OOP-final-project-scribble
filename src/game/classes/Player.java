@@ -37,6 +37,7 @@ public class Player {
     }
 
     public void setCanGuess(boolean b) {
+        if(!b) this.notifyPlayer("D,");
         bCanGuess = b;
     }
 

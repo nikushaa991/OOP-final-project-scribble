@@ -198,6 +198,8 @@ public class Game {
     public synchronized void unregister(int playerIndex) {
         isActive[playerIndex] = false;
         activePlayerCount--;
+        if(activePlayerCount == 0)
+            isOver = true;
     }
 
     public synchronized void SetHiddenWord(String word) {
