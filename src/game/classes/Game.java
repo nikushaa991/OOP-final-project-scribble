@@ -178,7 +178,7 @@ public class Game {
                 players[i].notifyPlayer(start);
     }
 
-    public void CheckGuessFromGame(int PlayerIndex, String guess) throws IOException, SQLException {
+    public void CheckGuessFromGame(int PlayerIndex, String guess) throws SQLException {
         if(registeredPlayers < 2 || curRound == N_ROUNDS)
         {
             for(int i = 0; i < MAX_PLAYERS; i++)

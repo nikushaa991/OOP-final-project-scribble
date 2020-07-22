@@ -88,6 +88,8 @@ window.onload = function () {
         {  //new round
             isPainter = false;
             context.clearRect(0, 0, canvas.width, canvas.height);
+            context.strokeStyle = 'black'; 
+            context.lineWidth = 1;
             enableChat();
             addSystemMessage("New Round Started");
         }
