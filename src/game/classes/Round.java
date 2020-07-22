@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class Round {
     private static final int WORD_CHOICE_NUM = 3;
     private static final int PAINTER_CHOICE_TIME = 5;
-    private static final int ROUND_DURATION = 35;
+    private static final int ROUND_DURATION = 60;
     private static final String defaultWord = "NOWORD";
     private final Player painter;
     private final Random rand;
