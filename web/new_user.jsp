@@ -3,10 +3,12 @@
 <head>
     <title>Registration</title>
     <link rel="stylesheet" href="styles/new_user.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
 <div id="header">
-    OOP
+    OOP <img id="xvliki" src="xvliki.png">
 </div>
 <div id="login">
     <form action="UserCreated" method="POST">

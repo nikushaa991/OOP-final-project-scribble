@@ -8,7 +8,11 @@
     line-height: 10vh;
     box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0 4px 6px -5px black;
 }
-
+img {
+    margin-top: 1vh;
+    height:8vh;
+    -webkit-user-drag: none;
+}
 #login {
     background: #1c1f26;
     color: #fff;

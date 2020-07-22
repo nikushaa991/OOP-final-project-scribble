@@ -216,13 +216,18 @@ public class Game {
 
     public synchronized int getActivePlayerCount() { return activePlayerCount; }
 
-    private void catchup(int id) throws IOException {
-        for(String s : instructions)
-            players[id].notifyPlayer(s);
-        if(id == painterId)
-            players[id].notifyPlayer("P,");
-        if (rounds[curRound] != null)
-            rounds[curRound].UpdateScores(players, isActive);
+    private synchronized void catchup(int id) {
+        try
+        {
+            for(String s : instructions)
+                players[id].notifyPlayer(s);
+            if(id == painterId)
+                players[id].notifyPlayer("P,");
+            if(rounds[curRound] != null)
+                rounds[curRound].UpdateScores(players, isActive);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

@@ -3,10 +3,12 @@
 <head>
     <title>Registration</title>
     <link rel="stylesheet" href="styles/user_exists.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
 <div id="header">
-    OOP
+    OOP <img id="xvliki" src="xvliki.png">
 </div>
 <div id="login">
     <label id="lbl"> Username is taken, choose a different one. </label>

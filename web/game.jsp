@@ -5,11 +5,13 @@
     <meta charset="UTF-8">
     <title>Game</title>
     <link rel="stylesheet" href="styles/game.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 
 <body>
 <div id="header">
-    OOP
+    <img id="xvliki" src="xvliki.png">
 </div>
 
 <div id="login">

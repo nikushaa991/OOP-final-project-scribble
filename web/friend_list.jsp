@@ -10,12 +10,14 @@
 <head>
     <title>Friendlist</title>
     <link rel="stylesheet" href="styles/friend_list.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 
 <body>
 
 <div id="header">
-    OOP
+    OOP <img id="xvliki" src="xvliki.png">
 </div>
 
 <div id="login">
