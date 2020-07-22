@@ -88,7 +88,7 @@ public class Game {
             while (!isActive[painterNum % MAX_PLAYERS])
                 painterNum++;
             painterId = painterNum % MAX_PLAYERS;
-            rounds[curRound] = new Round(players[painterId], gameId, scoresDAO, curRound);
+            rounds[curRound] = new Round(players[painterId], this, gameId, scoresDAO, curRound);
             Round CurrentRound = rounds[curRound];
             instructions.clear();
             CurrentRound.OnRoundBegin(players, isActive);
@@ -214,13 +214,15 @@ public class Game {
         return registeredPlayers == MAX_PLAYERS;
     }
 
+    public synchronized int getActivePlayerCount() { return activePlayerCount; }
+
     private void catchup(int id) throws IOException {
         for(String s : instructions)
             players[id].notifyPlayer(s);
         if(id == painterId)
             players[id].notifyPlayer("P,");
-
-        rounds[curRound].UpdateScores(players,isActive);
+        if (rounds[curRound] != null)
+            rounds[curRound].UpdateScores(players, isActive);
     }
 
 }

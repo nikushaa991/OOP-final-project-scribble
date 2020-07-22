@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Round {
     private static final int WORD_CHOICE_NUM = 3;
-    private static final int PAINTER_CHOICE_TIME = 5;
+    private static final int PAINTER_CHOICE_TIME = 10;
     private static final int ROUND_DURATION = 60;
     private static final String defaultWord = "NOWORD";
     private final Player painter;
@@ -19,12 +19,14 @@ public class Round {
     private final int index;
     private final ScoresDAO scoresDAO;
     private final Object lock;
+    private final Game game;
     private String hiddenWord;
     private int guessed;
 
-    public Round(Player painter, int gameId, ScoresDAO scoresDAO, int index) {
+    public Round(Player painter, Game game, int gameId, ScoresDAO scoresDAO, int index) {
         this.painter = painter;
         this.gameId = gameId;
+        this.game = game;
         this.scoresDAO = scoresDAO;
         this.index = index;
         this.lock = new Object();
@@ -121,7 +123,12 @@ public class Round {
         painter.notifyPlayer("M,You have chosen the word: " + hiddenWord);
         painter.setCanGuess(false);
 
-        TimeUnit.SECONDS.sleep(ROUND_DURATION);
+        for(int i = 0; i < 30 ; i++)
+            if(guessed != game.getActivePlayerCount() - 1)
+                TimeUnit.SECONDS.sleep(ROUND_DURATION / 30);
+            else break;
+
+        notifyAllPlayers(players, isActive, "M,The word was: " + hiddenWord);
     }
 
     public void OnRoundEnd(Player[] players, boolean[] isActive) throws IOException {

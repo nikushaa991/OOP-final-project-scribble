@@ -33,11 +33,11 @@
             <button type="button" value="#ffffff"></button>
         </div>
         <div class="brushes">
-            <button type="button" value="1"></button>
             <button type="button" value="2"></button>
-            <button type="button" value="3"></button>
             <button type="button" value="4"></button>
-            <button type="button" value="5"></button>
+            <button type="button" value="6"></button>
+            <button type="button" value="8"></button>
+            <button type="button" value="10"></button>
         </div>
         <div class="buttons">
             <button id="clear" class=bttn type="button">Clear</button>

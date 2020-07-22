@@ -51,7 +51,6 @@ public class Player {
             wsSession.getBasicRemote().sendText(text);
         } catch (Exception e)
         {
-            e.printStackTrace();
         }
     }
 

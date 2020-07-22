@@ -23,7 +23,7 @@ window.onload = function () {
     let mouseX = 0;
     let mouseY = 0;
     context.strokeStyle = 'black'; // initial brush color
-    context.lineWidth = 1; // initial brush width
+    context.lineWidth = 2; // initial brush width
     context.filter = "url(#crisp)";
     let isDrawing = false;
     let isPainter = false;
@@ -126,7 +126,7 @@ window.onload = function () {
             sp = sp.slice(1, sp.length - 1);
             setTimeout(function () {
                 modal.style.display = "none";
-            }, 5000);
+            }, 10000);
             chooseWordDisplay(sp);
         }
         else if (message.data.startsWith("C"))
