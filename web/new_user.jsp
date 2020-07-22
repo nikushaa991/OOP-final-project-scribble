@@ -13,10 +13,10 @@
 <div id="login">
     <form action="UserCreated" method="POST">
         <div class="field">
-            <input type="text" id="user" name="username" title="accountName" placeholder="Username"/>
+            <input type="text" id="user" name="username" title="accountName" placeholder="Username" minlength="3" required/>
         </div>
         <div class="field">
-            <input type="password" id="pass" name="password" title="accountPassword" placeholder="Password"/>
+            <input type="password" id="pass" name="password" title="accountPassword" placeholder="Password" minlength="3" required/>
         </div>
         <input type="submit" value="Register" id="reg"/>
     </form>
