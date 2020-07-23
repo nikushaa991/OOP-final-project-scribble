@@ -57,38 +57,50 @@ window.onload = function () {
         addSystemMessage("ERROR")
     }
 
-    function wsGetMessage(message) {
-        if (message.data.startsWith("L"))
-        {  //line to
-            let coordinates = message.data.split(",");
+    function handleDrawMessage(message) {
+        if (message.startsWith("L"))
+        {
+            let coordinates = message.split(",");
             context.lineTo(coordinates[1] / upscaleRatio, coordinates[2] / upscaleRatio);
             context.stroke();
         }
-        else if (message.data.startsWith("CLEAR,"))
+        else if (message.startsWith("B"))
+        {  //begin line
+            let coordinates = message.split(",");
+            context.beginPath();
+            context.moveTo(coordinates[1] / upscaleRatio, coordinates[2] / upscaleRatio);
+        }
+        else if (message.startsWith("T"))
+        {  //color
+            let paint = message.split(",");
+            context.strokeStyle = paint[1];
+        }
+        else if (message.startsWith("W"))
+        {  //stroke width
+            let width = message.split(",");
+            context.lineWidth = width[1];
+        }
+        else if (message.startsWith("CLEAR"))
         {  //clear canvas
             clear();
         }
-        else if (message.data.startsWith("T"))
-        {  //color
-            let paint = message.data.split(",");
-            context.strokeStyle = paint[1];
+    }
+
+    function wsGetMessage(message) {
+        if (message.data.startsWith("L") || message.data.startsWith("B") || message.data.startsWith("T") || message.data.startsWith("W") || message.data.startsWith("CLEAR"))
+        {  //line to
+            handleDrawMessage(message.data);
         }
-        else if (message.data.startsWith("W"))
-        {  //stroke width
-            let width = message.data.split(",");
-            context.lineWidth = width[1];
-        }
-        else if (message.data.startsWith("B"))
-        {  //begin line
-            let coordinates = message.data.split(",");
-            context.beginPath();
-            context.moveTo(coordinates[1] / upscaleRatio, coordinates[2] / upscaleRatio);
+        else if(message.data.startsWith("R,"))
+        {
+            let arr = message.data.substr(2).split(";");
+            arr.forEach(element => handleDrawMessage(element));
         }
         else if (message.data.startsWith("N"))
         {  //new round
             isPainter = false;
             context.clearRect(0, 0, canvas.width, canvas.height);
-            context.strokeStyle = 'black'; 
+            context.strokeStyle = 'black';
             context.lineWidth = 1;
             enableChat();
             addSystemMessage("New Round Started");

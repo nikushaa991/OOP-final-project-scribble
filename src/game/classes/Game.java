@@ -8,7 +8,6 @@ import login.classes.User;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class Game {
     public static final int N_ROUNDS = 18;
@@ -18,7 +17,7 @@ public class Game {
     private final Round[] rounds;
     private final Player[] players;
     private final boolean[] isActive;
-    private final ArrayList<String> instructions;
+    private String instructions;
     private final GamesDAO gamesDAO;
     private final ScoresDAO scoresDAO;
     private final UsersDAO usersDAO;
@@ -30,7 +29,6 @@ public class Game {
     private int gameId;
 
     public Game(boolean ranked, GamesDAO gamesDAO, ScoresDAO scoresDAO, UsersDAO usersDAO) throws SQLException {
-
         players = new Player[MAX_PLAYERS];
         rounds = new Round[N_ROUNDS];
         isActive = new boolean[MAX_PLAYERS];
@@ -39,7 +37,7 @@ public class Game {
         curRound = 0;
         painterId = 0;
         isOver = false;
-        instructions = new ArrayList<>();
+        instructions = "R,";
         this.ranked = ranked;
         this.gamesDAO = gamesDAO;
         this.scoresDAO = scoresDAO;
@@ -55,7 +53,7 @@ public class Game {
         catchup(id);
     }
 
-    public synchronized int registerSession(Session session, User user) throws IOException {
+    public synchronized int registerSession(Session session, User user) {
         Player newPlayer = new Player(session, user, usersDAO);
         players[registeredPlayers] = newPlayer;
         isActive[registeredPlayers] = true;
@@ -90,7 +88,7 @@ public class Game {
             painterId = painterNum % MAX_PLAYERS;
             rounds[curRound] = new Round(players[painterId], this, gameId, scoresDAO, curRound);
             Round CurrentRound = rounds[curRound];
-            instructions.clear();
+            instructions = "R,";
             CurrentRound.OnRoundBegin(players, isActive);
             // Game in Progress
             CurrentRound.OnRoundEnd(players, isActive);
@@ -172,7 +170,7 @@ public class Game {
     }
 
     public void stroke(String start, int id) {
-        instructions.add(start);
+        instructions += start + ';';
         for(int i = 0; i < MAX_PLAYERS; i++)
             if(isActive[i] && i != id)
                 players[i].notifyPlayer(start);
@@ -214,18 +212,20 @@ public class Game {
         return registeredPlayers == MAX_PLAYERS;
     }
 
-    public synchronized int getActivePlayerCount() { return activePlayerCount; }
+    public synchronized int getActivePlayerCount() {
+        return activePlayerCount;
+    }
 
     private synchronized void catchup(int id) {
         try
         {
-            for(String s : instructions)
-                players[id].notifyPlayer(s);
+            players[id].notifyPlayer(instructions);
             if(id == painterId)
                 players[id].notifyPlayer("P,");
             if(rounds[curRound] != null)
                 rounds[curRound].UpdateScores(players, isActive);
-        }catch(Exception e){
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
