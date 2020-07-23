@@ -149,15 +149,44 @@ public class Round {
         notifyAllPlayers(players, isActive, "C," + Game.colors[guesserIndex] + ',' + players[guesserIndex].getName() + "," + guess);
     }
 
+    public void OnCloseGuess(Player closePlayer, Player[] players, boolean[] isActive)
+    {
+        String text = "M," + closePlayer.getName() + " is close to guessing the word";
+        notifyAllPlayers(players, isActive, text);
+    }
+
     public void notifyAllPlayers(Player[] players, boolean[] isActive, String text) {
         for(int i = 0; i < Game.MAX_PLAYERS; i++)
             if(isActive[i])
                 players[i].notifyPlayer(text);
     }
 
-    public boolean CheckGuess(String guess) {
-        return guess.toLowerCase().equals(hiddenWord.toLowerCase()) && !guess.equals(defaultWord);
+    public int CheckGuess(String guess) {
+        if(guess.toLowerCase().equals(hiddenWord.toLowerCase()) && !guess.equals(defaultWord))
+        {
+            return 0;
+        }
+        else if(isClose(guess))
+        {
+            return 1;
+        }
+        else return 2;
     }
+
+    private boolean isClose(String word)
+    {
+        if(word.length() != hiddenWord.length()) return false;
+        int result = 0;
+        for(int i = 0; i < hiddenWord.length(); i++)
+        {
+            if(word.charAt(i) == hiddenWord.charAt(i))
+            {
+                result++;
+            }
+        }
+        return (result >= hiddenWord.length() - 1);
+    }
+
 
     private int CalculateScore() {
         return (Game.MAX_PLAYERS - guessed) * 10;
