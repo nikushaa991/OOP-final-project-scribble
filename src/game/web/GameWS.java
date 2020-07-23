@@ -46,7 +46,7 @@ public class GameWS {
 
     //CLIENT TO SERVER COMMUNICATION
     @OnMessage
-    synchronized public void onMessage(String message, Session session) throws IOException, SQLException {
+    synchronized public void onMessage(String message, Session session) throws SQLException {
         PlayerInfo info = map.get(session);
         if(message.startsWith("L") || message.startsWith("B") || message.startsWith("T") || message.startsWith("W") || message.startsWith("CLEAR"))
         {

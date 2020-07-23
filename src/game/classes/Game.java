@@ -187,10 +187,11 @@ public class Game {
         if(!players[PlayerIndex].getCanGuess())
             return;
         Round round = rounds[curRound];
-        if(round.CheckGuess(guess) == 0)
+        int closeness = round.CheckGuess(guess);
+        if(closeness == 0)
             round.OnCorrectGuess(players, isActive, PlayerIndex);
-        else if(round.CheckGuess(guess) == 1)
-            round.OnCloseGuess(players[PlayerIndex],players,isActive);
+        else if(closeness == 1)
+            round.OnCloseGuess(players[PlayerIndex], isActive, PlayerIndex);
         else
             round.OnIncorrectGuess(players, isActive, PlayerIndex, guess);
     }
