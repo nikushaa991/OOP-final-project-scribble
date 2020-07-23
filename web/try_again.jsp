@@ -12,7 +12,7 @@
 </div>
 <div id="login">
     <form action="Login" method="POST">
-        <label id="lbl"> Invalid credentials, try again. </label>
+        <label id="lbl"> Access denied, try again. </label>
         <div class="field">
             <input type="text" id="user" name="username" title="accountName" placeholder="Username"/>
         </div>

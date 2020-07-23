@@ -1,6 +1,5 @@
 package login.servlets;
 
-import databases.scores.ScoresDAO;
 import databases.users.UsersDAO;
 import utils.Pair;
 
@@ -24,13 +23,14 @@ public class LoginServlet extends HttpServlet {
         UsersDAO userDb = (UsersDAO) getServletContext().getAttribute("users");
         String username = req.getParameter("username");
         String psw = req.getParameter("password");
+        HttpSession session = req.getSession();
+        String oldAcc = (String) session.getAttribute("ACCOUNT");
         try
         {
-            if(userDb.exists(username) && userDb.passwordMatches(username, psw))
+            if((oldAcc.equals(username) || oldAcc.equals("N")) && userDb.exists(username) && userDb.passwordMatches(username, psw))
             {
-                HttpSession session = req.getSession();
                 session.setAttribute("USER", userDb.getUser(username));
-                ScoresDAO scoresDb = (ScoresDAO) getServletContext().getAttribute("scoresHistory");
+                session.setAttribute("ACCOUNT", username);
                 ArrayList<Pair<String, Integer>> leaderboard = userDb.topRankedUsers(topScoreCnt);
                 getServletContext().setAttribute("leaderboard", leaderboard);
                 req.getRequestDispatcher("home.jsp").forward(req, resp);

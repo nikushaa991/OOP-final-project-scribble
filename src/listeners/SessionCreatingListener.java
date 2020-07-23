@@ -12,6 +12,7 @@ public class SessionCreatingListener implements HttpSessionListener {
     @Override
     public void sessionCreated(HttpSessionEvent httpSessionEvent) {
         httpSessionEvent.getSession().setAttribute("INGAME", false);
+        httpSessionEvent.getSession().setAttribute("ACCOUNT", "N");
     }
 
     @Override

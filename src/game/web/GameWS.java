@@ -60,15 +60,21 @@ public class GameWS {
 
     @OnClose
     synchronized public void onClose(Session session) {
-        PlayerInfo info = map.get(session);
-        info.getGame().unregister(info.getId());
-        if(info.getGame().isOver())
+        try
         {
-            HttpSession hsess = map.get(session).getSess();
-            hsess.setAttribute("INGAME", false);
-            sessMap.remove(hsess);
-            map.remove(session);
+            PlayerInfo info = map.get(session);
+            info.getGame().unregister(info.getId());
+            if(info.getGame().isOver())
+            {
+                HttpSession hsess = map.get(session).getSess();
+                hsess.setAttribute("INGAME", false);
+                sessMap.remove(hsess);
+                map.remove(session);
 
+            }
+        }catch(Exception e)
+        {
+            e.printStackTrace();
         }
     }
 
