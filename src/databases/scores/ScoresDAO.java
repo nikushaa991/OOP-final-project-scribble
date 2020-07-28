@@ -37,10 +37,10 @@ public class ScoresDAO extends DBConnector {
     /* returns list of all-time top scorer usernames and respective total scores */
     public ArrayList<Pair<String, Integer>> overallTopScores(int count) throws SQLException {
         ArrayList<Pair<String, Integer>> top = new ArrayList<>();
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery(
-                "select * from (SELECT USERNAME, SUM(SCORE) SUM_SCORE FROM " + tableName +
-                        " GROUP BY USERNAME) a ORDER BY SUM_SCORE DESC LIMIT " + count + ";");
+        PreparedStatement stmt = connection.prepareStatement("select * from (SELECT USERNAME, SUM(SCORE) SUM_SCORE " +
+                "FROM " + tableName +" GROUP BY USERNAME) a ORDER BY SUM_SCORE DESC LIMIT ?;");
+        stmt.setInt(1, count);
+        ResultSet rs = stmt.executeQuery();
         while (rs.next())
         {
             Pair<String, Integer> nextUser = new Pair(rs.getString(1), rs.getInt(2));
@@ -51,10 +51,10 @@ public class ScoresDAO extends DBConnector {
 
     /* Per user total score */
     public int userScore(String username) throws SQLException {
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery(
-                "select SUM(SCORE) from  " + tableName +
-                        " WHERE USERNAME = \"" + username + "\" GROUP BY USERNAME;");
+        PreparedStatement stmt = connection.prepareStatement("select SUM(SCORE) from  " + tableName +
+                " WHERE USERNAME = ? GROUP BY USERNAME;");
+        stmt.setString(1, username);
+        ResultSet rs = stmt.executeQuery();
         if(rs.next())
             return rs.getInt(1);
         return 0;

@@ -18,9 +18,11 @@ public class FriendRequestsDao extends DBConnector {
 
     /* adds new friendship request to table, after checking that such friend request does not exist yet */
     public void newFriendshipRequest(String to, String from) throws SQLException {
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery(
-                "select USERNAME_FROM FROM " + tableName + " WHERE USERNAME_TO = \"" + to + "\" AND USERNAME_FROM = \"" + from + "\";");
+        PreparedStatement stmt = connection.prepareStatement("select USERNAME_FROM FROM " + tableName +
+                " WHERE USERNAME_TO = ? AND USERNAME_FROM = ?;");
+        stmt.setString(1, to);
+        stmt.setString(2, from);
+        ResultSet rs = stmt.executeQuery();
         if(!rs.next())
         {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO " + tableName +
@@ -43,9 +45,10 @@ public class FriendRequestsDao extends DBConnector {
     /* Returns ArrayList representation of friends requests list */
     public ArrayList<String> friendshipRequestsList(String to) throws SQLException {
         ArrayList<String> friendRequests = new ArrayList<>();
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery(
-                "select USERNAME_FROM FROM " + tableName + " WHERE USERNAME_TO = \"" + to + "\";");
+        PreparedStatement stmt = connection.prepareStatement("select USERNAME_FROM FROM " +
+                tableName + " WHERE USERNAME_TO = ?;");
+        stmt.setString(1, to);
+        ResultSet rs = stmt.executeQuery();
         while (rs.next())
         {
             String friend = rs.getString(1);

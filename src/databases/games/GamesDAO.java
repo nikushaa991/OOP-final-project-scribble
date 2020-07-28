@@ -52,9 +52,10 @@ public class GamesDAO extends DBConnector {
      * */
     public ArrayList<Pair<String, Integer>> topScores(int count) throws SQLException {
         ArrayList<Pair<String, Integer>> topScores = new ArrayList<>();
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName +
-                " WHERE RANKED = true ORDER BY WINNING_SCORE DESC LIMIT " + count + ";");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM " + tableName +
+                " WHERE RANKED = true ORDER BY WINNING_SCORE DESC LIMIT ?;");
+        stmt.setInt(1, count);
+        ResultSet rs = stmt.executeQuery();
         while (rs.next())
         {
             Pair nextUser = new Pair(rs.getString(3), rs.getInt(4));

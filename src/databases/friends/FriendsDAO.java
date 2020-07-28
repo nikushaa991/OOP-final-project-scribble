@@ -21,8 +21,11 @@ public class FriendsDAO extends DBConnector {
     /* adds new friendship to table after checking that such friendship does not exit yet*/
     public void newFriendship(String user1, String user2) throws SQLException {
         Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery(
-                "select USERNAME_1 FROM " + tableName + " WHERE USERNAME_1 = \"" + user1 + "\" AND USERNAME_2 = \"" + user2 + "\";");
+        PreparedStatement stmt = connection.prepareStatement("select USERNAME_1 FROM " +
+                tableName + " WHERE USERNAME_1 = ? AND USERNAME_2 = ?;");
+        stmt.setString(1, user1);
+        stmt.setString(2, user2);
+        ResultSet rs = stmt.executeQuery();
         if(!rs.next())
         {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO " + tableName +
@@ -49,9 +52,10 @@ public class FriendsDAO extends DBConnector {
     /* Returns ArrayList representation of friends list */
     public ArrayList<String> friendsList(String user) throws SQLException {
         ArrayList<String> friends = new ArrayList<>();
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery(
-                "select USERNAME_2 FROM " + tableName + " WHERE USERNAME_1 = \"" + user + "\";");
+        PreparedStatement stmt = connection.prepareStatement("select USERNAME_2 FROM " +
+                tableName + " WHERE USERNAME_1 = ?;");
+        stmt.setString(1, user);
+        ResultSet rs = stmt.executeQuery();
         while (rs.next())
         {
             String friend = rs.getString(1);

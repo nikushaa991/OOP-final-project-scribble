@@ -26,8 +26,9 @@ public class UsersDAO extends DBConnector {
     /* converts table records to a list of top ranked users */
     public ArrayList<Pair<String, Integer>> topRankedUsers(int count) throws SQLException {
         ArrayList<Pair<String, Integer>> usersArray = new ArrayList<>();
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + " ORDER BY RNK DESC LIMIT " + count + ";");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM "+tableName+" ORDER BY RNK DESC LIMIT ?;");
+        stmt.setInt(1, count);
+        ResultSet rs= stmt.executeQuery();
         while (rs.next())
         {
             Pair newItem = new Pair(rs.getString(2), rs.getInt(4));
@@ -46,8 +47,9 @@ public class UsersDAO extends DBConnector {
 
     /* returns user record from knowing it's username */
     public User getUser(String username) throws SQLException {
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + " WHERE username = \"" + username + "\"");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM "+tableName+" WHERE username = ?;");
+        stmt.setString(1, username);
+        ResultSet rs = stmt.executeQuery();
         if(rs.next())
             return new User(rs.getInt(1), rs.getString(2), rs.getInt(4));
         return null;
@@ -55,8 +57,9 @@ public class UsersDAO extends DBConnector {
 
     /* checks if user exists in the table */
     public boolean exists(String username) throws SQLException {
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + " WHERE username = \"" + username + "\"");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM "+tableName+" WHERE username = ?;");
+        stmt.setString(1, username);
+        ResultSet rs = stmt.executeQuery();
         return rs.next();
     }
 
@@ -85,8 +88,9 @@ public class UsersDAO extends DBConnector {
 
     /* Checks if SHA value of password matches username's password */
     public boolean passwordMatches(String username, String password) throws NoSuchAlgorithmException, SQLException {
-        Statement queryStm = connection.createStatement();
-        ResultSet rs = queryStm.executeQuery("SELECT * FROM " + tableName + " WHERE username = \"" + username + "\"");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM "+tableName+" WHERE username = ?;");
+        stmt.setString(1, username);
+        ResultSet rs = stmt.executeQuery();
         if(rs.next())
         {
             return rs.getString(3).equals(Encryptor.shaVal(password));
