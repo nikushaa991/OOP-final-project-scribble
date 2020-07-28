@@ -20,7 +20,7 @@ public class FriendRequestServlet extends HttpServlet {
         if(!sendRequestTo.equals(from)) {
             FriendRequestsDao requestsDao = (FriendRequestsDao) getServletContext().getAttribute("friendRequests");
             try {
-                requestsDao.newFriendshipRequest(sendRequestTo, from);
+                requestsDao.add(sendRequestTo, from);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

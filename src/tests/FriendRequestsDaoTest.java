@@ -15,10 +15,10 @@ class FriendRequestsDaoTest {
         FriendRequestsDao dao = new FriendRequestsDao();
         try
         {
-            dao.newFriendshipRequest("adami", "eva");
-            dao.newFriendshipRequest("adami", "gveli");
-            dao.newFriendshipRequest("chichiko", "bichiko");
-            ArrayList<String> friendRequestsList = dao.friendshipRequestsList("adami");
+            dao.add("adami", "eva");
+            dao.add("adami", "gveli");
+            dao.add("chichiko", "bichiko");
+            ArrayList<String> friendRequestsList = dao.toList("adami");
             assertEquals("eva", friendRequestsList.get(0));
             assertEquals("gveli", friendRequestsList.get(1));
         } catch (SQLException e)
@@ -26,9 +26,9 @@ class FriendRequestsDaoTest {
             e.printStackTrace();
         } finally
         {
-            dao.deleteFriendshipRequest("adami", "eva");
-            dao.deleteFriendshipRequest("chichiko", "bichiko");
-            dao.deleteFriendshipRequest("adami", "gveli");
+            dao.delete("adami", "eva");
+            dao.delete("chichiko", "bichiko");
+            dao.delete("adami", "gveli");
         }
     }
 }

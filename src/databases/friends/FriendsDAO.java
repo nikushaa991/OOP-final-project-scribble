@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /*
  *
  * */
-public class FriendsDAO extends DBConnector {
+public class FriendsDAO extends DBConnector implements Friends{
 
     public FriendsDAO() {
         super();
@@ -19,7 +19,7 @@ public class FriendsDAO extends DBConnector {
     }
 
     /* adds new friendship to table after checking that such friendship does not exit yet*/
-    public void newFriendship(String user1, String user2) throws SQLException {
+    public void add(String user1, String user2) throws SQLException {
         Statement queryStm = connection.createStatement();
         PreparedStatement stmt = connection.prepareStatement("select USERNAME_1 FROM " +
                 tableName + " WHERE USERNAME_1 = ? AND USERNAME_2 = ?;");
@@ -39,7 +39,7 @@ public class FriendsDAO extends DBConnector {
     }
 
     /* removes friendship from table */
-    public void deleteFriendship(String user1, String user2) throws SQLException {
+    public void delete(String user1, String user2) throws SQLException {
         PreparedStatement ps = connection.prepareStatement("DELETE FROM " + tableName +
                 " WHERE (USERNAME_1 = ? AND USERNAME_2 = ?) OR (USERNAME_2 = ? AND USERNAME_1 = ?) ");
         ps.setString(1, user1);
@@ -50,7 +50,7 @@ public class FriendsDAO extends DBConnector {
     }
 
     /* Returns ArrayList representation of friends list */
-    public ArrayList<String> friendsList(String user) throws SQLException {
+    public ArrayList<String> toList(String user) throws SQLException {
         ArrayList<String> friends = new ArrayList<>();
         PreparedStatement stmt = connection.prepareStatement("select USERNAME_2 FROM " +
                 tableName + " WHERE USERNAME_1 = ?;");

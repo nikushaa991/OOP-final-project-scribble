@@ -26,8 +26,8 @@ public class FriendsListServlet extends HttpServlet {
         ArrayList<String> gameInvites = userInvites.get(username);
         try
         {
-            friendsList = friendsDAO.friendsList(username);
-            friendRequestsList = friendRequestsDao.friendshipRequestsList(username);
+            friendsList = friendsDAO.toList(username);
+            friendRequestsList = friendRequestsDao.toList(username);
         } catch (SQLException e)
         {
             e.printStackTrace();

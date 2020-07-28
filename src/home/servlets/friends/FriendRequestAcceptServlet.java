@@ -27,8 +27,8 @@ public class FriendRequestAcceptServlet extends HttpServlet {
             {
                 try
                 {
-                    requestsDao.deleteFriendshipRequest(currentUser, friendRequest);
-                    friendsDao.newFriendship(friendRequest, currentUser);
+                    requestsDao.delete(currentUser, friendRequest);
+                    friendsDao.add(friendRequest, currentUser);
                 } catch (SQLException e)
                 {
                     e.printStackTrace();
