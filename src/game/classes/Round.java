@@ -9,10 +9,10 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Round {
+    public static final String defaultWord = "NOWORD";
     private static final int WORD_CHOICE_NUM = 3;
     private static final int PAINTER_CHOICE_TIME = 10;
     private static final int ROUND_DURATION = 60;
-    private static final String defaultWord = "NOWORD";
     private final int maxActivePlayers;
     private final int gameId;
     private final int index;
@@ -33,7 +33,6 @@ public class Round {
         this.lock = new Object();
         this.maxActivePlayers = game.getActivePlayerCount();
         rand = new Random();
-
     }
 
     String[] GenerateWordsForPainter() {
@@ -126,7 +125,7 @@ public class Round {
         painter.setCanGuess(false);
 
         for(int i = 0; i < 30; i++)
-            if(guessed != Math.min(game.getActivePlayerCount(), maxActivePlayers) - 1)
+            if(guessed == 0 ||  guessed != Math.min(game.getActivePlayerCount(), maxActivePlayers) - 1)
                 TimeUnit.SECONDS.sleep(ROUND_DURATION / 30);
             else break;
 
@@ -200,5 +199,9 @@ public class Round {
                 e.printStackTrace();
             }
         }
+    }
+
+    public String getHiddenWord() {
+        return hiddenWord;
     }
 }

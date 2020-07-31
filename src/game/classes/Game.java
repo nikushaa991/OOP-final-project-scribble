@@ -78,8 +78,14 @@ public class Game {
     private void begin() throws IOException, InterruptedException, SQLException {
         for(int painterNum = 0; curRound < N_ROUNDS; curRound++, painterNum++)
         {
-            if(activePlayerCount == 0)
+            if(isOver || activePlayerCount == 1)
             {
+                for(int i = 0; i < Game.MAX_PLAYERS; i++)
+                    if(isActive[i])
+                    {
+                        players[i].notifyPlayer("N,");
+                        players[i].notifyPlayer("M,Game is ending prematurely due to the lack of players.");
+                    }
                 isOver = true;
                 return;
             }
@@ -177,7 +183,7 @@ public class Game {
     }
 
     public void CheckGuessFromGame(int PlayerIndex, String guess) throws SQLException {
-        if(registeredPlayers < 2 || curRound == N_ROUNDS)
+        if(registeredPlayers < 2 || isOver)
         {
             for(int i = 0; i < MAX_PLAYERS; i++)
                 if(isActive[i])
@@ -222,10 +228,15 @@ public class Game {
     private synchronized void catchup(int id) {
         try
         {
+            Round currRound = rounds[curRound];
             players[id].notifyPlayer(instructions);
             if(id == painterId)
+            {
                 players[id].notifyPlayer("P,");
-            if(rounds[curRound] != null)
+                if(currRound != null && currRound.getHiddenWord() != Round.defaultWord)
+                    players[id].notifyPlayer("M,The word is: " + currRound.getHiddenWord());
+            }
+            if(currRound != null)
                 rounds[curRound].UpdateScores(players, isActive);
         } catch (Exception e)
         {

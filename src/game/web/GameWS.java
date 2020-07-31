@@ -21,16 +21,27 @@ public class GameWS {
         HttpSession sess = (HttpSession) config.getUserProperties().get("httpSession");
         boolean isInGame = (boolean) sess.getAttribute("INGAME");
         Game game = (Game) sess.getAttribute("GAME");
-        if(!isInGame)
+        if(game.isOver())
         {
-            if(game.isOver())
+            session.getBasicRemote().sendText("M,You have attempted to reconnect to a finished game");
+            session.getBasicRemote().sendText("M,Starting a new unranked game...");
+
+            if(isInGame)
             {
-                session.getBasicRemote().sendText("M,You have attempted to reconnect to a finished game");
-                session.getBasicRemote().sendText("M,Starting a new unranked game...");
-                Matchmaker mm = (Matchmaker) sess.getServletContext().getAttribute("MATCHMAKER");
-                game = mm.addToQueue();
-                sess.setAttribute("GAME", game);
+                map.remove(sessMap.get(sess));
+                sessMap.remove(sess);
             }
+
+            Matchmaker mm = (Matchmaker) sess.getServletContext().getAttribute("MATCHMAKER");
+            game = mm.addToQueue();
+            sess.setAttribute("GAME", game);
+            int id = game.registerSession(session, (User) sess.getAttribute("USER"));
+
+            map.put(session, new PlayerInfo(sess, id, game));
+            sess.setAttribute("INGAME", true);
+            sessMap.put(sess, session);
+        } else if(!isInGame)
+        {
             int id = game.registerSession(session, (User) sess.getAttribute("USER"));
             map.put(session, new PlayerInfo(sess, id, game));
             sess.setAttribute("INGAME", true);
@@ -70,9 +81,8 @@ public class GameWS {
                 hsess.setAttribute("INGAME", false);
                 sessMap.remove(hsess);
                 map.remove(session);
-
             }
-        }catch(Exception e)
+        } catch (Exception e)
         {
             e.printStackTrace();
         }

@@ -17,7 +17,7 @@ import java.sql.SQLException;
 public class QuickplayServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        if(!(boolean) request.getSession().getAttribute("INGAME"))
+        if(!(boolean) session.getAttribute("INGAME") || (session.getAttribute("GAME") == null || ((Game) session.getAttribute("GAME")).isOver()))
         {
             Matchmaker mm = (Matchmaker) getServletContext().getAttribute("MATCHMAKER");
             Game game = null;
@@ -29,6 +29,8 @@ public class QuickplayServlet extends HttpServlet {
                 e.printStackTrace();
             }
             session.setAttribute("GAME", game);
+            session.setAttribute("INGAME", false);
+
         }
 
         RequestDispatcher rd = request.getRequestDispatcher("game.jsp");
