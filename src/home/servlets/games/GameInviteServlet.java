@@ -21,7 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @WebServlet(value = "/GameInvite", name = "GameInvite")
 public class GameInviteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if(!(boolean) request.getSession().getAttribute("INGAME"))
+        HttpSession session = request.getSession();
+        if(!(boolean) session.getAttribute("INGAME") || (session.getAttribute("GAME") == null || ((Game) session.getAttribute("GAME")).isOver()))
         {
             ScoresDAO scoresDAO = (ScoresDAO) getServletContext().getAttribute("scoresHistory");
             GamesDAO gamesDAO = (GamesDAO) getServletContext().getAttribute("gamesHistory");
@@ -47,7 +48,6 @@ public class GameInviteServlet extends HttpServlet {
                     invites.add(host);
                 }
             }
-            HttpSession session = request.getSession();
             session.setAttribute("GAME", game);
         }
         RequestDispatcher rd = request.getRequestDispatcher("game.jsp"); // this should be changed probably??

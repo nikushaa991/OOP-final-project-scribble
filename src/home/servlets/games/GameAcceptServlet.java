@@ -18,7 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameAcceptServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //redirect to proposed game.
-        if(!(boolean) request.getSession().getAttribute("INGAME"))
+        HttpSession session = request.getSession();
+        if(!(boolean) session.getAttribute("INGAME") || (session.getAttribute("GAME") == null || ((Game) session.getAttribute("GAME")).isOver()))
         {
             String host = request.getParameter("name");
             Game game = ((ConcurrentHashMap<String, Game>) getServletContext().getAttribute("HOSTED_GAMES")).get(host);
@@ -33,7 +34,6 @@ public class GameAcceptServlet extends HttpServlet {
                     e.printStackTrace();
                 }
             }
-            HttpSession session = request.getSession();
             session.setAttribute("GAME", game);
         }
         RequestDispatcher rd = request.getRequestDispatcher("game.jsp");
