@@ -6,7 +6,7 @@
     font-size: 20vh;
     user-select: none;
     line-height: 20vh;
-    box-shadow: inset 0 4px 6px -5px black;
+    /* box-shadow: inset 0 4px 6px -5px black; */
 }
 img {
     margin-left: 43vw;
@@ -17,16 +17,11 @@ img {
 
 #login {
     background: #1c1f26;
-    color: #fff;
-    width: 100vw;
-    height: 80vh;
     position: absolute;
-    margin: auto;
     top: 20vh;
     right: 0;
     bottom: 0;
     left: 0;
-    box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0 4px 6px -5px black;
 }
 
 input[type=text] {
@@ -52,6 +47,7 @@ body {
 
 .brushes {
     display: inline-block;
+    padding-bottom: 0.5vh;
 }
 
 .brushes button {
@@ -61,8 +57,6 @@ body {
     background-color: transparent;
     cursor: pointer;
     float: left;
-    position: relative;
-    top: 50%;
 }
 
 .brushes button:after {
@@ -74,14 +68,17 @@ body {
 
 .brushes button:nth-of-type(1):after {
     height: 3px;
+    margin-top: 0.4vh;
 }
 
 .brushes button:nth-of-type(2):after {
     height: 6px;
+    margin-top: 0.25vh;
 }
 
 .brushes button:nth-of-type(3):after {
     height: 9px;
+    margin-top: 0.15vh;
 }
 
 .brushes button:nth-of-type(4):after {
@@ -90,6 +87,7 @@ body {
 
 .brushes button:nth-of-type(5):after {
     height: 15px;
+    margin-top: -0.3vh;
 }
 
 .buttons {
@@ -109,7 +107,7 @@ body {
     outline: none;
     cursor: pointer;
     position: relative;
-    top: -1.5vh;
+    top: -1.8vh;
 }
 
 #paint-canvas {
@@ -160,33 +158,25 @@ body {
 }
 
 .bottom-block {
-    background-color: transparent;
-    height: 10vh;
-    width: 80vw;
     overflow: hidden;
     position: absolute;
-    top: 70vh;
     left: 15vw;
+    height: 10vh;
 }
 
 .colors {
-    background-color: transparent;
-    text-align: left;
-    height: 10vh;
     display: inline-block;
     padding-left: 5px;
+    position: relative;
 }
 
 .colors button {
-    display: inline-block;
     border: 1px solid #00000026;
-    border-radius: 0;
     cursor: pointer;
     width: 2vw;
     height: 4vh;
-    margin-top: 3.5vh;
-    margin-bottom: 3.5vh;
     margin-left: 0.1vw;
+    border-radius: 100%;
 }
 
 .colors button:nth-of-type(1) {
