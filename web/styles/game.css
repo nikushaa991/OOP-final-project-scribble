@@ -43,6 +43,7 @@ input[type=text] {
 body {
     font-family: Arial;
     margin: 0;
+    color: white;
 }
 
 .brushes {

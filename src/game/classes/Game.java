@@ -8,25 +8,27 @@ import login.classes.User;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Game {
     public static final int N_ROUNDS = 18;
     public static final int MAX_PLAYERS = 6;
     public static final String[] colors = {"#98fb98", "#6495ed", "#9370db", "#dda0dd", "#f27927", "#e2a50e"};
     private final boolean ranked;
+    private final boolean[] isActive;
     private final Round[] rounds;
     private final Player[] players;
-    private final boolean[] isActive;
-    private String instructions;
     private final GamesDAO gamesDAO;
     private final ScoresDAO scoresDAO;
     private final UsersDAO usersDAO;
+    private boolean isOver;
     private int registeredPlayers;
     private int activePlayerCount;
     private int curRound;
     private int painterId;
-    private boolean isOver;
     private int gameId;
+    private String instructions;
+
 
     public Game(boolean ranked, GamesDAO gamesDAO, ScoresDAO scoresDAO, UsersDAO usersDAO) throws SQLException {
         players = new Player[MAX_PLAYERS];
@@ -86,7 +88,7 @@ public class Game {
                         players[i].notifyPlayer("N,");
                         players[i].notifyPlayer("M,Game is ending prematurely due to the lack of players.");
                     }
-                isOver = true;
+                endGame();
                 return;
             }
             while (!isActive[painterNum % MAX_PLAYERS])
@@ -99,7 +101,7 @@ public class Game {
             // Game in Progress
             CurrentRound.OnRoundEnd(players, isActive);
         }
-        isOver = true;
+        endGame();
         painterId = -1;
         Player p = GetWinner();
 
@@ -116,6 +118,9 @@ public class Game {
         updateGamesDAO(p);
     }
 
+    void endGame(){
+        isOver = true;
+}
 
     /*
      * Runs trough all the players, sorts them and Updates each Ranking based on players place
@@ -206,7 +211,7 @@ public class Game {
         isActive[playerIndex] = false;
         activePlayerCount--;
         if(activePlayerCount == 0)
-            isOver = true;
+            endGame();
     }
 
     public synchronized void SetHiddenWord(String word) {

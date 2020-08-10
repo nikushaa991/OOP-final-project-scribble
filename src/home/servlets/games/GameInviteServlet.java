@@ -49,6 +49,7 @@ public class GameInviteServlet extends HttpServlet {
                 }
             }
             session.setAttribute("GAME", game);
+            session.setAttribute("INGAME", false);
         }
         RequestDispatcher rd = request.getRequestDispatcher("game.jsp"); // this should be changed probably??
         rd.forward(request, response);

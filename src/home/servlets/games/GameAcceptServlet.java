@@ -35,6 +35,7 @@ public class GameAcceptServlet extends HttpServlet {
                 }
             }
             session.setAttribute("GAME", game);
+            session.setAttribute("INGAME", false);
         }
         RequestDispatcher rd = request.getRequestDispatcher("game.jsp");
         rd.forward(request, response);
